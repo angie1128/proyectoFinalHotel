@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Reserva - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{{ url_for('main.reservations') }}" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="h2 text-primary mb-0">
+                    <i class="fas fa-calendar-plus me-2"></i>Nueva Reserva
+                </h1>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Detalles de la Reserva
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.check_in.label(class="form-label") }}
+                                {{ form.check_in(class="form-control") }}
+                                {% if form.check_in.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.check_in.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.check_out.label(class="form-label") }}
+                                {{ form.check_out(class="form-control") }}
+                                {% if form.check_out.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.check_out.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.adults.label(class="form-label") }}
+                                {{ form.adults(class="form-control", value=1) }}
+                                {% if form.adults.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.adults.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.children.label(class="form-label") }}
+                                {{ form.children(class="form-control", value=0) }}
+                                {% if form.children.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.children.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.special_requests.label(class="form-label") }}
+                            {{ form.special_requests(class="form-control", rows="3", placeholder="Ej: Habitación en piso alto, cama extra, llegada tardía...") }}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-calendar-check me-2"></i>Crear Reserva
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bed me-2"></i>Tipos de Habitación Disponibles
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for room_type in room_types %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0">{{ room_type.name }}</h6>
+                            <span class="h6 text-primary mb-0">${{ "%.2f"|format(room_type.price_per_night) }}</span>
+                        </div>
+                        <p class="small text-muted mb-2">{{ room_type.description }}</p>
+                        <div class="small">
+                            <i class="fas fa-users text-muted me-1"></i>
+                            Hasta {{ room_type.capacity }} personas
+                        </div>
+                        {% if room_type.amenities %}
+                        <div class="small mt-2">
+                            <i class="fas fa-star text-warning me-1"></i>
+                            {{ room_type.amenities }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-body text-center">
+                    <i class="fas fa-info-circle text-info mb-2" style="font-size: 2rem;"></i>
+                    <h6>Información Importante</h6>
+                    <div class="small text-muted text-start">
+                        <p><i class="fas fa-check text-success me-1"></i>Check-in: 3:00 PM</p>
+                        <p><i class="fas fa-check text-success me-1"></i>Check-out: 11:00 AM</p>
+                        <p><i class="fas fa-check text-success me-1"></i>Cancelación gratuita hasta 24h antes</p>
+                        <p><i class="fas fa-check text-success me-1"></i>WiFi gratuito incluido</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Establecer fecha mínima como hoy
+    const today = new Date().toISOString().split('T')[0];
+    const checkInField = document.getElementById('check_in');
+    const checkOutField = document.getElementById('check_out');
+    
+    checkInField.min = today;
+    
+    // Actualizar fecha mínima de check-out cuando cambie check-in
+    checkInField.addEventListener('change', function() {
+        const checkInDate = new Date(this.value);
+        checkInDate.setDate(checkInDate.getDate() + 1);
+        checkOutField.min = checkInDate.toISOString().split('T')[0];
+        
+        // Si check-out es anterior o igual a check-in, actualizarlo
+        if (checkOutField.value && checkOutField.value <= this.value) {
+            checkOutField.value = checkInDate.toISOString().split('T')[0];
+        }
+    });
+});
+</script>
+{% endblock %}

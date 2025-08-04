@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Habitaciones - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-bed me-2"></i>Gestión de Habitaciones
+                </h1>
+                <div>
+                    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                        <i class="fas fa-plus me-1"></i>Nueva Habitación
+                    </button>
+                    <button class="btn btn-info" onclick="exportRooms()">
+                        <i class="fas fa-download me-1"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estadísticas Rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-bed text-primary mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="text-primary">{{ rooms|length }}</h4>
+                    <small class="text-muted">Total Habitaciones</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="text-success">{{ rooms|selectattr("status.value", "equalto", "available")|list|length }}</h4>
+                    <small class="text-muted">Disponibles</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-door-closed text-danger mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="text-danger">{{ rooms|selectattr("status.value", "equalto", "occupied")|list|length }}</h4>
+                    <small class="text-muted">Ocupadas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-tools text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="text-warning">{{ rooms|selectattr("status.value", "equalto", "maintenance")|list|length }}</h4>
+                    <small class="text-muted">Mantenimiento</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">Todos los estados</option>
+                                <option value="available">Disponible</option>
+                                <option value="occupied">Ocupada</option>
+                                <option value="maintenance">Mantenimiento</option>
+                                <option value="cleaning">Limpieza</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="floorFilter">
+                                <option value="">Todos los pisos</option>
+                                {% for floor in range(1, 6) %}
+                                <option value="{{ floor }}">Piso {{ floor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="searchRoom" placeholder="Buscar por número...">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100" onclick="filterRooms()">
+                                <i class="fas fa-search me-1"></i>Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lista de Habitaciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Habitación</th>
+                                    <th>Piso</th>
+                                    <th>Tipo</th>
+                                    <th>Capacidad</th>
+                                    <th>Precio/Noche</th>
+                                    <th>Estado</th>
+                                    <th>Último Mantenimiento</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomsTableBody">
+                                {% for room in rooms %}
+                                <tr class="room-row" 
+                                    data-status="{{ room.status.value }}" 
+                                    data-floor="{{ room.floor }}"
+                                    data-number="{{ room.number }}">
+                                    <td>
+                                        <strong class="text-primary">
+                                            <i class="fas fa-door-open me-1"></i>
+                                            {{ room.number }}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">Piso {{ room.floor }}</span>
+                                    </td>
+                                    <td>{{ room.room_type.name }}</td>
+                                    <td>
+                                        <i class="fas fa-users text-muted me-1"></i>
+                                        {{ room.room_type.capacity }}
+                                    </td>
+                                    <td>
+                                        <strong>${{ "%.2f"|format(room.room_type.price_per_night) }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if room.status.value == 'available' %}
+                                        <span class="badge status-available">
+                                            <i class="fas fa-check me-1"></i>Disponible
+                                        </span>
+                                        {% elif room.status.value == 'occupied' %}
+                                        <span class="badge status-occupied">
+                                            <i class="fas fa-user me-1"></i>Ocupada
+                                        </span>
+                                        {% elif room.status.value == 'maintenance' %}
+                                        <span class="badge status-maintenance">
+                                            <i class="fas fa-tools me-1"></i>Mantenimiento
+                                        </span>
+                                        {% else %}
+                                        <span class="badge status-cleaning">
+                                            <i class="fas fa-broom me-1"></i>Limpieza
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if room.last_maintenance %}
+                                        {{ room.last_maintenance.strftime('%d/%m/%Y') }}
+                                        {% else %}
+                                        <span class="text-muted">Sin registro</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary" onclick="editRoom({{ room.id }})" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info" onclick="viewRoom({{ room.id }})" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="changeStatus({{ room.id }})" title="Cambiar estado">
+                                                <i class="fas fa-exchange-alt"></i>
+                                            </button>
+                                            {% if current_user.role.value == 'admin' %}
+                                            <button class="btn btn-outline-danger" onclick="deleteRoom({{ room.id }})" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nueva Habitación -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>Nueva Habitación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addRoomForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Número de Habitación</label>
+                            <input type="text" class="form-control" name="number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Piso</label>
+                            <select class="form-select" name="floor" required>
+                                {% for floor in range(1, 11) %}
+                                <option value="{{ floor }}">Piso {{ floor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Tipo de Habitación</label>
+                            <select class="form-select" name="room_type_id" required>
+                                <option value="">Seleccionar tipo...</option>
+                                <!-- Aquí se cargarían los tipos de habitación -->
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Estado Inicial</label>
+                            <select class="form-select" name="status">
+                                <option value="available">Disponible</option>
+                                <option value="maintenance">Mantenimiento</option>
+                                <option value="cleaning">Limpieza</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notas</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveRoom()">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterRooms() {
+    const status = document.getElementById('statusFilter').value;
+    const floor = document.getElementById('floorFilter').value;
+    const search = document.getElementById('searchRoom').value.toLowerCase();
+    const rows = document.querySelectorAll('.room-row');
+    
+    rows.forEach(row => {
+        let show = true;
+        
+        if (status && row.dataset.status !== status) show = false;
+        if (floor && row.dataset.floor !== floor) show = false;
+        if (search && !row.dataset.number.toLowerCase().includes(search)) show = false;
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+function editRoom(roomId) {
+    // Implementar edición de habitación
+    alert('Función de edición - Habitación ID: ' + roomId);
+}
+
+function viewRoom(roomId) {
+    // Implementar vista de detalles
+    alert('Ver detalles - Habitación ID: ' + roomId);
+}
+
+function changeStatus(roomId) {
+    // Implementar cambio de estado
+    alert('Cambiar estado - Habitación ID: ' + roomId);
+}
+
+function deleteRoom(roomId) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta habitación?')) {
+        // Implementar eliminación
+        alert('Eliminar habitación - ID: ' + roomId);
+    }
+}
+
+function saveRoom() {
+    // Implementar guardado de nueva habitación
+    alert('Guardar nueva habitación');
+}
+
+function exportRooms() {
+    // Implementar exportación
+    alert('Exportar habitaciones');
+}
+
+// Filtrado en tiempo real
+document.getElementById('searchRoom').addEventListener('input', filterRooms);
+document.getElementById('statusFilter').addEventListener('change', filterRooms);
+document.getElementById('floorFilter').addEventListener('change', filterRooms);
+</script>
+{% endblock %}

@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 text-gradient mb-4">
+                <i class="fas fa-user me-2"></i>Mi Perfil
+            </h1>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Información Personal -->
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h4 class="text-gradient">{{ current_user.get_full_name() }}</h4>
+                <p class="text-muted mb-3">{{ current_user.email }}</p>
+                <span class="badge bg-success px-3 py-2">
+                    <i class="fas fa-star me-1"></i>Huésped VIP
+                </span>
+                
+                <div class="mt-4">
+                    <div class="row g-2 text-start">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-body text-center p-3">
+                                    <h5 class="text-primary mb-1">{{ current_user.reservations.count() }}</h5>
+                                    <small class="text-muted">Reservas</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-body text-center p-3">
+                                    <h5 class="text-success mb-1">0</h5>
+                                    <small class="text-muted">Puntos</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary mt-4 w-100" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="fas fa-edit me-1"></i>Editar Perfil
+                </button>
+            </div>
+        </div>
+        
+        <!-- Información Detallada -->
+        <div class="col-lg-8">
+            <div class="row g-4">
+                <!-- Datos Personales -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-id-card me-2"></i>Información Personal
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Nombre de Usuario</label>
+                                    <p class="mb-0">{{ current_user.username }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Email</label>
+                                    <p class="mb-0">{{ current_user.email }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Nombre</label>
+                                    <p class="mb-0">{{ current_user.first_name }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Apellido</label>
+                                    <p class="mb-0">{{ current_user.last_name }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Teléfono</label>
+                                    <p class="mb-0">{{ current_user.phone or 'No especificado' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">Miembro desde</label>
+                                    <p class="mb-0">{{ current_user.created_at.strftime('%d/%m/%Y') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preferencias -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cog me-2"></i>Preferencias
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                        <label class="form-check-label" for="emailNotifications">
+                                            Notificaciones por email
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                        <label class="form-check-label" for="smsNotifications">
+                                            Notificaciones SMS
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="promotions" checked>
+                                        <label class="form-check-label" for="promotions">
+                                            Recibir promociones
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="newsletter" checked>
+                                        <label class="form-check-label" for="newsletter">
+                                            Newsletter mensual
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Historial de Reservas -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-history me-2"></i>Historial de Reservas
+                            </h5>
+                            <a href="{{ url_for('main.reservations') }}" class="btn btn-sm btn-outline-primary">
+                                Ver todas
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if current_user.reservations.limit(3).all() %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Habitación</th>
+                                            <th>Fechas</th>
+                                            <th>Estado</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reservation in current_user.reservations.limit(3).all() %}
+                                        <tr>
+                                            <td>{{ reservation.room.number }}</td>
+                                            <td>{{ reservation.check_in.strftime('%d/%m') }} - {{ reservation.check_out.strftime('%d/%m/%Y') }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if reservation.status.value == 'confirmed' else 'warning' }}">
+                                                    {{ reservation.status.value.title() }}
+                                                </span>
+                                            </td>
+                                            <td>${{ "%.2f"|format(reservation.total_amount) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-times text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">No tienes reservas aún</p>
+                                <a href="{{ url_for('main.make_reservation') }}" class="btn btn-primary">
+                                    Hacer primera reserva
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>Editar Perfil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="first_name" value="{{ current_user.first_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Apellido</label>
+                            <input type="text" class="form-control" name="last_name" value="{{ current_user.last_name }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" value="{{ current_user.email }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" name="phone" value="{{ current_user.phone or '' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Nueva Contraseña (opcional)</label>
+                            <input type="password" class="form-control" name="new_password" placeholder="Dejar en blanco para mantener actual">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Confirmar Nueva Contraseña</label>
+                            <input type="password" class="form-control" name="confirm_password" placeholder="Confirmar nueva contraseña">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">
+                    <i class="fas fa-save me-1"></i>Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function saveProfile() {
+    // Implementar guardado de perfil
+    alert('Perfil actualizado exitosamente');
+    bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+}
+
+// Guardar preferencias automáticamente
+document.querySelectorAll('.form-check-input').forEach(input => {
+    input.addEventListener('change', function() {
+        // Aquí se guardarían las preferencias
+        console.log(`Preferencia ${this.id}: ${this.checked}`);
+    });
+});
+</script>
+{% endblock %}

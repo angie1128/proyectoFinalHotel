@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Recepcionista - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-concierge-bell me-2"></i>Dashboard Recepcionista
+                </h1>
+                <span class="badge bg-info px-3 py-2">
+                    <i class="fas fa-headset me-1"></i>Recepcionista
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-calendar-check text-primary mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="todayCheckIns">0</div>
+                <div class="text-muted">Check-ins Hoy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-calendar-times text-warning mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="todayCheckOuts">0</div>
+                <div class="text-muted">Check-outs Hoy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-clock text-info mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="pendingReservations">0</div>
+                <div class="text-muted">Reservas Pendientes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="availableRooms">0</div>
+                <div class="text-muted">Habitaciones Libres</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-user-plus text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Check-in</h5>
+                    <p class="card-text">Registrar llegada de huéspedes</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkInModal">
+                        <i class="fas fa-sign-in-alt me-1"></i>Hacer Check-in
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-user-minus text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Check-out</h5>
+                    <p class="card-text">Procesar salida de huéspedes</p>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkOutModal">
+                        <i class="fas fa-sign-out-alt me-1"></i>Hacer Check-out
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-calendar-plus text-success mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Nueva Reserva</h5>
+                    <p class="card-text">Crear reserva para huésped</p>
+                    <a href="{{ url_for('main.make_reservation') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Nueva Reserva
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Today's Activities -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-day me-2"></i>Actividades de Hoy
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Huésped</th>
+                                    <th>Habitación</th>
+                                    <th>Actividad</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>09:00</td>
+                                    <td>Juan Pérez</td>
+                                    <td>101</td>
+                                    <td>Check-out</td>
+                                    <td><span class="badge bg-warning">Pendiente</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary">Procesar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>14:00</td>
+                                    <td>María García</td>
+                                    <td>205</td>
+                                    <td>Check-in</td>
+                                    <td><span class="badge bg-info">Programado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success">Confirmar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>16:30</td>
+                                    <td>Carlos López</td>
+                                    <td>302</td>
+                                    <td>Check-in</td>
+                                    <td><span class="badge bg-success">Completado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>Hecho</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Alertas
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Check-out tardío</strong><br>
+                        Habitación 101 - Juan Pérez
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Llegada temprana</strong><br>
+                        Habitación 205 - María García
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Ocupación Hoy
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block">
+                        <canvas id="occupancyChart" width="150" height="150"></canvas>
+                        <div class="position-absolute top-50 start-50 translate-middle">
+                            <h3 class="text-primary mb-0">75%</h3>
+                            <small class="text-muted">Ocupación</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check-in Modal -->
+<div class="modal fade" id="checkInModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Buscar Reserva</label>
+                        <input type="text" class="form-control" placeholder="Número de reserva o nombre del huésped">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Habitación Asignada</label>
+                        <select class="form-select">
+                            <option>101 - Estándar</option>
+                            <option>205 - Deluxe</option>
+                            <option>302 - Suite</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notas del Check-in</label>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-check me-1"></i>Confirmar Check-in
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check-out Modal -->
+<div class="modal fade" id="checkOutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-out-alt me-2"></i>Check-out
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Habitación</label>
+                        <select class="form-select">
+                            <option>101 - Juan Pérez</option>
+                            <option>205 - María García</option>
+                            <option>302 - Carlos López</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Servicios Adicionales</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="minibar">
+                            <label class="form-check-label" for="minibar">
+                                Minibar - $25.00
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="laundry">
+                            <label class="form-check-label" for="laundry">
+                                Lavandería - $15.00
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total a Pagar</label>
+                        <input type="text" class="form-control" value="$180.00" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning">
+                    <i class="fas fa-credit-card me-1"></i>Procesar Check-out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar estadísticas
+    fetch('/api/dashboard_stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('todayCheckIns').textContent = 3;
+            document.getElementById('todayCheckOuts').textContent = 2;
+            document.getElementById('pendingReservations').textContent = data.pending_reservations || 0;
+            document.getElementById('availableRooms').textContent = data.available_rooms || 0;
+        });
+    
+    // Gráfico de ocupación
+    const ctx = document.getElementById('occupancyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [75, 25],
+                backgroundColor: ['#ee6983', '#E9D5B7'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

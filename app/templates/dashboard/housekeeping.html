@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Limpieza - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-broom me-2"></i>Dashboard Limpieza
+                </h1>
+                <span class="badge bg-success px-3 py-2">
+                    <i class="fas fa-sparkles me-1"></i>Housekeeping
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-list-check text-primary mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number">8</div>
+                <div class="text-muted">Habitaciones Asignadas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-check-circle text-success mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number">5</div>
+                <div class="text-muted">Completadas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-clock text-warning mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number">3</div>
+                <div class="text-muted">Pendientes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-tools text-danger mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number">2</div>
+                <div class="text-muted">Mantenimiento</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task List -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tasks me-2"></i>Tareas de Hoy
+                    </h5>
+                    <div>
+                        <button class="btn btn-sm btn-success" onclick="markAllComplete()">
+                            <i class="fas fa-check-double me-1"></i>Marcar Todas
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <input class="form-check-input me-3" type="checkbox" id="room101">
+                                <div>
+                                    <h6 class="mb-1">Habitación 101</h6>
+                                    <small class="text-muted">Check-out completado - Limpieza profunda</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge bg-warning me-2">Pendiente</span>
+                                <button class="btn btn-sm btn-outline-primary" onclick="startTask('101')">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <input class="form-check-input me-3" type="checkbox" id="room205" checked>
+                                <div>
+                                    <h6 class="mb-1">Habitación 205</h6>
+                                    <small class="text-muted">Mantenimiento diario</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge bg-success me-2">Completada</span>
+                                <button class="btn btn-sm btn-outline-success" disabled>
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <input class="form-check-input me-3" type="checkbox" id="room302">
+                                <div>
+                                    <h6 class="mb-1">Habitación 302</h6>
+                                    <small class="text-muted">Preparar para check-in 16:00</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge bg-info me-2">En Progreso</span>
+                                <button class="btn btn-sm btn-outline-warning" onclick="pauseTask('302')">
+                                    <i class="fas fa-pause"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <input class="form-check-input me-3" type="checkbox" id="room401">
+                                <div>
+                                    <h6 class="mb-1">Habitación 401</h6>
+                                    <small class="text-muted">Reporte de mantenimiento - Grifo con fuga</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge bg-danger me-2">Mantenimiento</span>
+                                <button class="btn btn-sm btn-outline-danger" onclick="reportIssue('401')">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Supplies Inventory -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-boxes me-2"></i>Inventario de Suministros
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="text-center p-2 border rounded">
+                                <i class="fas fa-toilet-paper text-primary"></i>
+                                <div class="small mt-1">Papel Higiénico</div>
+                                <div class="badge bg-success">Stock OK</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 border rounded">
+                                <i class="fas fa-pump-soap text-info"></i>
+                                <div class="small mt-1">Jabón</div>
+                                <div class="badge bg-warning">Bajo</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 border rounded">
+                                <i class="fas fa-tshirt text-success"></i>
+                                <div class="small mt-1">Toallas</div>
+                                <div class="badge bg-success">Stock OK</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 border rounded">
+                                <i class="fas fa-spray-can text-secondary"></i>
+                                <div class="small mt-1">Limpiadores</div>
+                                <div class="badge bg-danger">Crítico</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm w-100 mt-3" data-bs-toggle="modal" data-bs-target="#requestSuppliesModal">
+                        <i class="fas fa-plus me-1"></i>Solicitar Suministros
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reportIssueModal">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Reportar Problema
+                        </button>
+                        <button class="btn btn-outline-success" onclick="requestInspection()">
+                            <i class="fas fa-search me-1"></i>Solicitar Inspección
+                        </button>
+                        <button class="btn btn-outline-info" onclick="viewSchedule()">
+                            <i class="fas fa-calendar me-1"></i>Ver Horario Completo
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="emergencyClean()">
+                            <i class="fas fa-fire me-1"></i>Limpieza Urgente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Supplies Modal -->
+<div class="modal fade" id="requestSuppliesModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-boxes me-2"></i>Solicitar Suministros
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Suministros Necesarios</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="toiletPaper">
+                            <label class="form-check-label" for="toiletPaper">Papel Higiénico</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="soap" checked>
+                            <label class="form-check-label" for="soap">Jabón</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="towels">
+                            <label class="form-check-label" for="towels">Toallas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="cleaners" checked>
+                            <label class="form-check-label" for="cleaners">Productos de Limpieza</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prioridad</label>
+                        <select class="form-select">
+                            <option>Normal</option>
+                            <option>Alta</option>
+                            <option>Urgente</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notas Adicionales</label>
+                        <textarea class="form-control" rows="3" placeholder="Especificar cantidades o detalles..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-1"></i>Enviar Solicitud
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Issue Modal -->
+<div class="modal fade" id="reportIssueModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Reportar Problema
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Habitación</label>
+                        <select class="form-select">
+                            <option>101</option>
+                            <option>205</option>
+                            <option>302</option>
+                            <option>401</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Problema</label>
+                        <select class="form-select">
+                            <option>Plomería</option>
+                            <option>Electricidad</option>
+                            <option>Aire Acondicionado</option>
+                            <option>Mobiliario</option>
+                            <option>Limpieza Especial</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción del Problema</label>
+                        <textarea class="form-control" rows="4" placeholder="Describe detalladamente el problema encontrado..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Urgencia</label>
+                        <select class="form-select">
+                            <option>Baja - Puede esperar</option>
+                            <option>Media - Resolver hoy</option>
+                            <option>Alta - Resolver inmediatamente</option>
+                            <option>Crítica - Habitación fuera de servicio</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>Reportar Problema
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function startTask(roomNumber) {
+    alert(`Iniciando limpieza de habitación ${roomNumber}`);
+}
+
+function pauseTask(roomNumber) {
+    alert(`Pausando tarea de habitación ${roomNumber}`);
+}
+
+function reportIssue(roomNumber) {
+    document.querySelector('#reportIssueModal select').value = roomNumber;
+    new bootstrap.Modal(document.getElementById('reportIssueModal')).show();
+}
+
+function markAllComplete() {
+    document.querySelectorAll('.form-check-input').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    alert('Todas las tareas marcadas como completadas');
+}
+
+function requestInspection() {
+    alert('Solicitud de inspección enviada');
+}
+
+function viewSchedule() {
+    alert('Mostrando horario completo');
+}
+
+function emergencyClean() {
+    alert('Protocolo de limpieza urgente activado');
+}
+</script>
+{% endblock %}

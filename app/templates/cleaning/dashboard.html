@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Limpieza - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-broom me-2"></i>Dashboard Limpieza
+                </h1>
+                <span class="badge bg-success px-3 py-2">
+                    <i class="fas fa-sparkles me-1"></i>{{ current_user.get_full_name() }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-list-check text-primary mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="assignedRooms">8</div>
+                <div class="text-muted">Habitaciones Asignadas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-check-circle text-success mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="completedRooms">5</div>
+                <div class="text-muted">Completadas Hoy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-clock text-warning mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="pendingRooms">3</div>
+                <div class="text-muted">Pendientes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-tools text-danger mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="maintenanceRooms">2</div>
+                <div class="text-muted">Mantenimiento</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task Management -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tasks me-2"></i>Tareas de Hoy
+                    </h5>
+                    <div>
+                        <button class="btn btn-sm btn-success" onclick="markAllComplete()">
+                            <i class="fas fa-check-double me-1"></i>Marcar Todas
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="refreshTasks()">
+                            <i class="fas fa-sync me-1"></i>Actualizar
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="tasksList">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Supplies Inventory -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-boxes me-2"></i>Inventario de Suministros
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2" id="suppliesInventory">
+                        <!-- Supplies will be loaded here -->
+                    </div>
+                    <button class="btn btn-primary btn-sm w-100 mt-3" onclick="requestSupplies()">
+                        <i class="fas fa-plus me-1"></i>Solicitar Suministros
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="reportIssue()">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Reportar Problema
+                        </button>
+                        <button class="btn btn-outline-success" onclick="requestInspection()">
+                            <i class="fas fa-search me-1"></i>Solicitar Inspección
+                        </button>
+                        <button class="btn btn-outline-info" onclick="viewSchedule()">
+                            <i class="fas fa-calendar me-1"></i>Ver Horario
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="emergencyClean()">
+                            <i class="fas fa-fire me-1"></i>Limpieza Urgente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="taskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles de la Tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="taskModalBody">
+                <!-- Task details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="completeTask()">
+                    <i class="fas fa-check me-1"></i>Completar Tarea
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentTaskId = null;
+
+// Sample data - in real app this would come from API
+const tasks = [
+    {
+        id: 1,
+        room: '101',
+        type: 'checkout_cleaning',
+        status: 'pending',
+        priority: 'high',
+        estimated_time: 45,
+        notes: 'Check-out completado - Limpieza profunda requerida'
+    },
+    {
+        id: 2,
+        room: '205',
+        type: 'maintenance',
+        status: 'completed',
+        priority: 'normal',
+        estimated_time: 30,
+        notes: 'Mantenimiento diario'
+    },
+    {
+        id: 3,
+        room: '302',
+        type: 'checkin_prep',
+        status: 'in_progress',
+        priority: 'high',
+        estimated_time: 40,
+        notes: 'Preparar para check-in 16:00'
+    }
+];
+
+const supplies = [
+    { name: 'Papel Higiénico', status: 'ok', icon: 'fas fa-toilet-paper' },
+    { name: 'Jabón', status: 'low', icon: 'fas fa-pump-soap' },
+    { name: 'Toallas', status: 'ok', icon: 'fas fa-tshirt' },
+    { name: 'Limpiadores', status: 'critical', icon: 'fas fa-spray-can' }
+];
+
+function loadTasks() {
+    const tasksList = document.getElementById('tasksList');
+    tasksList.innerHTML = '';
+    
+    tasks.forEach(task => {
+        const statusClass = task.status === 'completed' ? 'success' : 
+                           task.status === 'in_progress' ? 'info' : 'warning';
+        const statusIcon = task.status === 'completed' ? 'check' : 
+                          task.status === 'in_progress' ? 'play' : 'clock';
+        
+        const taskElement = document.createElement('div');
+        taskElement.className = 'list-group-item d-flex justify-content-between align-items-center mb-2';
+        taskElement.innerHTML = `
+            <div class="d-flex align-items-center">
+                <input class="form-check-input me-3" type="checkbox" ${task.status === 'completed' ? 'checked' : ''} 
+                       onchange="toggleTask(${task.id})">
+                <div>
+                    <h6 class="mb-1">Habitación ${task.room}</h6>
+                    <small class="text-muted">${task.notes}</small>
+                    <div class="small text-muted mt-1">
+                        <i class="fas fa-clock me-1"></i>${task.estimated_time} min
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="badge bg-${statusClass} me-2">
+                    <i class="fas fa-${statusIcon} me-1"></i>${task.status.replace('_', ' ').toUpperCase()}
+                </span>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewTask(${task.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+        `;
+        tasksList.appendChild(taskElement);
+    });
+}
+
+function loadSupplies() {
+    const suppliesInventory = document.getElementById('suppliesInventory');
+    suppliesInventory.innerHTML = '';
+    
+    supplies.forEach(supply => {
+        const statusClass = supply.status === 'ok' ? 'success' : 
+                           supply.status === 'low' ? 'warning' : 'danger';
+        const statusText = supply.status === 'ok' ? 'Stock OK' : 
+                          supply.status === 'low' ? 'Bajo' : 'Crítico';
+        
+        const supplyElement = document.createElement('div');
+        supplyElement.className = 'col-6';
+        supplyElement.innerHTML = `
+            <div class="text-center p-2 border rounded">
+                <i class="${supply.icon} text-primary"></i>
+                <div class="small mt-1">${supply.name}</div>
+                <div class="badge bg-${statusClass}">${statusText}</div>
+            </div>
+        `;
+        suppliesInventory.appendChild(supplyElement);
+    });
+}
+
+function toggleTask(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        task.status = task.status === 'completed' ? 'pending' : 'completed';
+        loadTasks();
+        updateStats();
+    }
+}
+
+function viewTask(taskId) {
+    currentTaskId = taskId;
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        document.getElementById('taskModalBody').innerHTML = `
+            <div class="row g-3">
+                <div class="col-12">
+                    <h6>Habitación ${task.room}</h6>
+                    <p class="text-muted">${task.notes}</p>
+                </div>
+                <div class="col-6">
+                    <strong>Tipo:</strong><br>
+                    <span class="badge bg-info">${task.type.replace('_', ' ')}</span>
+                </div>
+                <div class="col-6">
+                    <strong>Tiempo estimado:</strong><br>
+                    ${task.estimated_time} minutos
+                </div>
+                <div class="col-6">
+                    <strong>Prioridad:</strong><br>
+                    <span class="badge bg-${task.priority === 'high' ? 'danger' : 'secondary'}">${task.priority}</span>
+                </div>
+                <div class="col-6">
+                    <strong>Estado:</strong><br>
+                    <span class="badge bg-${task.status === 'completed' ? 'success' : 'warning'}">${task.status}</span>
+                </div>
+            </div>
+        `;
+        new bootstrap.Modal(document.getElementById('taskModal')).show();
+    }
+}
+
+function completeTask() {
+    if (currentTaskId) {
+        toggleTask(currentTaskId);
+        bootstrap.Modal.getInstance(document.getElementById('taskModal')).hide();
+    }
+}
+
+function markAllComplete() {
+    tasks.forEach(task => task.status = 'completed');
+    loadTasks();
+    updateStats();
+}
+
+function refreshTasks() {
+    loadTasks();
+    loadSupplies();
+    updateStats();
+}
+
+function updateStats() {
+    const completed = tasks.filter(t => t.status === 'completed').length;
+    const pending = tasks.filter(t => t.status === 'pending').length;
+    const inProgress = tasks.filter(t => t.status === 'in_progress').length;
+    
+    document.getElementById('completedRooms').textContent = completed;
+    document.getElementById('pendingRooms').textContent = pending;
+}
+
+function requestSupplies() {
+    alert('Solicitud de suministros enviada al almacén');
+}
+
+function reportIssue() {
+    alert('Formulario de reporte de problemas');
+}
+
+function requestInspection() {
+    alert('Solicitud de inspección enviada');
+}
+
+function viewSchedule() {
+    alert('Mostrando horario completo de limpieza');
+}
+
+function emergencyClean() {
+    alert('Protocolo de limpieza urgente activado');
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadTasks();
+    loadSupplies();
+    updateStats();
+});
+</script>
+{% endblock %}

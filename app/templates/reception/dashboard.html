@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Recepción - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-concierge-bell me-2"></i>Dashboard Recepción
+                </h1>
+                <span class="badge bg-info px-3 py-2">
+                    <i class="fas fa-headset me-1"></i>{{ current_user.get_full_name() }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-calendar-check text-primary mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="todayCheckIns">3</div>
+                <div class="text-muted">Check-ins Hoy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-calendar-times text-warning mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="todayCheckOuts">2</div>
+                <div class="text-muted">Check-outs Hoy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-clock text-info mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="pendingReservations">5</div>
+                <div class="text-muted">Reservas Pendientes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="availableRooms">12</div>
+                <div class="text-muted">Habitaciones Libres</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-user-plus text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Check-in</h5>
+                    <p class="card-text">Registrar llegada de huéspedes</p>
+                    <button class="btn btn-primary" onclick="showCheckIn()">
+                        <i class="fas fa-sign-in-alt me-1"></i>Hacer Check-in
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-user-minus text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Check-out</h5>
+                    <p class="card-text">Procesar salida de huéspedes</p>
+                    <button class="btn btn-warning" onclick="showCheckOut()">
+                        <i class="fas fa-sign-out-alt me-1"></i>Hacer Check-out
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-calendar-plus text-success mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Nueva Reserva</h5>
+                    <p class="card-text">Crear reserva para huésped</p>
+                    <button class="btn btn-success" onclick="createReservation()">
+                        <i class="fas fa-plus me-1"></i>Nueva Reserva
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Today's Activities -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-day me-2"></i>Actividades de Hoy
+                    </h5>
+                    <button class="btn btn-sm btn-primary" onclick="refreshActivities()">
+                        <i class="fas fa-sync me-1"></i>Actualizar
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="activitiesTable">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Huésped</th>
+                                    <th>Habitación</th>
+                                    <th>Actividad</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activitiesBody">
+                                <!-- Activities will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Alertas
+                    </h6>
+                </div>
+                <div class="card-body" id="alertsContainer">
+                    <!-- Alerts will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Ocupación Hoy
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block">
+                        <canvas id="occupancyChart" width="150" height="150"></canvas>
+                        <div class="position-absolute top-50 start-50 translate-middle">
+                            <h3 class="text-primary mb-0" id="occupancyPercentage">75%</h3>
+                            <small class="text-muted">Ocupación</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check-in Modal -->
+<div class="modal fade" id="checkInModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="checkInForm">
+                    <div class="mb-3">
+                        <label class="form-label">Buscar Reserva</label>
+                        <input type="text" class="form-control" id="searchReservation" 
+                               placeholder="Número de reserva o nombre del huésped">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Habitación Asignada</label>
+                        <select class="form-select" id="assignedRoom">
+                            <option value="101">101 - Estándar</option>
+                            <option value="205">205 - Deluxe</option>
+                            <option value="302">302 - Suite</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notas del Check-in</label>
+                        <textarea class="form-control" id="checkInNotes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="processCheckIn()">
+                    <i class="fas fa-check me-1"></i>Confirmar Check-in
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check-out Modal -->
+<div class="modal fade" id="checkOutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-out-alt me-2"></i>Check-out
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="checkOutForm">
+                    <div class="mb-3">
+                        <label class="form-label">Habitación</label>
+                        <select class="form-select" id="checkOutRoom">
+                            <option value="101">101 - Juan Pérez</option>
+                            <option value="205">205 - María García</option>
+                            <option value="302">302 - Carlos López</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Servicios Adicionales</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="minibar">
+                            <label class="form-check-label" for="minibar">
+                                Minibar - $25.00
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="laundry">
+                            <label class="form-check-label" for="laundry">
+                                Lavandería - $15.00
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total a Pagar</label>
+                        <input type="text" class="form-control" id="totalAmount" value="$180.00" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" onclick="processCheckOut()">
+                    <i class="fas fa-credit-card me-1"></i>Procesar Check-out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Sample data
+const activities = [
+    {
+        time: '09:00',
+        guest: 'Juan Pérez',
+        room: '101',
+        activity: 'Check-out',
+        status: 'pending'
+    },
+    {
+        time: '14:00',
+        guest: 'María García',
+        room: '205',
+        activity: 'Check-in',
+        status: 'scheduled'
+    },
+    {
+        time: '16:30',
+        guest: 'Carlos López',
+        room: '302',
+        activity: 'Check-in',
+        status: 'completed'
+    }
+];
+
+const alerts = [
+    {
+        type: 'warning',
+        icon: 'clock',
+        title: 'Check-out tardío',
+        message: 'Habitación 101 - Juan Pérez'
+    },
+    {
+        type: 'info',
+        icon: 'info-circle',
+        title: 'Llegada temprana',
+        message: 'Habitación 205 - María García'
+    }
+];
+
+function loadActivities() {
+    const tbody = document.getElementById('activitiesBody');
+    tbody.innerHTML = '';
+    
+    activities.forEach(activity => {
+        const statusClass = activity.status === 'completed' ? 'success' : 
+                           activity.status === 'scheduled' ? 'info' : 'warning';
+        const statusText = activity.status === 'completed' ? 'Completado' : 
+                          activity.status === 'scheduled' ? 'Programado' : 'Pendiente';
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${activity.time}</td>
+            <td>${activity.guest}</td>
+            <td>${activity.room}</td>
+            <td>${activity.activity}</td>
+            <td><span class="badge bg-${statusClass}">${statusText}</span></td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="processActivity('${activity.room}', '${activity.activity}')">
+                    ${activity.status === 'completed' ? 'Ver' : 'Procesar'}
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function loadAlerts() {
+    const container = document.getElementById('alertsContainer');
+    container.innerHTML = '';
+    
+    alerts.forEach(alert => {
+        const alertElement = document.createElement('div');
+        alertElement.className = `alert alert-${alert.type}`;
+        alertElement.innerHTML = `
+            <i class="fas fa-${alert.icon} me-2"></i>
+            <strong>${alert.title}</strong><br>
+            ${alert.message}
+        `;
+        container.appendChild(alertElement);
+    });
+}
+
+function showCheckIn() {
+    new bootstrap.Modal(document.getElementById('checkInModal')).show();
+}
+
+function showCheckOut() {
+    new bootstrap.Modal(document.getElementById('checkOutModal')).show();
+}
+
+function createReservation() {
+    window.location.href = '/make_reservation';
+}
+
+function processCheckIn() {
+    const reservation = document.getElementById('searchReservation').value;
+    const room = document.getElementById('assignedRoom').value;
+    const notes = document.getElementById('checkInNotes').value;
+    
+    if (!reservation) {
+        alert('Por favor ingresa el número de reserva o nombre del huésped');
+        return;
+    }
+    
+    // Simulate API call
+    setTimeout(() => {
+        alert(`Check-in procesado exitosamente para habitación ${room}`);
+        bootstrap.Modal.getInstance(document.getElementById('checkInModal')).hide();
+        refreshActivities();
+    }, 1000);
+}
+
+function processCheckOut() {
+    const room = document.getElementById('checkOutRoom').value;
+    const total = document.getElementById('totalAmount').value;
+    
+    // Simulate API call
+    setTimeout(() => {
+        alert(`Check-out procesado exitosamente para habitación ${room}. Total: ${total}`);
+        bootstrap.Modal.getInstance(document.getElementById('checkOutModal')).hide();
+        refreshActivities();
+    }, 1000);
+}
+
+function processActivity(room, activity) {
+    if (activity === 'Check-in') {
+        showCheckIn();
+    } else if (activity === 'Check-out') {
+        showCheckOut();
+    }
+}
+
+function refreshActivities() {
+    loadActivities();
+    loadAlerts();
+    updateStats();
+}
+
+function updateStats() {
+    // Simulate API call to update stats
+    fetch('/api/dashboard_stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('pendingReservations').textContent = data.pending_reservations || 5;
+            document.getElementById('availableRooms').textContent = data.available_rooms || 12;
+        })
+        .catch(error => console.error('Error loading stats:', error));
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadActivities();
+    loadAlerts();
+    updateStats();
+    
+    // Initialize occupancy chart
+    const ctx = document.getElementById('occupancyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [75, 25],
+                backgroundColor: ['#3498db', '#ecf0f1'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

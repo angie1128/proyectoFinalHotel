@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Administrador - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard Administrador
+                </h1>
+                <span class="badge bg-primary px-3 py-2">
+                    <i class="fas fa-crown me-1"></i>Administrador
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-bed text-primary mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="totalRooms">0</div>
+                <div class="text-muted">Habitaciones Totales</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="availableRooms">0</div>
+                <div class="text-muted">Disponibles</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-door-closed text-danger mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="occupiedRooms">0</div>
+                <div class="text-muted">Ocupadas</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <i class="fas fa-clock text-warning mb-2" style="font-size: 2rem;"></i>
+                <div class="stats-number" id="pendingReservations">0</div>
+                <div class="text-muted">Reservas Pendientes</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Management Cards -->
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Gestión de Usuarios</h5>
+                    <p class="card-text">Administrar empleados, roles y permisos del sistema</p>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-cog me-1"></i>Gestionar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-bed text-success mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Habitaciones</h5>
+                    <p class="card-text">Gestionar tipos de habitación, precios y disponibilidad</p>
+                    <a href="{{ url_for('main.rooms') }}" class="btn btn-success">
+                        <i class="fas fa-bed me-1"></i>Ver Habitaciones
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-check text-info mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Reservaciones</h5>
+                    <p class="card-text">Supervisar todas las reservas y gestionar check-in/out</p>
+                    <a href="{{ url_for('main.reservations') }}" class="btn btn-info">
+                        <i class="fas fa-calendar me-1"></i>Ver Reservas
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-bar text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Reportes</h5>
+                    <p class="card-text">Analíticas, ocupación, ingresos y reportes detallados</p>
+                    <button class="btn btn-warning">
+                        <i class="fas fa-chart-line me-1"></i>Ver Reportes
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs text-secondary mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Servicios</h5>
+                    <p class="card-text">Configurar servicios adicionales, precios y categorías</p>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-concierge-bell me-1"></i>Gestionar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-tools text-danger mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Mantenimiento</h5>
+                    <p class="card-text">Programar y supervisar tareas de mantenimiento</p>
+                    <button class="btn btn-danger">
+                        <i class="fas fa-wrench me-1"></i>Mantenimiento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Action Button -->
+<button class="floating-action" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+    <i class="fas fa-plus"></i>
+</button>
+
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--primary-gradient); color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Agregar Usuario
+                    </button>
+                    <button class="btn btn-outline-success">
+                        <i class="fas fa-bed me-2"></i>Nueva Habitación
+                    </button>
+                    <button class="btn btn-outline-info">
+                        <i class="fas fa-calendar-plus me-2"></i>Nueva Reserva
+                    </button>
+                    <button class="btn btn-outline-warning">
+                        <i class="fas fa-file-export me-2"></i>Exportar Datos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar estadísticas del dashboard
+    fetch('/api/dashboard_stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalRooms').textContent = data.total_rooms || 0;
+            document.getElementById('availableRooms').textContent = data.available_rooms || 0;
+            document.getElementById('occupiedRooms').textContent = data.occupied_rooms || 0;
+            document.getElementById('pendingReservations').textContent = data.pending_reservations || 0;
+        })
+        .catch(error => console.error('Error loading stats:', error));
+        
+    // Animación de contadores
+    const counters = document.querySelectorAll('.stats-number');
+    counters.forEach(counter => {
+        const target = parseInt(counter.textContent);
+        let current = 0;
+        const increment = target / 20;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                counter.textContent = target;
+                clearInterval(timer);
+            } else {
+                counter.textContent = Math.floor(current);
+            }
+        }, 50);
+    });
+});
+</script>
+{% endblock %}

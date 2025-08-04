@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold mb-4 animate-fade-in">
+                    <i class="fas fa-hotel me-3"></i>Bienvenido a Nuestro Hotel
+                </h1>
+                <p class="lead mb-5 animate-fade-in">
+                    Experimenta el lujo y la comodidad en cada momento de tu estadía
+                </p>
+                <div class="animate-fade-in">
+                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Registrarse
+                    </a>
+                    <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 class="fw-bold mb-3">¿Por qué elegirnos?</h2>
+                <p class="lead text-muted">Ofrecemos servicios excepcionales para hacer tu estadía inolvidable</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <i class="fas fa-concierge-bell feature-icon mb-3"></i>
+                        <h5 class="card-title">Servicio Premium</h5>
+                        <p class="card-text">Personal altamente capacitado disponible 24/7 para atender todas tus necesidades.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <i class="fas fa-wifi feature-icon mb-3"></i>
+                        <h5 class="card-title">Conectividad Total</h5>
+                        <p class="card-text">WiFi de alta velocidad gratuito en todas las áreas del hotel.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body p-4">
+                        <i class="fas fa-utensils feature-icon mb-3"></i>
+                        <h5 class="card-title">Gastronomía Exquisita</h5>
+                        <p class="card-text">Restaurante gourmet con platos locales e internacionales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Room Types Preview -->
+{% if room_types %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 class="fw-bold mb-3">Nuestras Habitaciones</h2>
+                <p class="lead text-muted">Espacios diseñados para tu máximo confort</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for room_type in room_types %}
+            <div class="col-md-4">
+                <div class="room-card">
+                    <div class="room-image">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="card-title">{{ room_type.name }}</h5>
+                        <p class="card-text">{{ room_type.description or 'Habitación cómoda y elegante' }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">${{ "%.2f"|format(room_type.price_per_night) }}</span>
+                            <small class="text-muted">por noche</small>
+                        </div>
+                        <div class="mt-3">
+                            <i class="fas fa-users text-muted me-2"></i>
+                            <small class="text-muted">Hasta {{ room_type.capacity }} personas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-calendar-plus me-2"></i>Reserva Ahora
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

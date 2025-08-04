@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hotel Management System{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+    /* Paleta elegante y suave */
+    --primary-navy: #2c3e50;
+    --soft-blue: #cc8db3;
+    --light-blue: #f6a5c0;
+    --cream: #f7c2ca;
+    --warm-white: #ffffff;
+    --soft-gray: #ecf0f1;
+    --dark-gray: #250e2c;
+    --accent-gold: #f39c12;
+    --soft-green: #27ae60;
+    --soft-red: #e74c3c;
+    
+    /* Gradientes suaves */
+    --primary-gradient: linear-gradient(135deg, #f6a5c0, #cc8db3);
+    --secondary-gradient: linear-gradient(135deg, #ecf0f1, #ffffff);
+    --accent-gradient: linear-gradient(135deg, #f39c12, #f1c40f);
+    --light-gradient: linear-gradient(135deg, #f8f9fa, #ffffff);
+    --success-gradient: linear-gradient(135deg, #27ae60, #2ecc71);
+    --warning-gradient: linear-gradient(135deg, #f39c12, #f1c40f);
+    --danger-gradient: linear-gradient(135deg, #e74c3c, #ec7063);
+}
+
+body {
+    background: var(--light-gradient);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    color: var(--dark-gray);
+    line-height: 1.6;
+}
+
+.navbar {
+    background: var(--primary-gradient) !important;
+    box-shadow: 0 2px 15px rgba(44, 62, 80, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: white !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--light-blue) !important;
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: 1px solid #bdc3c7;
+    box-shadow: 0 3px 10px rgba(44, 62, 80, 0.2);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+    background: linear-gradient(135deg, #ffffff);
+    color: var(--dark-gray);
+    border-radius: 8px;
+}
+
+.btn-secondary {
+    background: var(--secondary-gradient);
+    border: 1px solid #bdc3c7;
+    color: var(--dark-gray);
+    border-radius: 8px;
+}
+
+.btn-success {
+    background: var(--success-gradient);
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #3498db, #85c1e9);
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-warning {
+    background: var(--warning-gradient);
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-danger {
+    background: var(--danger-gradient);
+    border: none;
+    border-radius: 8px;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    background: var(--warm-white);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: var(--secondary-gradient);
+    border-radius: 15px 15px 0 0 !important;
+    border: none;
+    color: var(--dark-gray);
+    font-weight: 600;
+    padding: 20px;
+}
+
+.hero-section {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: var(--soft-blue);
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d5f4e6, #ffffff);
+    border: 1px solid #27ae60;
+    border-radius: 10px;
+    color: #1e8449;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fadbd8, #ffffff);
+    border: 1px solid #e74c3c;
+    border-radius: 10px;
+    color: #c0392b;
+}
+
+.stats-card {
+    background: var(--warm-white);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid #ecf0f1;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+.table {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+    background: white;
+}
+
+.table thead {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.room-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #ecf0f1;
+}
+
+.room-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.room-image {
+    height: 200px;
+    background: var(--secondary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--soft-blue);
+}
+
+.floating-action {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    box-shadow: 0 5px 20px rgba(44, 62, 80, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.floating-action:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(44, 62, 80, 0.4);
+}
+
+.profile-card {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid #ecf0f1;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+    margin: 0 auto 20px;
+    border: 3px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-available { background: var(--success-gradient); color: white; }
+.status-occupied { background: var(--danger-gradient); color: white; }
+.status-maintenance { background: var(--warning-gradient); color: white; }
+.status-cleaning { background: linear-gradient(135deg, #9b59b6, #bb8fce); color: white; }
+
+.form-control:focus {
+    border-color: var(--soft-blue);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+}
+
+.text-gradient {
+    color: var(--primary-navy);
+    font-weight: 600;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.google-btn {
+    background: white;
+    border: 2px solid #4285f4;
+    color: #4285f4;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.google-btn:hover {
+    background: #4285f4;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+}
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    {% if current_user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.dashboard') }}">
+                <i class="fas fa-hotel me-2"></i>Hotel System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.rooms') }}">
+                            <i class="fas fa-bed me-1"></i>Habitaciones
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.reservations') }}">
+                            <i class="fas fa-calendar-check me-1"></i>Reservaciones
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ current_user.get_full_name() }}
+                            <span class="badge bg-light text-dark ms-1">{{ current_user.role.value.title() }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('main.profile') }}">
+                                <i class="fas fa-user-cog me-2"></i>Perfil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show animate-fade-in" role="alert">
+            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <script>
+        // Animaciones suaves
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar clase de animación a elementos
+            const elements = document.querySelectorAll('.card, .stats-card');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+            
+            // Auto-ocultar alertas después de 5 segundos
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                }, 5000);
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

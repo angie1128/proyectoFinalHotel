@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Habitaciones Disponibles - Hotel System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-gradient">
+                    <i class="fas fa-bed me-2"></i>Nuestras Habitaciones
+                </h1>
+                <a href="{{ url_for('main.make_reservation') }}" class="btn btn-primary">
+                    <i class="fas fa-calendar-plus me-1"></i>Reservar Ahora
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glass-effect">
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Capacidad</label>
+                            <select class="form-select" id="capacityFilter">
+                                <option value="">Todas</option>
+                                <option value="1">1 persona</option>
+                                <option value="2">2 personas</option>
+                                <option value="3">3 personas</option>
+                                <option value="4">4+ personas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Precio máximo</label>
+                            <select class="form-select" id="priceFilter">
+                                <option value="">Sin límite</option>
+                                <option value="100">Hasta $100</option>
+                                <option value="200">Hasta $200</option>
+                                <option value="300">Hasta $300</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha entrada</label>
+                            <input type="date" class="form-control" id="checkInFilter">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100" onclick="filterRooms()">
+                                <i class="fas fa-search me-1"></i>Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Habitaciones -->
+    <div class="row g-4" id="roomsContainer">
+        {% for room_type in room_types %}
+        <div class="col-lg-4 col-md-6 room-item" 
+             data-capacity="{{ room_type.capacity }}" 
+             data-price="{{ room_type.price_per_night }}">
+            <div class="room-card">
+                <div class="room-image">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title text-gradient mb-0">{{ room_type.name }}</h5>
+                        <span class="badge bg-primary">${{ "%.0f"|format(room_type.price_per_night) }}/noche</span>
+                    </div>
+                    
+                    <p class="card-text text-muted mb-3">
+                        {{ room_type.description or 'Habitación cómoda y elegante con todas las comodidades necesarias para una estadía perfecta.' }}
+                    </p>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users text-primary me-2"></i>
+                                <small>{{ room_type.capacity }} personas</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-wifi text-success me-2"></i>
+                                <small>WiFi gratis</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-snowflake text-info me-2"></i>
+                                <small>Aire acondicionado</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tv text-secondary me-2"></i>
+                                <small>TV HD</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if room_type.amenities %}
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-star text-warning me-1"></i>
+                            {{ room_type.amenities }}
+                        </small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('main.make_reservation') }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-check me-1"></i>Reservar Esta Habitación
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="showRoomDetails({{ room_type.id }})">
+                            <i class="fas fa-info-circle me-1"></i>Más Detalles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Servicios Adicionales -->
+    <div class="section-divider"></div>
+    
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-gradient mb-4">
+                <i class="fas fa-concierge-bell me-2"></i>Servicios Adicionales
+            </h3>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-utensils text-primary mb-3" style="font-size: 2.5rem;"></i>
+                    <h6>Servicio a la Habitación</h6>
+                    <p class="small text-muted">24/7 disponible</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-spa text-success mb-3" style="font-size: 2.5rem;"></i>
+                    <h6>Spa & Wellness</h6>
+                    <p class="small text-muted">Relajación total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-car text-info mb-3" style="font-size: 2.5rem;"></i>
+                    <h6>Transporte</h6>
+                    <p class="small text-muted">Aeropuerto y ciudad</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-dumbbell text-warning mb-3" style="font-size: 2.5rem;"></i>
+                    <h6>Gimnasio</h6>
+                    <p class="small text-muted">Equipamiento moderno</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalles -->
+<div class="modal fade" id="roomDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--secondary-gradient);">
+                <h5 class="modal-title">
+                    <i class="fas fa-bed me-2"></i>Detalles de la Habitación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="roomDetailsContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterRooms() {
+    const capacity = document.getElementById('capacityFilter').value;
+    const price = document.getElementById('priceFilter').value;
+    const rooms = document.querySelectorAll('.room-item');
+    
+    rooms.forEach(room => {
+        let show = true;
+        
+        if (capacity && parseInt(room.dataset.capacity) < parseInt(capacity)) {
+            show = false;
+        }
+        
+        if (price && parseFloat(room.dataset.price) > parseFloat(price)) {
+            show = false;
+        }
+        
+        room.style.display = show ? 'block' : 'none';
+    });
+}
+
+function showRoomDetails(roomTypeId) {
+    // Aquí se cargarían los detalles específicos de la habitación
+    document.getElementById('roomDetailsContent').innerHTML = `
+        <div class="text-center py-4">
+            <i class="fas fa-bed text-primary mb-3" style="font-size: 4rem;"></i>
+            <h4>Habitación Premium</h4>
+            <p class="text-muted">Detalles completos de la habitación con galería de imágenes, amenidades detalladas y disponibilidad en tiempo real.</p>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ruler-combined text-primary mb-2"></i>
+                            <h6>Dimensiones</h6>
+                            <p class="small mb-0">35 m² / 377 ft²</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-eye text-success mb-2"></i>
+                            <h6>Vista</h6>
+                            <p class="small mb-0">Ciudad / Jardín</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('roomDetailsModal')).show();
+}
+
+// Establecer fecha mínima como hoy
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkInFilter').min = today;
+});
+</script>
+{% endblock %}
