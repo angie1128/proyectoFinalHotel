@@ -9,7 +9,7 @@
     <style>
         :root {
     /* Paleta elegante y suave */
-    --primary-navy: #2c3e50;
+    --primary-navy: #c2649b;
     --soft-blue: #cc8db3;
     --light-blue: #f6a5c0;
     --cream: #f7c2ca;
@@ -58,7 +58,10 @@ body {
 .btn-primary {
     background: var(--primary-gradient);
     border: 1px solid #bdc3c7;
-    box-shadow: 0 3px 10px rgba(44, 62, 80, 0.2);
+    color: white;
+    border-radius: 8px;
+    border: 1px solidrgb(255, 255, 255);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
     font-weight: 500;
     border-radius: 8px;
@@ -67,8 +70,12 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
     background: linear-gradient(135deg, #ffffff);
+    color: var(--dark-gray);
+    border-radius: 8px;
+     background: var(--secondary-gradient);
+    border: 1px solid #bdc3c7;
     color: var(--dark-gray);
     border-radius: 8px;
 }
@@ -87,7 +94,7 @@ body {
 }
 
 .btn-info {
-    background: linear-gradient(135deg, #3498db, #85c1e9);
+    background: linear-gradient(135deg, #ffafcc, #ffc8dd);
     border: none;
     border-radius: 8px;
 }
@@ -114,7 +121,7 @@ body {
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.12);
 }
 
 .card-header {
@@ -142,9 +149,9 @@ body {
 
 .alert-success {
     background: linear-gradient(135deg, #d5f4e6, #ffffff);
-    border: 1px solid #27ae60;
+    border: 1px solid #b0bae1;
     border-radius: 10px;
-    color: #1e8449;
+    color: #cfc8e9;
 }
 
 .alert-danger {
@@ -269,9 +276,10 @@ body {
 .status-cleaning { background: linear-gradient(135deg, #9b59b6, #bb8fce); color: white; }
 
 .form-control:focus {
-    border-color: var(--soft-blue);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+    border-color: #915ba4;
+    box-shadow: 0 0 10px rgba(145, 91, 164, 0.3); 
 }
+
 
 .text-gradient {
     color: var(--primary-navy);
@@ -289,8 +297,8 @@ body {
 
 .google-btn {
     background: white;
-    border: 2px solid #4285f4;
-    color: #4285f4;
+    border: 2px solid #A2D2FF;
+    color: #BDE0FE;
     border-radius: 8px;
     padding: 12px 20px;
     font-weight: 500;
@@ -298,7 +306,7 @@ body {
 }
 
 .google-btn:hover {
-    background: #4285f4;
+    background: #00B4D8;
     color: white;
     transform: translateY(-1px);
     box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
