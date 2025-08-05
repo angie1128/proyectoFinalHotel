@@ -12,10 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Exponer el puerto 8080
-EXPOSE 8085
+EXPOSE 8086
 
 # Crear un directorio para las migraciones (si usas Flask-Migrate)
 RUN mkdir -p migrations
 
 # Comando para ejecutar la aplicación (usa variables de entorno para la base de datos)
-CMD ["sh", "-c", "flask run --host=0.0.0.0 --port=8085"]
+CMD ["sh", "-c", "flask run --host=0.0.0.0 --port=8086"]
