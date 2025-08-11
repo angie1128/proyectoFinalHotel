@@ -22,7 +22,7 @@ COPY . .
 RUN mkdir -p uploads
 
 # Exponer el puerto 5000
-EXPOSE 5000
+EXPOSE 8086
 
 # Crear usuario no-root para seguridad
 RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
