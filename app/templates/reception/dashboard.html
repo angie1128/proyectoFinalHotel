@@ -10,103 +10,199 @@
                 <h1 class="h2 text-gradient">
                     <i class="fas fa-concierge-bell me-2"></i>Dashboard Recepción
                 </h1>
-                <span class="badge bg-info px-3 py-2">
-                    <i class="fas fa-headset me-1"></i>{{ current_user.get_full_name() }}
-                </span>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Added real-time clock and shift indicator -->
+                    <div class="text-center">
+                        <div class="small text-muted">Turno Actual</div>
+                        <span class="badge bg-info px-3 py-2">
+                            <i class="fas fa-clock me-1"></i><span id="currentTime"></span>
+                        </span>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: var(--accent-gradient); color: var(--warm-white);">
+                        <i class="fas fa-headset me-1"></i>{{ current_user.get_full_name() }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Stats Cards -->
+    <!-- Enhanced Stats Cards with new color palette -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-calendar-check text-primary mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--rich-brown);">
+                <i class="fas fa-calendar-check mb-2" style="font-size: 2rem; color: var(--rich-brown);"></i>
                 <div class="stats-number" id="todayCheckIns">3</div>
                 <div class="text-muted">Check-ins Hoy</div>
+                <!-- Added progress indicator -->
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--rich-brown); width: 60%;"></div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-calendar-times text-warning mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--warm-beige);">
+                <i class="fas fa-calendar-times mb-2" style="font-size: 2rem; color: var(--warm-beige);"></i>
                 <div class="stats-number" id="todayCheckOuts">2</div>
                 <div class="text-muted">Check-outs Hoy</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--warm-beige); width: 40%;"></div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-clock text-info mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--soft-taupe);">
+                <i class="fas fa-clock mb-2" style="font-size: 2rem; color: var(--soft-taupe);"></i>
                 <div class="stats-number" id="pendingReservations">5</div>
                 <div class="text-muted">Reservas Pendientes</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--soft-taupe); width: 80%;"></div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--success-green);">
+                <i class="fas fa-door-open mb-2" style="font-size: 2rem; color: var(--success-green);"></i>
                 <div class="stats-number" id="availableRooms">12</div>
                 <div class="text-muted">Habitaciones Libres</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar bg-success" style="width: 75%;"></div>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Quick Actions -->
+    <!-- Enhanced Quick Actions with new styling -->
     <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="card text-center h-100">
+            <div class="card text-center h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body">
-                    <i class="fas fa-user-plus text-primary mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Check-in</h5>
-                    <p class="card-text">Registrar llegada de huéspedes</p>
-                    <button class="btn btn-primary" onclick="showCheckIn()">
+                    <div class="feature-icon" style="color: var(--rich-brown);">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Check-in Express</h5>
+                    <p class="card-text">Registrar llegada de huéspedes con proceso optimizado</p>
+                    <button class="btn btn-primary" onclick="showCheckIn()" style="background: var(--primary-gradient); border: none;">
                         <i class="fas fa-sign-in-alt me-1"></i>Hacer Check-in
                     </button>
+                    <!-- Added quick stats below button -->
+                    <div class="mt-2 small text-muted">
+                        <i class="fas fa-users me-1"></i>3 llegadas programadas
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-4">
-            <div class="card text-center h-100">
+            <div class="card text-center h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body">
-                    <i class="fas fa-user-minus text-warning mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Check-out</h5>
-                    <p class="card-text">Procesar salida de huéspedes</p>
-                    <button class="btn btn-warning" onclick="showCheckOut()">
+                    <div class="feature-icon" style="color: var(--warm-beige);">
+                        <i class="fas fa-user-minus"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Check-out Rápido</h5>
+                    <p class="card-text">Procesar salida y facturación de huéspedes</p>
+                    <button class="btn" onclick="showCheckOut()" style="background: var(--accent-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-sign-out-alt me-1"></i>Hacer Check-out
                     </button>
+                    <div class="mt-2 small text-muted">
+                        <i class="fas fa-clock me-1"></i>2 salidas pendientes
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-4">
-            <div class="card text-center h-100">
+            <div class="card text-center h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body">
-                    <i class="fas fa-calendar-plus text-success mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Nueva Reserva</h5>
-                    <p class="card-text">Crear reserva para huésped</p>
-                    <button class="btn btn-success" onclick="createReservation()">
+                    <div class="feature-icon" style="color: var(--soft-taupe);">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Nueva Reserva</h5>
+                    <p class="card-text">Crear reserva directa para huésped walk-in</p>
+                    <button class="btn btn-success" onclick="createReservation()" style="background: var(--success-gradient); border: none;">
                         <i class="fas fa-plus me-1"></i>Nueva Reserva
                     </button>
+                    <div class="mt-2 small text-muted">
+                        <i class="fas fa-bed me-1"></i>12 habitaciones disponibles
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Added Guest Services section -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card" style="background: var(--secondary-gradient); border: none;">
+                <div class="card-header" style="background: transparent; border: none;">
+                    <h5 class="mb-0" style="color: var(--dark-text);">
+                        <i class="fas fa-concierge-bell me-2"></i>Servicios de Huéspedes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleWakeUpCall()">
+                                <i class="fas fa-phone d-block mb-1"></i>
+                                <small>Llamada Despertar</small>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleRoomService()">
+                                <i class="fas fa-utensils d-block mb-1"></i>
+                                <small>Room Service</small>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleLaundry()">
+                                <i class="fas fa-tshirt d-block mb-1"></i>
+                                <small>Lavandería</small>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleMaintenance()">
+                                <i class="fas fa-tools d-block mb-1"></i>
+                                <small>Mantenimiento</small>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleLostFound()">
+                                <i class="fas fa-search d-block mb-1"></i>
+                                <small>Objetos Perdidos</small>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn w-100" style="background: var(--warm-white); border: 1px solid var(--cream-light); color: var(--dark-text);" onclick="handleComplaint()">
+                                <i class="fas fa-exclamation-triangle d-block mb-1"></i>
+                                <small>Quejas</small>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Today's Activities -->
+    <!-- Today's Activities with enhanced styling -->
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
+            <div class="card" style="border: 1px solid var(--cream-light);">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h5 class="mb-0" style="color: var(--dark-text);">
                         <i class="fas fa-calendar-day me-2"></i>Actividades de Hoy
                     </h5>
-                    <button class="btn btn-sm btn-primary" onclick="refreshActivities()">
-                        <i class="fas fa-sync me-1"></i>Actualizar
-                    </button>
+                    <div class="d-flex gap-2">
+                        <!-- Added filter buttons -->
+                        <button class="btn btn-sm" style="background: var(--cream-light); color: var(--dark-text);" onclick="filterActivities('all')">Todas</button>
+                        <button class="btn btn-sm" style="background: var(--warm-beige); color: var(--warm-white);" onclick="filterActivities('pending')">Pendientes</button>
+                        <button class="btn btn-sm btn-primary" onclick="refreshActivities()">
+                            <i class="fas fa-sync me-1"></i>Actualizar
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="activitiesTable">
-                            <thead>
+                            <thead style="background: var(--light-taupe); color: var(--dark-text);">
                                 <tr>
                                     <th>Hora</th>
                                     <th>Huésped</th>
@@ -126,10 +222,11 @@
         </div>
         
         <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h6 class="mb-0">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Alertas
+            <!-- Enhanced Alerts section -->
+            <div class="card mb-4" style="border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h6 class="mb-0" style="color: var(--dark-text);">
+                        <i class="fas fa-bell me-2"></i>Alertas y Notificaciones
                     </h6>
                 </div>
                 <div class="card-body" id="alertsContainer">
@@ -137,18 +234,37 @@
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">
-                        <i class="fas fa-chart-pie me-2"></i>Ocupación Hoy
+            <!-- Enhanced Occupancy Chart -->
+            <div class="card" style="border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h6 class="mb-0" style="color: var(--dark-text);">
+                        <i class="fas fa-chart-pie me-2"></i>Ocupación Actual
                     </h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="position-relative d-inline-block">
                         <canvas id="occupancyChart" width="150" height="150"></canvas>
                         <div class="position-absolute top-50 start-50 translate-middle">
-                            <h3 class="text-primary mb-0" id="occupancyPercentage">75%</h3>
+                            <h3 class="mb-0" style="color: var(--rich-brown);" id="occupancyPercentage">75%</h3>
                             <small class="text-muted">Ocupación</small>
+                        </div>
+                    </div>
+                    <!-- Added occupancy breakdown -->
+                    <div class="row mt-3 text-center">
+                        <div class="col-4">
+                            <div class="small" style="color: var(--rich-brown);">
+                                <strong>18</strong><br>Ocupadas
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small" style="color: var(--success-green);">
+                                <strong>6</strong><br>Disponibles
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small" style="color: var(--warning-amber);">
+                                <strong>2</strong><br>Mantenimiento
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,40 +273,70 @@
     </div>
 </div>
 
-<!-- Check-in Modal -->
+<!-- Enhanced Check-in Modal -->
 <div class="modal fade" id="checkInModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-sign-in-alt me-2"></i>Check-in
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border: 2px solid var(--cream-light);">
+            <div class="modal-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                <h5 class="modal-title" style="color: var(--dark-text);">
+                    <i class="fas fa-sign-in-alt me-2"></i>Check-in Express
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="checkInForm">
-                    <div class="mb-3">
-                        <label class="form-label">Buscar Reserva</label>
-                        <input type="text" class="form-control" id="searchReservation" 
-                               placeholder="Número de reserva o nombre del huésped">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Habitación Asignada</label>
-                        <select class="form-select" id="assignedRoom">
-                            <option value="101">101 - Estándar</option>
-                            <option value="205">205 - Deluxe</option>
-                            <option value="302">302 - Suite</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Notas del Check-in</label>
-                        <textarea class="form-control" id="checkInNotes" rows="3"></textarea>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Buscar Reserva</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchReservation" 
+                                       placeholder="Número de reserva o nombre">
+                                <button class="btn" type="button" style="background: var(--warm-beige); color: var(--warm-white);">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Habitación Asignada</label>
+                            <select class="form-select" id="assignedRoom">
+                                <option value="101">101 - Estándar</option>
+                                <option value="205">205 - Deluxe</option>
+                                <option value="302">302 - Suite</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Servicios Adicionales</label>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="breakfast">
+                                        <label class="form-check-label" for="breakfast">Desayuno</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="parking">
+                                        <label class="form-check-label" for="parking">Estacionamiento</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="wifi">
+                                        <label class="form-check-label" for="wifi">WiFi Premium</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notas del Check-in</label>
+                            <textarea class="form-control" id="checkInNotes" rows="3" placeholder="Observaciones especiales..."></textarea>
+                        </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="border-top: 1px solid var(--cream-light);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="processCheckIn()">
+                <button type="button" class="btn btn-primary" onclick="processCheckIn()" style="background: var(--primary-gradient); border: none;">
                     <i class="fas fa-check me-1"></i>Confirmar Check-in
                 </button>
             </div>
@@ -198,50 +344,78 @@
     </div>
 </div>
 
-<!-- Check-out Modal -->
+<!-- Enhanced Check-out Modal -->
 <div class="modal fade" id="checkOutModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-sign-out-alt me-2"></i>Check-out
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border: 2px solid var(--cream-light);">
+            <div class="modal-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                <h5 class="modal-title" style="color: var(--dark-text);">
+                    <i class="fas fa-sign-out-alt me-2"></i>Check-out y Facturación
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="checkOutForm">
-                    <div class="mb-3">
-                        <label class="form-label">Habitación</label>
-                        <select class="form-select" id="checkOutRoom">
-                            <option value="101">101 - Juan Pérez</option>
-                            <option value="205">205 - María García</option>
-                            <option value="302">302 - Carlos López</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Servicios Adicionales</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="minibar">
-                            <label class="form-check-label" for="minibar">
-                                Minibar - $25.00
-                            </label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Habitación</label>
+                            <select class="form-select" id="checkOutRoom">
+                                <option value="101">101 - Juan Pérez</option>
+                                <option value="205">205 - María García</option>
+                                <option value="302">302 - Carlos López</option>
+                            </select>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="laundry">
-                            <label class="form-check-label" for="laundry">
-                                Lavandería - $15.00
-                            </label>
+                        <div class="col-md-6">
+                            <label class="form-label">Método de Pago</label>
+                            <select class="form-select">
+                                <option>Efectivo</option>
+                                <option>Tarjeta de Crédito</option>
+                                <option>Transferencia</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Total a Pagar</label>
-                        <input type="text" class="form-control" id="totalAmount" value="$180.00" readonly>
+                        <div class="col-12">
+                            <label class="form-label">Servicios Adicionales Consumidos</label>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Servicio</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Minibar</td>
+                                            <td>1</td>
+                                            <td>$25.00</td>
+                                            <td>$25.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lavandería</td>
+                                            <td>1</td>
+                                            <td>$15.00</td>
+                                            <td>$15.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Subtotal Habitación</label>
+                            <input type="text" class="form-control" value="$140.00" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Total a Pagar</label>
+                            <input type="text" class="form-control fw-bold" id="totalAmount" value="$180.00" readonly style="background: var(--cream-light);">
+                        </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="border-top: 1px solid var(--cream-light);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-warning" onclick="processCheckOut()">
+                <button type="button" class="btn" onclick="processCheckOut()" style="background: var(--accent-gradient); color: var(--warm-white); border: none;">
                     <i class="fas fa-credit-card me-1"></i>Procesar Check-out
                 </button>
             </div>
@@ -259,21 +433,32 @@ const activities = [
         guest: 'Juan Pérez',
         room: '101',
         activity: 'Check-out',
-        status: 'pending'
+        status: 'pending',
+        priority: 'high'
     },
     {
         time: '14:00',
         guest: 'María García',
         room: '205',
         activity: 'Check-in',
-        status: 'scheduled'
+        status: 'scheduled',
+        priority: 'normal'
     },
     {
         time: '16:30',
         guest: 'Carlos López',
         room: '302',
         activity: 'Check-in',
-        status: 'completed'
+        status: 'completed',
+        priority: 'normal'
+    },
+    {
+        time: '18:00',
+        guest: 'Ana Martínez',
+        room: '404',
+        activity: 'Check-in',
+        status: 'scheduled',
+        priority: 'vip'
     }
 ];
 
@@ -282,13 +467,19 @@ const alerts = [
         type: 'warning',
         icon: 'clock',
         title: 'Check-out tardío',
-        message: 'Habitación 101 - Juan Pérez'
+        message: 'Habitación 101 - Juan Pérez (30 min de retraso)'
     },
     {
         type: 'info',
         icon: 'info-circle',
         title: 'Llegada temprana',
-        message: 'Habitación 205 - María García'
+        message: 'Habitación 205 - María García (2 horas antes)'
+    },
+    {
+        type: 'danger',
+        icon: 'exclamation-triangle',
+        title: 'Problema técnico',
+        message: 'Aire acondicionado Hab. 303 - Reportado por huésped'
     }
 ];
 
@@ -302,15 +493,19 @@ function loadActivities() {
         const statusText = activity.status === 'completed' ? 'Completado' : 
                           activity.status === 'scheduled' ? 'Programado' : 'Pendiente';
         
+        const priorityIcon = activity.priority === 'vip' ? '<i class="fas fa-crown text-warning me-1"></i>' :
+                            activity.priority === 'high' ? '<i class="fas fa-exclamation text-danger me-1"></i>' : '';
+        
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${activity.time}</td>
-            <td>${activity.guest}</td>
-            <td>${activity.room}</td>
+            <td><strong>${activity.time}</strong></td>
+            <td>${priorityIcon}${activity.guest}</td>
+            <td><span class="badge" style="background: var(--cream-light); color: var(--dark-text);">${activity.room}</span></td>
             <td>${activity.activity}</td>
             <td><span class="badge bg-${statusClass}">${statusText}</span></td>
             <td>
-                <button class="btn btn-sm btn-primary" onclick="processActivity('${activity.room}', '${activity.activity}')">
+                <button class="btn btn-sm btn-primary" onclick="processActivity('${activity.room}', '${activity.activity}')" 
+                        style="background: var(--rich-brown); border: none;">
                     ${activity.status === 'completed' ? 'Ver' : 'Procesar'}
                 </button>
             </td>
@@ -325,14 +520,46 @@ function loadAlerts() {
     
     alerts.forEach(alert => {
         const alertElement = document.createElement('div');
-        alertElement.className = `alert alert-${alert.type}`;
+        alertElement.className = `alert alert-${alert.type} border-0`;
+        alertElement.style.background = alert.type === 'warning' ? 'linear-gradient(135deg, #fff3cd, var(--warm-white))' :
+                                       alert.type === 'info' ? 'linear-gradient(135deg, #d1ecf1, var(--warm-white))' :
+                                       'linear-gradient(135deg, #f8d7da, var(--warm-white))';
         alertElement.innerHTML = `
             <i class="fas fa-${alert.icon} me-2"></i>
             <strong>${alert.title}</strong><br>
-            ${alert.message}
+            <small>${alert.message}</small>
         `;
         container.appendChild(alertElement);
     });
+}
+
+function handleWakeUpCall() {
+    alert('Sistema de llamadas de despertar activado');
+}
+
+function handleRoomService() {
+    alert('Conectando con room service...');
+}
+
+function handleLaundry() {
+    alert('Servicio de lavandería contactado');
+}
+
+function handleMaintenance() {
+    alert('Reporte de mantenimiento creado');
+}
+
+function handleLostFound() {
+    alert('Accediendo a objetos perdidos...');
+}
+
+function handleComplaint() {
+    alert('Formulario de quejas abierto');
+}
+
+function filterActivities(filter) {
+    // Implementation for filtering activities
+    console.log('Filtering activities by:', filter);
 }
 
 function showCheckIn() {
@@ -357,7 +584,6 @@ function processCheckIn() {
         return;
     }
     
-    // Simulate API call
     setTimeout(() => {
         alert(`Check-in procesado exitosamente para habitación ${room}`);
         bootstrap.Modal.getInstance(document.getElementById('checkInModal')).hide();
@@ -369,7 +595,6 @@ function processCheckOut() {
     const room = document.getElementById('checkOutRoom').value;
     const total = document.getElementById('totalAmount').value;
     
-    // Simulate API call
     setTimeout(() => {
         alert(`Check-out procesado exitosamente para habitación ${room}. Total: ${total}`);
         bootstrap.Modal.getInstance(document.getElementById('checkOutModal')).hide();
@@ -392,7 +617,6 @@ function refreshActivities() {
 }
 
 function updateStats() {
-    // Simulate API call to update stats
     fetch('/api/dashboard_stats')
         .then(response => response.json())
         .then(data => {
@@ -404,18 +628,31 @@ function updateStats() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('es-ES', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        });
+        document.getElementById('currentTime').textContent = timeString;
+    }
+    
+    updateClock();
+    setInterval(updateClock, 1000);
+    
     loadActivities();
     loadAlerts();
     updateStats();
     
-    // Initialize occupancy chart
+    // Enhanced occupancy chart with new colors
     const ctx = document.getElementById('occupancyChart').getContext('2d');
     new Chart(ctx, {
         type: 'doughnut',
         data: {
             datasets: [{
                 data: [75, 25],
-                backgroundColor: ['#3498db', '#ecf0f1'],
+                backgroundColor: ['var(--rich-brown)', 'var(--cream-light)'],
                 borderWidth: 0
             }]
         },

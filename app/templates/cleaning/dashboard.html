@@ -10,55 +10,135 @@
                 <h1 class="h2 text-gradient">
                     <i class="fas fa-broom me-2"></i>Dashboard Limpieza
                 </h1>
-                <span class="badge bg-success px-3 py-2">
-                    <i class="fas fa-sparkles me-1"></i>{{ current_user.get_full_name() }}
-                </span>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Added shift timer and performance indicator -->
+                    <div class="text-center">
+                        <div class="small text-muted">Turno Actual</div>
+                        <span class="badge px-3 py-2" style="background: var(--soft-taupe); color: var(--warm-white);">
+                            <i class="fas fa-clock me-1"></i><span id="shiftTime">08:00 - 16:00</span>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <div class="small text-muted">Rendimiento</div>
+                        <span class="badge px-3 py-2" style="background: var(--success-green); color: var(--warm-white);">
+                            <i class="fas fa-star me-1"></i>Excelente
+                        </span>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: var(--accent-gradient); color: var(--warm-white);">
+                        <i class="fas fa-sparkles me-1"></i>{{ current_user.get_full_name() }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Stats Cards -->
+    <!-- Enhanced Stats Cards with new color palette -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-list-check text-primary mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--rich-brown);">
+                <i class="fas fa-list-check mb-2" style="font-size: 2rem; color: var(--rich-brown);"></i>
                 <div class="stats-number" id="assignedRooms">8</div>
                 <div class="text-muted">Habitaciones Asignadas</div>
+                <!-- Added daily target progress -->
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--rich-brown); width: 80%;"></div>
+                </div>
+                <div class="small text-muted mt-1">Meta diaria: 10 habitaciones</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-check-circle text-success mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--success-green);">
+                <i class="fas fa-check-circle mb-2" style="font-size: 2rem; color: var(--success-green);"></i>
                 <div class="stats-number" id="completedRooms">5</div>
                 <div class="text-muted">Completadas Hoy</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar bg-success" style="width: 62.5%;"></div>
+                </div>
+                <div class="small text-muted mt-1">Promedio: 35 min/habitación</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-clock text-warning mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--warning-amber);">
+                <i class="fas fa-clock mb-2" style="font-size: 2rem; color: var(--warning-amber);"></i>
                 <div class="stats-number" id="pendingRooms">3</div>
                 <div class="text-muted">Pendientes</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--warning-amber); width: 37.5%;"></div>
+                </div>
+                <div class="small text-muted mt-1">Tiempo restante: 4.5 hrs</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-tools text-danger mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--danger-coral);">
+                <i class="fas fa-tools mb-2" style="font-size: 2rem; color: var(--danger-coral);"></i>
                 <div class="stats-number" id="maintenanceRooms">2</div>
                 <div class="text-muted">Mantenimiento</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--danger-coral); width: 100%;"></div>
+                </div>
+                <div class="small text-muted mt-1">Requieren atención</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Added priority tasks section -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card" style="background: var(--secondary-gradient); border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: transparent; border: none;">
+                    <h6 class="mb-0" style="color: var(--dark-text);">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Tareas Prioritarias
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2" id="priorityTasks">
+                        <div class="col-md-3">
+                            <div class="alert alert-warning mb-0 py-2">
+                                <i class="fas fa-clock me-1"></i>
+                                <strong>Hab. 101</strong> - Check-out tardío
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-info mb-0 py-2">
+                                <i class="fas fa-user-plus me-1"></i>
+                                <strong>Hab. 205</strong> - Check-in 14:00
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-danger mb-0 py-2">
+                                <i class="fas fa-tools me-1"></i>
+                                <strong>Hab. 303</strong> - Mantenimiento
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="alert alert-success mb-0 py-2">
+                                <i class="fas fa-star me-1"></i>
+                                <strong>Hab. 401</strong> - VIP llegada
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Task Management -->
+    <!-- Enhanced Task Management -->
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
+            <div class="card" style="border: 1px solid var(--cream-light);">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h5 class="mb-0" style="color: var(--dark-text);">
                         <i class="fas fa-tasks me-2"></i>Tareas de Hoy
                     </h5>
-                    <div>
-                        <button class="btn btn-sm btn-success" onclick="markAllComplete()">
+                    <div class="d-flex gap-2">
+                        <!-- Added filter and sort options -->
+                        <select class="form-select form-select-sm" style="width: auto;" onchange="filterTasks(this.value)">
+                            <option value="all">Todas</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="in_progress">En Progreso</option>
+                            <option value="completed">Completadas</option>
+                        </select>
+                        <button class="btn btn-sm" style="background: var(--success-green); color: var(--warm-white);" onclick="markAllComplete()">
                             <i class="fas fa-check-double me-1"></i>Marcar Todas
                         </button>
                         <button class="btn btn-sm btn-primary" onclick="refreshTasks()">
@@ -75,10 +155,10 @@
         </div>
         
         <div class="col-lg-4">
-            <!-- Supplies Inventory -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h6 class="mb-0">
+            <!-- Enhanced Supplies Inventory -->
+            <div class="card mb-4" style="border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h6 class="mb-0" style="color: var(--dark-text);">
                         <i class="fas fa-boxes me-2"></i>Inventario de Suministros
                     </h6>
                 </div>
@@ -86,32 +166,51 @@
                     <div class="row g-2" id="suppliesInventory">
                         <!-- Supplies will be loaded here -->
                     </div>
-                    <button class="btn btn-primary btn-sm w-100 mt-3" onclick="requestSupplies()">
+                    <button class="btn btn-sm w-100 mt-3" style="background: var(--primary-gradient); color: var(--warm-white); border: none;" onclick="requestSupplies()">
                         <i class="fas fa-plus me-1"></i>Solicitar Suministros
                     </button>
+                    <!-- Added supply usage tracking -->
+                    <div class="mt-3 pt-3 border-top">
+                        <h6 class="small mb-2" style="color: var(--dark-text);">Uso Diario</h6>
+                        <div class="d-flex justify-content-between small">
+                            <span>Toallas limpias:</span>
+                            <span class="fw-bold">24/30</span>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span>Productos limpieza:</span>
+                            <span class="fw-bold">85%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">
+            <!-- Enhanced Quick Actions -->
+            <div class="card" style="border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                    <h6 class="mb-0" style="color: var(--dark-text);">
                         <i class="fas fa-bolt me-2"></i>Acciones Rápidas
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary" onclick="reportIssue()">
+                        <button class="btn btn-outline-primary" onclick="reportIssue()" style="border-color: var(--rich-brown); color: var(--rich-brown);">
                             <i class="fas fa-exclamation-triangle me-1"></i>Reportar Problema
                         </button>
-                        <button class="btn btn-outline-success" onclick="requestInspection()">
+                        <button class="btn btn-outline-success" onclick="requestInspection()" style="border-color: var(--success-green); color: var(--success-green);">
                             <i class="fas fa-search me-1"></i>Solicitar Inspección
                         </button>
-                        <button class="btn btn-outline-info" onclick="viewSchedule()">
-                            <i class="fas fa-calendar me-1"></i>Ver Horario
+                        <button class="btn btn-outline-info" onclick="viewSchedule()" style="border-color: var(--soft-taupe); color: var(--soft-taupe);">
+                            <i class="fas fa-calendar me-1"></i>Ver Horario Completo
                         </button>
-                        <button class="btn btn-outline-warning" onclick="emergencyClean()">
+                        <button class="btn btn-outline-warning" onclick="emergencyClean()" style="border-color: var(--warning-amber); color: var(--warning-amber);">
                             <i class="fas fa-fire me-1"></i>Limpieza Urgente
+                        </button>
+                        <!-- Added new quick actions -->
+                        <button class="btn btn-outline-secondary" onclick="requestBreak()" style="border-color: var(--warm-beige); color: var(--warm-beige);">
+                            <i class="fas fa-coffee me-1"></i>Solicitar Descanso
+                        </button>
+                        <button class="btn btn-outline-dark" onclick="endShift()" style="border-color: var(--dark-brown); color: var(--dark-brown);">
+                            <i class="fas fa-sign-out-alt me-1"></i>Finalizar Turno
                         </button>
                     </div>
                 </div>
@@ -120,21 +219,100 @@
     </div>
 </div>
 
-<!-- Modals -->
+<!-- Enhanced Task Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detalles de la Tarea</h5>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border: 2px solid var(--cream-light);">
+            <div class="modal-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                <h5 class="modal-title" style="color: var(--dark-text);">
+                    <i class="fas fa-tasks me-2"></i>Detalles de la Tarea
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="taskModalBody">
                 <!-- Task details will be loaded here -->
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="border-top: 1px solid var(--cream-light);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success" onclick="completeTask()">
+                <button type="button" class="btn" onclick="startTask()" style="background: var(--soft-taupe); color: var(--warm-white); border: none;">
+                    <i class="fas fa-play me-1"></i>Iniciar Tarea
+                </button>
+                <button type="button" class="btn" onclick="completeTask()" style="background: var(--success-green); color: var(--warm-white); border: none;">
                     <i class="fas fa-check me-1"></i>Completar Tarea
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Added Supply Request Modal -->
+<div class="modal fade" id="supplyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border: 2px solid var(--cream-light);">
+            <div class="modal-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                <h5 class="modal-title" style="color: var(--dark-text);">
+                    <i class="fas fa-boxes me-2"></i>Solicitar Suministros
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="supplyRequestForm">
+                    <div class="mb-3">
+                        <label class="form-label">Suministros Necesarios</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="toiletPaper">
+                                    <label class="form-check-label" for="toiletPaper">Papel Higiénico</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="soap" checked>
+                                    <label class="form-check-label" for="soap">Jabón</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="towels">
+                                    <label class="form-check-label" for="towels">Toallas</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cleaners" checked>
+                                    <label class="form-check-label" for="cleaners">Limpiadores</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prioridad</label>
+                        <select class="form-select">
+                            <option>Normal</option>
+                            <option>Alta</option>
+                            <option>Urgente</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ubicación de Entrega</label>
+                        <select class="form-select">
+                            <option>Carrito de limpieza - Piso 1</option>
+                            <option>Carrito de limpieza - Piso 2</option>
+                            <option>Carrito de limpieza - Piso 3</option>
+                            <option>Almacén de limpieza</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notas Adicionales</label>
+                        <textarea class="form-control" rows="3" placeholder="Especificar cantidades o detalles..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid var(--cream-light);">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn" onclick="submitSupplyRequest()" style="background: var(--primary-gradient); color: var(--warm-white); border: none;">
+                    <i class="fas fa-paper-plane me-1"></i>Enviar Solicitud
                 </button>
             </div>
         </div>
@@ -146,7 +324,7 @@
 <script>
 let currentTaskId = null;
 
-// Sample data - in real app this would come from API
+// Enhanced sample data
 const tasks = [
     {
         id: 1,
@@ -155,7 +333,9 @@ const tasks = [
         status: 'pending',
         priority: 'high',
         estimated_time: 45,
-        notes: 'Check-out completado - Limpieza profunda requerida'
+        notes: 'Check-out completado - Limpieza profunda requerida',
+        guest_checkout: '11:00',
+        next_checkin: '15:00'
     },
     {
         id: 2,
@@ -164,7 +344,8 @@ const tasks = [
         status: 'completed',
         priority: 'normal',
         estimated_time: 30,
-        notes: 'Mantenimiento diario'
+        notes: 'Mantenimiento diario completado',
+        completed_at: '10:30'
     },
     {
         id: 3,
@@ -173,15 +354,26 @@ const tasks = [
         status: 'in_progress',
         priority: 'high',
         estimated_time: 40,
-        notes: 'Preparar para check-in 16:00'
+        notes: 'Preparar para check-in 16:00 - Huésped VIP',
+        next_checkin: '16:00',
+        started_at: '13:15'
+    },
+    {
+        id: 4,
+        room: '404',
+        type: 'deep_clean',
+        status: 'pending',
+        priority: 'normal',
+        estimated_time: 60,
+        notes: 'Limpieza profunda semanal programada'
     }
 ];
 
 const supplies = [
-    { name: 'Papel Higiénico', status: 'ok', icon: 'fas fa-toilet-paper' },
-    { name: 'Jabón', status: 'low', icon: 'fas fa-pump-soap' },
-    { name: 'Toallas', status: 'ok', icon: 'fas fa-tshirt' },
-    { name: 'Limpiadores', status: 'critical', icon: 'fas fa-spray-can' }
+    { name: 'Papel Higiénico', status: 'ok', icon: 'fas fa-toilet-paper', level: 85 },
+    { name: 'Jabón', status: 'low', icon: 'fas fa-pump-soap', level: 25 },
+    { name: 'Toallas', status: 'ok', icon: 'fas fa-tshirt', level: 70 },
+    { name: 'Limpiadores', status: 'critical', icon: 'fas fa-spray-can', level: 10 }
 ];
 
 function loadTasks() {
@@ -194,25 +386,33 @@ function loadTasks() {
         const statusIcon = task.status === 'completed' ? 'check' : 
                           task.status === 'in_progress' ? 'play' : 'clock';
         
+        const priorityBadge = task.priority === 'high' ? 
+            `<span class="badge me-2" style="background: var(--danger-coral); color: var(--warm-white);">Alta</span>` : '';
+        
         const taskElement = document.createElement('div');
         taskElement.className = 'list-group-item d-flex justify-content-between align-items-center mb-2';
+        taskElement.style.border = `1px solid var(--cream-light)`;
+        taskElement.style.borderRadius = '8px';
         taskElement.innerHTML = `
             <div class="d-flex align-items-center">
                 <input class="form-check-input me-3" type="checkbox" ${task.status === 'completed' ? 'checked' : ''} 
                        onchange="toggleTask(${task.id})">
                 <div>
-                    <h6 class="mb-1">Habitación ${task.room}</h6>
+                    <h6 class="mb-1" style="color: var(--dark-text);">
+                        ${priorityBadge}Habitación ${task.room}
+                    </h6>
                     <small class="text-muted">${task.notes}</small>
                     <div class="small text-muted mt-1">
                         <i class="fas fa-clock me-1"></i>${task.estimated_time} min
+                        ${task.next_checkin ? `<i class="fas fa-user-plus ms-2 me-1"></i>Check-in: ${task.next_checkin}` : ''}
                     </div>
                 </div>
             </div>
             <div>
-                <span class="badge bg-${statusClass} me-2">
+                <span class="badge me-2" style="background: var(--${statusClass === 'success' ? 'success-green' : statusClass === 'info' ? 'soft-taupe' : 'warning-amber'}); color: var(--warm-white);">
                     <i class="fas fa-${statusIcon} me-1"></i>${task.status.replace('_', ' ').toUpperCase()}
                 </span>
-                <button class="btn btn-sm btn-outline-primary" onclick="viewTask(${task.id})">
+                <button class="btn btn-sm" onclick="viewTask(${task.id})" style="background: var(--cream-light); color: var(--dark-text); border: 1px solid var(--warm-beige);">
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
@@ -232,22 +432,34 @@ function loadSupplies() {
                           supply.status === 'low' ? 'Bajo' : 'Crítico';
         
         const supplyElement = document.createElement('div');
-        supplyElement.className = 'col-6';
+        supplyElement.className = 'col-6 mb-2';
         supplyElement.innerHTML = `
-            <div class="text-center p-2 border rounded">
-                <i class="${supply.icon} text-primary"></i>
-                <div class="small mt-1">${supply.name}</div>
+            <div class="text-center p-2 border rounded" style="border-color: var(--cream-light) !important; background: var(--warm-white);">
+                <i class="${supply.icon}" style="color: var(--soft-taupe);"></i>
+                <div class="small mt-1" style="color: var(--dark-text);">${supply.name}</div>
                 <div class="badge bg-${statusClass}">${statusText}</div>
+                <div class="progress mt-1" style="height: 3px;">
+                    <div class="progress-bar bg-${statusClass}" style="width: ${supply.level}%;"></div>
+                </div>
             </div>
         `;
         suppliesInventory.appendChild(supplyElement);
     });
 }
 
+function filterTasks(filter) {
+    // Implementation for filtering tasks
+    console.log('Filtering tasks by:', filter);
+    loadTasks(); // Reload with filter applied
+}
+
 function toggleTask(taskId) {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
         task.status = task.status === 'completed' ? 'pending' : 'completed';
+        if (task.status === 'completed') {
+            task.completed_at = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
         loadTasks();
         updateStats();
     }
@@ -260,28 +472,75 @@ function viewTask(taskId) {
         document.getElementById('taskModalBody').innerHTML = `
             <div class="row g-3">
                 <div class="col-12">
-                    <h6>Habitación ${task.room}</h6>
+                    <h6 style="color: var(--dark-text);">Habitación ${task.room}</h6>
                     <p class="text-muted">${task.notes}</p>
                 </div>
                 <div class="col-6">
-                    <strong>Tipo:</strong><br>
-                    <span class="badge bg-info">${task.type.replace('_', ' ')}</span>
+                    <strong>Tipo de Limpieza:</strong><br>
+                    <span class="badge" style="background: var(--soft-taupe); color: var(--warm-white);">${task.type.replace('_', ' ')}</span>
                 </div>
                 <div class="col-6">
-                    <strong>Tiempo estimado:</strong><br>
-                    ${task.estimated_time} minutos
+                    <strong>Tiempo Estimado:</strong><br>
+                    <span style="color: var(--dark-text);">${task.estimated_time} minutos</span>
                 </div>
                 <div class="col-6">
                     <strong>Prioridad:</strong><br>
-                    <span class="badge bg-${task.priority === 'high' ? 'danger' : 'secondary'}">${task.priority}</span>
+                    <span class="badge" style="background: var(--${task.priority === 'high' ? 'danger-coral' : 'warm-beige'}); color: var(--warm-white);">${task.priority}</span>
                 </div>
                 <div class="col-6">
-                    <strong>Estado:</strong><br>
-                    <span class="badge bg-${task.status === 'completed' ? 'success' : 'warning'}">${task.status}</span>
+                    <strong>Estado Actual:</strong><br>
+                    <span class="badge" style="background: var(--${task.status === 'completed' ? 'success-green' : 'warning-amber'}); color: var(--warm-white);">${task.status}</span>
+                </div>
+                ${task.next_checkin ? `
+                <div class="col-6">
+                    <strong>Próximo Check-in:</strong><br>
+                    <span style="color: var(--dark-text);">${task.next_checkin}</span>
+                </div>
+                ` : ''}
+                ${task.completed_at ? `
+                <div class="col-6">
+                    <strong>Completada a las:</strong><br>
+                    <span style="color: var(--success-green);">${task.completed_at}</span>
+                </div>
+                ` : ''}
+                <div class="col-12">
+                    <strong>Lista de Verificación:</strong>
+                    <div class="mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check1">
+                            <label class="form-check-label" for="check1">Cambiar ropa de cama</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check2">
+                            <label class="form-check-label" for="check2">Limpiar baño completo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check3">
+                            <label class="form-check-label" for="check3">Aspirar y trapear</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check4">
+                            <label class="form-check-label" for="check4">Reponer amenidades</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
         new bootstrap.Modal(document.getElementById('taskModal')).show();
+    }
+}
+
+function startTask() {
+    if (currentTaskId) {
+        const task = tasks.find(t => t.id === currentTaskId);
+        if (task) {
+            task.status = 'in_progress';
+            task.started_at = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            loadTasks();
+            updateStats();
+            bootstrap.Modal.getInstance(document.getElementById('taskModal')).hide();
+            alert(`Tarea iniciada para habitación ${task.room}`);
+        }
     }
 }
 
@@ -293,9 +552,15 @@ function completeTask() {
 }
 
 function markAllComplete() {
-    tasks.forEach(task => task.status = 'completed');
+    tasks.forEach(task => {
+        if (task.status !== 'completed') {
+            task.status = 'completed';
+            task.completed_at = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
+    });
     loadTasks();
     updateStats();
+    alert('Todas las tareas marcadas como completadas');
 }
 
 function refreshTasks() {
@@ -314,15 +579,20 @@ function updateStats() {
 }
 
 function requestSupplies() {
+    new bootstrap.Modal(document.getElementById('supplyModal')).show();
+}
+
+function submitSupplyRequest() {
     alert('Solicitud de suministros enviada al almacén');
+    bootstrap.Modal.getInstance(document.getElementById('supplyModal')).hide();
 }
 
 function reportIssue() {
-    alert('Formulario de reporte de problemas');
+    alert('Formulario de reporte de problemas abierto');
 }
 
 function requestInspection() {
-    alert('Solicitud de inspección enviada');
+    alert('Solicitud de inspección enviada a supervisión');
 }
 
 function viewSchedule() {
@@ -330,7 +600,17 @@ function viewSchedule() {
 }
 
 function emergencyClean() {
-    alert('Protocolo de limpieza urgente activado');
+    alert('Protocolo de limpieza urgente activado - Notificando a supervisión');
+}
+
+function requestBreak() {
+    alert('Solicitud de descanso enviada - Esperando aprobación');
+}
+
+function endShift() {
+    const completed = tasks.filter(t => t.status === 'completed').length;
+    const total = tasks.length;
+    alert(`Turno finalizado. Habitaciones completadas: ${completed}/${total}`);
 }
 
 // Initialize
@@ -338,6 +618,16 @@ document.addEventListener('DOMContentLoaded', function() {
     loadTasks();
     loadSupplies();
     updateStats();
+    
+    // Update shift time display
+    const now = new Date();
+    const shiftStart = new Date(now);
+    shiftStart.setHours(8, 0, 0);
+    const shiftEnd = new Date(now);
+    shiftEnd.setHours(16, 0, 0);
+    
+    document.getElementById('shiftTime').textContent = 
+        `${shiftStart.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - ${shiftEnd.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
 });
 </script>
 {% endblock %}

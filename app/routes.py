@@ -165,12 +165,56 @@ def profile():
     else:
         return render_template('profile/staff.html')
 
-@main.route('/admin/users')
+@main.route('/admin/users', methods=['GET', 'POST'])
 @login_required
 def admin_users():
     if current_user.role != UserRole.ADMIN:
         flash('No tienes permisos para acceder a esta página', 'error')
         return redirect(url_for('main.dashboard'))
+    
+    if request.method == 'POST':
+        try:
+            # Validar que las contraseñas coincidan
+            if request.form.get('password') != request.form.get('confirm_password'):
+                return jsonify({'success': False, 'message': 'Las contraseñas no coinciden'}), 400
+            
+            # Verificar que el email y username no existan
+            existing_email = User.query.filter_by(email=request.form.get('email')).first()
+            existing_username = User.query.filter_by(username=request.form.get('username')).first()
+            
+            if existing_email:
+                return jsonify({'success': False, 'message': 'El email ya está registrado'}), 400
+            if existing_username:
+                return jsonify({'success': False, 'message': 'El nombre de usuario ya existe'}), 400
+            
+            # Crear nuevo usuario
+            user = User(
+                username=request.form.get('username'),
+                email=request.form.get('email'),
+                first_name=request.form.get('first_name'),
+                last_name=request.form.get('last_name'),
+                phone=request.form.get('phone'),
+                role=UserRole(request.form.get('role'))
+            )
+            user.set_password(request.form.get('password'))
+            
+            db.session.add(user)
+            db.session.commit()
+            
+            return jsonify({
+                'success': True, 
+                'message': f'Usuario {user.get_full_name()} creado exitosamente',
+                'user': {
+                    'id': user.id,
+                    'name': user.get_full_name(),
+                    'email': user.email,
+                    'role': user.role.value
+                }
+            })
+            
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'message': f'Error al crear usuario: {str(e)}'}), 500
     
     users = User.query.all()
     return render_template('admin/users.html', users=users)

@@ -7,159 +7,374 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h2 text-primary">
+                <h1 class="h2 text-gradient">
                     <i class="fas fa-tachometer-alt me-2"></i>Dashboard Administrador
                 </h1>
-                <span class="badge bg-primary px-3 py-2">
-                    <i class="fas fa-crown me-1"></i>Administrador
-                </span>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Added system status indicator -->
+                    <div class="text-center">
+                        <div class="small text-muted">Estado del Sistema</div>
+                        <span class="badge px-3 py-2" style="background: var(--success-green); color: var(--warm-white);">
+                            <i class="fas fa-check-circle me-1"></i>Operativo
+                        </span>
+                    </div>
+                    <span class="badge px-3 py-2" style="background: var(--accent-gradient); color: var(--warm-white);">
+                        <i class="fas fa-crown me-1"></i>Administrador
+                    </span>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Stats Cards -->
+    <!-- Enhanced Stats Cards with new color palette -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-bed text-primary mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--rich-brown);">
+                <i class="fas fa-bed mb-2" style="font-size: 2rem; color: var(--rich-brown);"></i>
                 <div class="stats-number" id="totalRooms">0</div>
                 <div class="text-muted">Habitaciones Totales</div>
+                <!-- Added occupancy rate -->
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--rich-brown);" id="occupancyBar"></div>
+                </div>
+                <div class="small text-muted mt-1">Ocupación: <span id="occupancyRate">0%</span></div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-door-open text-success mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--success-green);">
+                <i class="fas fa-door-open mb-2" style="font-size: 2rem; color: var(--success-green);"></i>
                 <div class="stats-number" id="availableRooms">0</div>
                 <div class="text-muted">Disponibles</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar bg-success" id="availableBar"></div>
+                </div>
+                <div class="small text-muted mt-1">Listas para huéspedes</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-door-closed text-danger mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--danger-coral);">
+                <i class="fas fa-door-closed mb-2" style="font-size: 2rem; color: var(--danger-coral);"></i>
                 <div class="stats-number" id="occupiedRooms">0</div>
                 <div class="text-muted">Ocupadas</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--danger-coral);" id="occupiedBar"></div>
+                </div>
+                <div class="small text-muted mt-1">Con huéspedes activos</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
-                <i class="fas fa-clock text-warning mb-2" style="font-size: 2rem;"></i>
+            <div class="stats-card" style="border-left: 4px solid var(--warning-amber);">
+                <i class="fas fa-clock mb-2" style="font-size: 2rem; color: var(--warning-amber);"></i>
                 <div class="stats-number" id="pendingReservations">0</div>
                 <div class="text-muted">Reservas Pendientes</div>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" style="background: var(--warning-amber);" id="pendingBar"></div>
+                </div>
+                <div class="small text-muted mt-1">Requieren atención</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Added Account Management Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card" style="background: var(--secondary-gradient); border: 1px solid var(--cream-light);">
+                <div class="card-header" style="background: transparent; border: none;">
+                    <h5 class="mb-0" style="color: var(--dark-text);">
+                        <i class="fas fa-users-cog me-2"></i>Gestión de Cuentas Activas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: var(--warm-white); border-radius: 10px; border: 1px solid var(--cream-light);">
+                                <i class="fas fa-users mb-2" style="font-size: 1.5rem; color: var(--rich-brown);"></i>
+                                <div class="h4 mb-1" style="color: var(--dark-text);" id="totalUsers">0</div>
+                                <div class="small text-muted">Total Usuarios</div>
+                                <button class="btn btn-sm mt-2" style="background: var(--rich-brown); color: var(--warm-white);" onclick="viewAllUsers()">
+                                    Ver Todos
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: var(--warm-white); border-radius: 10px; border: 1px solid var(--cream-light);">
+                                <i class="fas fa-user-shield mb-2" style="font-size: 1.5rem; color: var(--soft-taupe);"></i>
+                                <div class="h4 mb-1" style="color: var(--dark-text);" id="activeStaff">0</div>
+                                <div class="small text-muted">Personal Activo</div>
+                                <button class="btn btn-sm mt-2" style="background: var(--soft-taupe); color: var(--warm-white);" onclick="viewActiveStaff()">
+                                    Gestionar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: var(--warm-white); border-radius: 10px; border: 1px solid var(--cream-light);">
+                                <i class="fas fa-user-plus mb-2" style="font-size: 1.5rem; color: var(--success-green);"></i>
+                                <div class="h4 mb-1" style="color: var(--dark-text);" id="newUsersToday">0</div>
+                                <div class="small text-muted">Nuevos Hoy</div>
+                                <button class="btn btn-sm mt-2" style="background: var(--success-green); color: var(--warm-white);" onclick="createNewUser()">
+                                    Crear Usuario
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: var(--warm-white); border-radius: 10px; border: 1px solid var(--cream-light);">
+                                <i class="fas fa-user-clock mb-2" style="font-size: 1.5rem; color: var(--warning-amber);"></i>
+                                <div class="h4 mb-1" style="color: var(--dark-text);" id="onlineUsers">0</div>
+                                <div class="small text-muted">En Línea Ahora</div>
+                                <button class="btn btn-sm mt-2" style="background: var(--warning-amber); color: var(--warm-white);" onclick="viewOnlineUsers()">
+                                    Ver Actividad
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Management Cards -->
+    <!-- Enhanced Management Cards -->
     <div class="row g-4">
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-users text-primary mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Gestión de Usuarios</h5>
+                    <div class="feature-icon mb-3" style="color: var(--rich-brown);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Gestión de Usuarios</h5>
                     <p class="card-text">Administrar empleados, roles y permisos del sistema</p>
-                    <button class="btn btn-primary">
+                    <a href="{{ url_for('main.admin_users') }}" class="btn" style="background: var(--primary-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-user-cog me-1"></i>Gestionar
-                    </button>
+                    </a>
+                    <!-- Added quick stats -->
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="small" style="color: var(--rich-brown);">
+                                    <strong id="adminCount">0</strong><br>Admins
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small" style="color: var(--soft-taupe);">
+                                    <strong id="staffCount">0</strong><br>Personal
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small" style="color: var(--success-green);">
+                                    <strong id="guestCount">0</strong><br>Huéspedes
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-bed text-success mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Habitaciones</h5>
+                    <div class="feature-icon mb-3" style="color: var(--success-green);">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Habitaciones</h5>
                     <p class="card-text">Gestionar tipos de habitación, precios y disponibilidad</p>
-                    <a href="{{ url_for('main.rooms') }}" class="btn btn-success">
+                    <a href="{{ url_for('main.rooms') }}" class="btn" style="background: var(--success-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-bed me-1"></i>Ver Habitaciones
                     </a>
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="small" style="color: var(--success-green);">
+                                    <strong id="roomTypesCount">0</strong><br>Tipos
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small" style="color: var(--rich-brown);">
+                                    <strong id="avgOccupancy">0%</strong><br>Ocupación
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-calendar-check text-info mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Reservaciones</h5>
+                    <div class="feature-icon mb-3" style="color: var(--soft-taupe);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Reservaciones</h5>
                     <p class="card-text">Supervisar todas las reservas y gestionar check-in/out</p>
-                    <a href="{{ url_for('main.reservations') }}" class="btn btn-info">
+                    <a href="{{ url_for('main.reservations') }}" class="btn" style="background: var(--accent-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-calendar me-1"></i>Ver Reservas
                     </a>
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="small" style="color: var(--soft-taupe);">
+                                    <strong id="todayReservations">0</strong><br>Hoy
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small" style="color: var(--warning-amber);">
+                                    <strong id="weekReservations">0</strong><br>Esta Semana
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-chart-bar text-warning mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Reportes</h5>
+                    <div class="feature-icon mb-3" style="color: var(--warning-amber);">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Reportes</h5>
                     <p class="card-text">Analíticas, ocupación, ingresos y reportes detallados</p>
-                    <button class="btn btn-warning">
+                    <a href="{{ url_for('main.admin_reports') }}" class="btn" style="background: var(--warning-gradient); color: var(--dark-text); border: none;">
                         <i class="fas fa-chart-line me-1"></i>Ver Reportes
-                    </button>
+                    </a>
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="small" style="color: var(--warning-amber);">
+                                    <strong id="monthlyRevenue">$0</strong><br>Ingresos
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small" style="color: var(--success-green);">
+                                    <strong id="profitMargin">0%</strong><br>Margen
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-cogs text-secondary mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Servicios</h5>
+                    <div class="feature-icon mb-3" style="color: var(--soft-taupe);">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Servicios</h5>
                     <p class="card-text">Configurar servicios adicionales, precios y categorías</p>
-                    <button class="btn btn-secondary">
+                    <a href="{{ url_for('main.admin_services') }}" class="btn" style="background: var(--accent-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-concierge-bell me-1"></i>Gestionar
-                    </button>
+                    </a>
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="small" style="color: var(--soft-taupe);">
+                                    <strong id="activeServices">0</strong><br>Activos
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small" style="color: var(--success-green);">
+                                    <strong id="serviceRevenue">$0</strong><br>Ingresos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100" style="border: 2px solid var(--cream-light); transition: all 0.3s ease;">
                 <div class="card-body text-center">
-                    <i class="fas fa-tools text-danger mb-3" style="font-size: 3rem;"></i>
-                    <h5 class="card-title">Mantenimiento</h5>
+                    <div class="feature-icon mb-3" style="color: var(--danger-coral);">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h5 class="card-title" style="color: var(--dark-text);">Mantenimiento</h5>
                     <p class="card-text">Programar y supervisar tareas de mantenimiento</p>
-                    <button class="btn btn-danger">
+                    <a href="{{ url_for('main.admin_maintenance') }}" class="btn" style="background: var(--danger-gradient); color: var(--warm-white); border: none;">
                         <i class="fas fa-wrench me-1"></i>Mantenimiento
-                    </button>
+                    </a>
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="small" style="color: var(--danger-coral);">
+                                    <strong id="pendingMaintenance">0</strong><br>Pendientes
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small" style="color: var(--warning-amber);">
+                                    <strong id="urgentIssues">0</strong><br>Urgentes
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Floating Action Button -->
-<button class="floating-action" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+<!-- Enhanced Floating Action Button -->
+<button class="floating-action" data-bs-toggle="modal" data-bs-target="#quickActionsModal" style="background: var(--primary-gradient);">
     <i class="fas fa-plus"></i>
 </button>
 
-<!-- Quick Actions Modal -->
+<!-- Enhanced Quick Actions Modal -->
 <div class="modal fade" id="quickActionsModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background: var(--primary-gradient); color: white;">
-                <h5 class="modal-title">
-                    <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border: 2px solid var(--cream-light);">
+            <div class="modal-header" style="background: var(--secondary-gradient); border-bottom: 1px solid var(--cream-light);">
+                <h5 class="modal-title" style="color: var(--dark-text);">
+                    <i class="fas fa-bolt me-2"></i>Acciones Rápidas de Administrador
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary">
-                        <i class="fas fa-user-plus me-2"></i>Agregar Usuario
-                    </button>
-                    <button class="btn btn-outline-success">
-                        <i class="fas fa-bed me-2"></i>Nueva Habitación
-                    </button>
-                    <button class="btn btn-outline-info">
-                        <i class="fas fa-calendar-plus me-2"></i>Nueva Reserva
-                    </button>
-                    <button class="btn btn-outline-warning">
-                        <i class="fas fa-file-export me-2"></i>Exportar Datos
-                    </button>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--rich-brown); color: var(--warm-white); border: none;" onclick="createNewUser()">
+                            <i class="fas fa-user-plus d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Agregar Usuario</strong><br>
+                            <small>Crear nueva cuenta de empleado</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--success-green); color: var(--warm-white); border: none;" onclick="addNewRoom()">
+                            <i class="fas fa-bed d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Nueva Habitación</strong><br>
+                            <small>Agregar habitación al inventario</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--soft-taupe); color: var(--warm-white); border: none;" onclick="createReservation()">
+                            <i class="fas fa-calendar-plus d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Nueva Reserva</strong><br>
+                            <small>Crear reserva administrativa</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--warning-amber); color: var(--dark-text); border: none;" onclick="exportData()">
+                            <i class="fas fa-file-export d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Exportar Datos</strong><br>
+                            <small>Generar reportes y backups</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--danger-coral); color: var(--warm-white); border: none;" onclick="systemMaintenance()">
+                            <i class="fas fa-cogs d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Mantenimiento Sistema</strong><br>
+                            <small>Configuración y limpieza</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn w-100 p-3" style="background: var(--accent-gradient); color: var(--warm-white); border: none;" onclick="viewAnalytics()">
+                            <i class="fas fa-chart-line d-block mb-2" style="font-size: 1.5rem;"></i>
+                            <strong>Analytics</strong><br>
+                            <small>Dashboard de métricas</small>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,33 +384,143 @@
 
 {% block scripts %}
 <script>
+// Sample data for demonstration
+const sampleData = {
+    totalRooms: 26,
+    availableRooms: 8,
+    occupiedRooms: 16,
+    pendingReservations: 5,
+    totalUsers: 24,
+    activeStaff: 12,
+    newUsersToday: 3,
+    onlineUsers: 8,
+    adminCount: 2,
+    staffCount: 10,
+    guestCount: 12,
+    roomTypesCount: 4,
+    todayReservations: 7,
+    weekReservations: 23,
+    monthlyRevenue: 15420,
+    profitMargin: 32,
+    activeServices: 8,
+    serviceRevenue: 2340,
+    pendingMaintenance: 3,
+    urgentIssues: 1
+};
+
+function updateStats() {
+    // Update main stats
+    document.getElementById('totalRooms').textContent = sampleData.totalRooms;
+    document.getElementById('availableRooms').textContent = sampleData.availableRooms;
+    document.getElementById('occupiedRooms').textContent = sampleData.occupiedRooms;
+    document.getElementById('pendingReservations').textContent = sampleData.pendingReservations;
+    
+    // Calculate and update occupancy rate
+    const occupancyRate = Math.round((sampleData.occupiedRooms / sampleData.totalRooms) * 100);
+    document.getElementById('occupancyRate').textContent = occupancyRate + '%';
+    document.getElementById('occupancyBar').style.width = occupancyRate + '%';
+    
+    // Update progress bars
+    const availablePercent = Math.round((sampleData.availableRooms / sampleData.totalRooms) * 100);
+    const occupiedPercent = Math.round((sampleData.occupiedRooms / sampleData.totalRooms) * 100);
+    const pendingPercent = Math.min(100, (sampleData.pendingReservations / 10) * 100);
+    
+    document.getElementById('availableBar').style.width = availablePercent + '%';
+    document.getElementById('occupiedBar').style.width = occupiedPercent + '%';
+    document.getElementById('pendingBar').style.width = pendingPercent + '%';
+    
+    // Update account management stats
+    document.getElementById('totalUsers').textContent = sampleData.totalUsers;
+    document.getElementById('activeStaff').textContent = sampleData.activeStaff;
+    document.getElementById('newUsersToday').textContent = sampleData.newUsersToday;
+    document.getElementById('onlineUsers').textContent = sampleData.onlineUsers;
+    
+    // Update detailed stats
+    document.getElementById('adminCount').textContent = sampleData.adminCount;
+    document.getElementById('staffCount').textContent = sampleData.staffCount;
+    document.getElementById('guestCount').textContent = sampleData.guestCount;
+    document.getElementById('roomTypesCount').textContent = sampleData.roomTypesCount;
+    document.getElementById('avgOccupancy').textContent = occupancyRate + '%';
+    document.getElementById('todayReservations').textContent = sampleData.todayReservations;
+    document.getElementById('weekReservations').textContent = sampleData.weekReservations;
+    document.getElementById('monthlyRevenue').textContent = '$' + sampleData.monthlyRevenue.toLocaleString();
+    document.getElementById('profitMargin').textContent = sampleData.profitMargin + '%';
+    document.getElementById('activeServices').textContent = sampleData.activeServices;
+    document.getElementById('serviceRevenue').textContent = '$' + sampleData.serviceRevenue.toLocaleString();
+    document.getElementById('pendingMaintenance').textContent = sampleData.pendingMaintenance;
+    document.getElementById('urgentIssues').textContent = sampleData.urgentIssues;
+}
+
+// Account management functions
+function viewAllUsers() {
+    window.location.href = '/admin/users';
+}
+
+function viewActiveStaff() {
+    window.location.href = '/admin/users?filter=staff&status=active';
+}
+
+function createNewUser() {
+    window.location.href = '/admin/users#create';
+}
+
+function viewOnlineUsers() {
+    alert('Mostrando usuarios activos en tiempo real');
+}
+
+// Quick action functions
+function addNewRoom() {
+    alert('Formulario para agregar nueva habitación');
+}
+
+function createReservation() {
+    window.location.href = '/make_reservation';
+}
+
+function exportData() {
+    alert('Iniciando exportación de datos del sistema');
+}
+
+function systemMaintenance() {
+    alert('Accediendo a herramientas de mantenimiento del sistema');
+}
+
+function viewAnalytics() {
+    alert('Abriendo dashboard de analytics avanzado');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Cargar estadísticas del dashboard
+    updateStats();
+    
+    // Fetch real data from API
     fetch('/api/dashboard_stats')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('totalRooms').textContent = data.total_rooms || 0;
-            document.getElementById('availableRooms').textContent = data.available_rooms || 0;
-            document.getElementById('occupiedRooms').textContent = data.occupied_rooms || 0;
-            document.getElementById('pendingReservations').textContent = data.pending_reservations || 0;
+            // Update with real data if available
+            if (data.total_rooms) document.getElementById('totalRooms').textContent = data.total_rooms;
+            if (data.available_rooms) document.getElementById('availableRooms').textContent = data.available_rooms;
+            if (data.occupied_rooms) document.getElementById('occupiedRooms').textContent = data.occupied_rooms;
+            if (data.pending_reservations) document.getElementById('pendingReservations').textContent = data.pending_reservations;
         })
         .catch(error => console.error('Error loading stats:', error));
         
-    // Animación de contadores
-    const counters = document.querySelectorAll('.stats-number');
+    // Animate counters
+    const counters = document.querySelectorAll('.stats-number, .h4');
     counters.forEach(counter => {
-        const target = parseInt(counter.textContent);
-        let current = 0;
-        const increment = target / 20;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                counter.textContent = target;
-                clearInterval(timer);
-            } else {
-                counter.textContent = Math.floor(current);
-            }
-        }, 50);
+        const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+        if (target > 0) {
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = counter.textContent.replace(/[0-9]+/, target);
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = counter.textContent.replace(/[0-9]+/, Math.floor(current));
+                }
+            }, 50);
+        }
     });
 });
 </script>

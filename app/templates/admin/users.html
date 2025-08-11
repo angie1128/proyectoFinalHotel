@@ -310,13 +310,54 @@ function deleteUser(userId) {
 }
 
 function saveUser() {
-    alert('Usuario creado exitosamente');
-    bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+    const form = document.getElementById('addUserForm');
+    const formData = new FormData(form);
+    
+    // Validar que las contraseñas coincidan
+    if (formData.get('password') !== formData.get('confirm_password')) {
+        alert('Las contraseñas no coinciden');
+        return;
+    }
+    
+    // Mostrar loading
+    const saveBtn = document.querySelector('#addUserModal .btn-primary');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Creando...';
+    saveBtn.disabled = true;
+    
+    fetch('/admin/users', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ ' + data.message);
+            bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+            // Recargar la página para mostrar el nuevo usuario
+            window.location.reload();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Error al crear el usuario. Inténtalo de nuevo.');
+    })
+    .finally(() => {
+        // Restaurar botón
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    });
 }
 
 // Filtrado en tiempo real
 document.getElementById('searchUser').addEventListener('input', filterUsers);
 document.getElementById('roleFilter').addEventListener('change', filterUsers);
 document.getElementById('statusFilter').addEventListener('change', filterUsers);
+
+document.getElementById('addUserModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('addUserForm').reset();
+});
 </script>
 {% endblock %}
