@@ -20,13 +20,13 @@ def create_app():
     # Crear directorio de uploads si no existe
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
-    from app.models import User
+    from app.models.models import User
     
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
     
-    from app.routes import main
+    from app.routes.routes import main
     app.register_blueprint(main)
     
     with app.app_context():
@@ -37,7 +37,7 @@ def create_app():
     return app
 
 def create_default_admin():
-    from app.models import User, UserRole
+    from app.models.models import User, UserRole
     admin = User.query.filter_by(email='admin@hotel.com').first()
     if not admin:
         admin = User(

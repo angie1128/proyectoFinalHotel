@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
-from app.models import User, Room, RoomType, Reservation, Service, UserRole, RoomStatus, ReservationStatus
-from app.forms import LoginForm, RegisterForm, ReservationForm, RoomForm
+from app.models.models import User, Room, RoomType, Reservation, Service, UserRole, RoomStatus, ReservationStatus
+from app.forms.forms import LoginForm, RegisterForm, ReservationForm, RoomForm
 from app import db
 from datetime import datetime, date
 import json

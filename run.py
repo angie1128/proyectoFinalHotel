@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import User, Room, RoomType, Reservation, Service, UserRole, RoomStatus
+from app.models.models import User, Room, RoomType, Reservation, Service, UserRole, RoomStatus
 import os
 
 app = create_app()
