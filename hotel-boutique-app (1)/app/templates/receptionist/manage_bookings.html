@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Reservas - Recepción{% endblock %}
+
+{% block content %}
+<div class="receptionist-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="fas fa-calendar-check text-pink me-2"></i>Gestionar Reservas</h1>
+                    <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-outline-pink">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Panel
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros rápidos -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <button class="btn btn-outline-success w-100" onclick="filterByStatus('confirmed')">
+                    <i class="fas fa-check me-2"></i>Confirmadas
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-warning w-100" onclick="filterByStatus('checked_in')">
+                    <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-info w-100" onclick="filterByDate('today')">
+                    <i class="fas fa-calendar-day me-2"></i>Hoy
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                    <i class="fas fa-times me-2"></i>Limpiar
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla de reservas -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Huésped</th>
+                                <th>Habitación</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Huéspedes</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr data-status="{{ booking.status }}" data-checkin="{{ booking.check_in.strftime('%Y-%m-%d') }}">
+                                <td>{{ booking.id }}</td>
+                                <td>
+                                    <div>
+                                        <strong>{{ booking.user.full_name }}</strong><br>
+                                        <small class="text-muted">{{ booking.user.email }}</small>
+                                    </div>
+                                </td>
+                                <td>{{ booking.room.name }}</td>
+                                <td>{{ booking.check_in.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ booking.check_out.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ booking.guests }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'checked_in' else 'info' if booking.status == 'pending' else 'secondary' }}">
+                                        {% if booking.status == 'confirmed' %}Confirmada
+                                        {% elif booking.status == 'checked_in' %}Check-in
+                                        {% elif booking.status == 'completed' %}Completada
+                                        {% elif booking.status == 'cancelled' %}Cancelada
+                                        {% else %}Pendiente
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        {% if booking.status == 'confirmed' %}
+                                            <a href="{{ url_for('receptionist.checkin_booking', booking_id=booking.id) }}" 
+                                               class="btn btn-success" title="Check-in">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </a>
+                                        {% elif booking.status == 'checked_in' %}
+                                            <a href="{{ url_for('receptionist.checkout_booking', booking_id=booking.id) }}" 
+                                               class="btn btn-warning" title="Check-out">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            </a>
+                                        {% endif %}
+                                        <button class="btn btn-outline-primary" onclick="viewBookingDetails({{ booking.id }})" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterByStatus(status) {
+    const rows = document.querySelectorAll('#bookingsTable tbody tr');
+    rows.forEach(row => {
+        if (row.dataset.status === status) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function filterByDate(filter) {
+    const today = new Date().toISOString().split('T')[0];
+    const rows = document.querySelectorAll('#bookingsTable tbody tr');
+    
+    rows.forEach(row => {
+        if (filter === 'today' && row.dataset.checkin === today) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function clearFilters() {
+    const rows = document.querySelectorAll('#bookingsTable tbody tr');
+    rows.forEach(row => {
+        row.style.display = '';
+    });
+}
+
+function viewBookingDetails(bookingId) {
+    alert('Ver detalles de la reserva ' + bookingId);
+}
+</script>
+{% endblock %}

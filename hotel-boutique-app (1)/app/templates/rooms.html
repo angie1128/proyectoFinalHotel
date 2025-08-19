@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Habitaciones - Hotel Boutique Elegante{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="section-title">Nuestras Habitaciones</h1>
+        <p class="section-subtitle">Descubre el lujo y confort en cada una de nuestras elegantes habitaciones</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Tipo de Habitación</label>
+                            <select name="type" class="form-select">
+                                <option value="">Todos los tipos</option>
+                                {% for room_type in room_types %}
+                                <option value="{{ room_type }}" {% if current_type == room_type %}selected{% endif %}>
+                                    {{ room_type.title() }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Precio Mínimo</label>
+                            <input type="number" name="min_price" class="form-control" 
+                                   value="{{ min_price or '' }}" placeholder="$0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Precio Máximo</label>
+                            <input type="number" name="max_price" class="form-control" 
+                                   value="{{ max_price or '' }}" placeholder="$1000">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary-elegant w-100">
+                                <i class="fas fa-search me-2"></i>Filtrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rooms Grid -->
+    <div class="row">
+        {% for room in rooms.items %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="room-card">
+                <div class="room-image">
+                    <img src="{{ room.image_url or '/placeholder.svg?height=250&width=400' + room.room_type }}" 
+                         alt="{{ room.name }}" class="img-fluid">
+                    <div class="room-overlay">
+                        <a href="{{ url_for('main.room_detail', room_id=room.id) }}" 
+                           class="btn btn-gold">
+                            <i class="fas fa-eye me-2"></i>Ver Detalles
+                        </a>
+                    </div>
+                </div>
+                <div class="room-content">
+                    <h3 class="room-title">{{ room.name }}</h3>
+                    <p class="room-description">{{ room.description[:100] }}...</p>
+                    
+                    <div class="room-amenities mb-3">
+                        {% for amenity in room.get_amenities()[:3] %}
+                        <span class="amenity-tag">{{ amenity }}</span>
+                        {% endfor %}
+                        {% if room.get_amenities()|length > 3 %}
+                        <span class="amenity-tag">+{{ room.get_amenities()|length - 3 }} más</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="room-price">
+                            <span class="price">${{ "%.0f"|format(room.price_per_night) }}</span>
+                            <span class="period">/ noche</span>
+                        </div>
+                        <div class="room-capacity">
+                            <i class="fas fa-users me-1"></i>{{ room.capacity }} personas
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if rooms.pages > 1 %}
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="Paginación de habitaciones">
+                <ul class="pagination justify-content-center">
+                    {% if rooms.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.rooms', page=rooms.prev_num, type=current_type, min_price=min_price, max_price=max_price) }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for page_num in rooms.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != rooms.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.rooms', page=page_num, type=current_type, min_price=min_price, max_price=max_price) }}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                            {% endif %}
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if rooms.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.rooms', page=rooms.next_num, type=current_type, min_price=min_price, max_price=max_price) }}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

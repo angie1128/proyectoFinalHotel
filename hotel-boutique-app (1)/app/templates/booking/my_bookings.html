@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Reservas - Hotel Boutique{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-pink-600 mb-4">
+                <i class="fas fa-calendar-check me-2"></i>Mis Reservas
+            </h1>
+            
+            {% if bookings.items %}
+                <div class="row">
+                    {% for booking in bookings.items %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">{{ booking.room.name }}</h6>
+                                    <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'danger' }}">
+                                        {{ booking.status.title() }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <i class="fas fa-calendar me-2 text-pink-500"></i>
+                                    <strong>Check-in:</strong> {{ booking.check_in.strftime('%d/%m/%Y') }}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-calendar-times me-2 text-pink-500"></i>
+                                    <strong>Check-out:</strong> {{ booking.check_out.strftime('%d/%m/%Y') }}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-users me-2 text-pink-500"></i>
+                                    <strong>Huéspedes:</strong> {{ booking.guests }}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fas fa-dollar-sign me-2 text-pink-500"></i>
+                                    <strong>Total:</strong> ${{ "%.2f"|format(booking.total_price) }}
+                                </p>
+                                {% if booking.special_requests %}
+                                <p class="card-text">
+                                    <i class="fas fa-comment me-2 text-pink-500"></i>
+                                    <strong>Solicitudes:</strong> {{ booking.special_requests }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('booking.booking_detail', booking_id=booking.id) }}" class="btn btn-outline-pink btn-sm">
+                                        <i class="fas fa-eye me-1"></i>Ver Detalles
+                                    </a>
+                                    {% if booking.status in ['pending', 'confirmed'] and booking.check_in > today %}
+                                        <form method="POST" action="{{ url_for('booking.cancel_booking', booking_id=booking.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
+                                                <i class="fas fa-times me-1"></i>Cancelar
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación -->
+                {% if bookings.pages > 1 %}
+                    <nav aria-label="Paginación" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if bookings.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('booking.my_bookings', page=bookings.prev_num) }}">Anterior</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in bookings.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != bookings.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('booking.my_bookings', page=page_num) }}">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">…</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if bookings.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('booking.my_bookings', page=bookings.next_num) }}">Siguiente</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No tienes reservas</h3>
+                    <p class="text-muted mb-4">¡Explora nuestras habitaciones y haz tu primera reserva!</p>
+                    <a href="{{ url_for('main.rooms') }}" class="btn btn-pink">
+                        <i class="fas fa-bed me-2"></i>Ver Habitaciones
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

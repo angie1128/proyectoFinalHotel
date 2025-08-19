@@ -1,0 +1,1 @@
+from .receptionist_routes import receptionist_bp
