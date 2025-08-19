@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-4 fade-in-up">Bienvenido a Hotel Paradise</h1>
+            <p class="lead mb-5 fade-in-up">Experimenta el lujo y la comodidad en cada momento de tu estadía</p>
+            <div class="fade-in-up">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_guest() %}
+                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-calendar-plus me-2"></i>Hacer Reservación
+                        </a>
+                        <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Mi Dashboard
+                        </a>
+                    {% elif current_user.is_admin() %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-user-shield me-2"></i>Panel Administrador
+                        </a>
+                        <a href="{{ url_for('admin.rooms') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-bed me-2"></i>Gestionar Habitaciones
+                        </a>
+                    {% elif current_user.is_receptionist() %}
+                        <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-user-tie me-2"></i>Panel Recepcionista
+                        </a>
+                        <a href="{{ url_for('receptionist.checkin') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Registrarse
+                    </a>
+                    <!-- Cambiar "Ver Habitaciones" por "Iniciar Sesión" -->
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Rooms Carousel -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">Nuestras Habitaciones</h2>
+            <p class="lead text-secondary">Descubre el confort y elegancia en cada una de nuestras habitaciones</p>
+        </div>
+        
+        <div id="roomsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="2"></button>
+            </div>
+            
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/placeholder.svg?height=400&width=800" 
+                         class="d-block w-100" alt="Suite de Lujo">
+                    <div class="carousel-caption">
+                        <h3>Suite de Lujo</h3>
+                        <p>Experimenta el máximo confort en nuestra suite presidencial con vista panorámica</p>
+                        <p class="fw-bold">$299.99 por noche</p>
+                        {% if current_user.is_authenticated and current_user.is_guest() %}
+                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="/placeholder.svg?height=400&width=800" 
+                         class="d-block w-100" alt="Habitación Deluxe">
+                    <div class="carousel-caption">
+                        <h3>Habitación Deluxe</h3>
+                        <p>Habitación espaciosa con todas las comodidades modernas y decoración elegante</p>
+                        <p class="fw-bold">$199.99 por noche</p>
+                        {% if current_user.is_authenticated and current_user.is_guest() %}
+                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="/placeholder.svg?height=400&width=800" 
+                         class="d-block w-100" alt="Habitación Estándar">
+                    <div class="carousel-caption">
+                        <h3>Habitación Estándar</h3>
+                        <p>Confort y funcionalidad en un ambiente acogedor y moderno</p>
+                        <p class="fw-bold">$129.99 por noche</p>
+                        {% if current_user.is_authenticated and current_user.is_guest() %}
+                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#roomsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#roomsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">¿Por qué elegir Hotel Paradise?</h2>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-wifi fa-3x text-primary"></i>
+                        </div>
+                        <h4>WiFi Gratuito</h4>
+                        <p class="text-muted">Internet de alta velocidad en todas las habitaciones y áreas comunes</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-swimming-pool fa-3x text-primary"></i>
+                        </div>
+                        <h4>Piscina</h4>
+                        <p class="text-muted">Disfruta de nuestra piscina climatizada disponible las 24 horas</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0 shadow">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-concierge-bell fa-3x text-primary"></i>
+                        </div>
+                        <h4>Servicio 24/7</h4>
+                        <p class="text-muted">Nuestro equipo está disponible las 24 horas para atenderte</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">Galería</h2>
+            <p class="lead text-secondary">Conoce nuestras instalaciones</p>
+        </div>
+        
+        <div class="row g-3">
+            <div class="col-md-4">
+                <img src="/placeholder.svg?height=300&width=400" 
+                     class="img-fluid rounded shadow" alt="Lobby Elegante">
+            </div>
+            <div class="col-md-4">
+                <img src="/placeholder.svg?height=300&width=400" 
+                     class="img-fluid rounded shadow" alt="Restaurante Gourmet">
+            </div>
+            <div class="col-md-4">
+                <img src="/placeholder.svg?height=300&width=400" 
+                     class="img-fluid rounded shadow" alt="Spa Relajante">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold mb-4">¿Listo para tu próxima aventura?</h2>
+        <p class="lead mb-4">Reserva ahora y vive una experiencia inolvidable</p>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-3">
+            <i class="fas fa-user-plus me-2"></i>Únete a nosotros
+        </a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+        </a>
+        {% elif current_user.is_guest() %}
+        <a href="{{ url_for('guest.reserve') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-calendar-plus me-2"></i>Hacer Reservación
+        </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

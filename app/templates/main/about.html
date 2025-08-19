@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Nosotros - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-4">Sobre Hotel Paradise</h1>
+            <p class="lead">Más de 20 años creando experiencias inolvidables</p>
+        </div>
+    </div>
+    
+    <!-- About Content -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <img src="/placeholder.svg?height=400&width=600" 
+                 class="img-fluid rounded shadow" alt="Hotel Paradise Lobby">
+        </div>
+        <div class="col-lg-6">
+            <h2 class="mb-4">Nuestra Historia</h2>
+            <p>Hotel Paradise nació en 2004 con la visión de crear un refugio de lujo y comodidad para viajeros de todo el mundo. Ubicado en el corazón de la ciudad, nuestro hotel combina la elegancia clásica con las comodidades modernas.</p>
+            <p>Con más de dos décadas de experiencia en hospitalidad, nos enorgullecemos de ofrecer un servicio excepcional y crear momentos memorables para cada huésped que nos visita.</p>
+        </div>
+    </div>
+    
+    <!-- Services -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">Nuestros Servicios</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <i class="fas fa-wifi fa-3x text-primary mb-3"></i>
+                <h4>WiFi Gratuito</h4>
+                <p>Internet de alta velocidad en todas las habitaciones y áreas comunes.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <i class="fas fa-swimming-pool fa-3x text-primary mb-3"></i>
+                <h4>Piscina</h4>
+                <p>Piscina climatizada disponible las 24 horas con área de relajación.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <i class="fas fa-utensils fa-3x text-primary mb-3"></i>
+                <h4>Restaurante</h4>
+                <p>Cocina gourmet con especialidades locales e internacionales.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team -->
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-5">Nuestro Equipo</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <img src="/placeholder.svg?height=200&width=200" 
+                     class="card-img-top mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" alt="Manager">
+                <div class="card-body">
+                    <h5 class="card-title">María González</h5>
+                    <p class="card-text text-muted">Gerente General</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <img src="/placeholder.svg?height=200&width=200" 
+                     class="card-img-top mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" alt="Receptionist">
+                <div class="card-body">
+                    <h5 class="card-title">Carlos Rodríguez</h5>
+                    <p class="card-text text-muted">Jefe de Recepción</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <img src="/placeholder.svg?height=200&width=200" 
+                     class="card-img-top mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" alt="Chef">
+                <div class="card-body">
+                    <h5 class="card-title">Ana Martínez</h5>
+                    <p class="card-text text-muted">Chef Ejecutiva</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

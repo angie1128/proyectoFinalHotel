@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Pagos - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="py-4">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-tie me-2"></i>Recepcionista
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.checkin') }}">
+                        <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.checkout') }}">
+                        <i class="fas fa-sign-out-alt me-2"></i>Check-out
+                    </a>
+                    <a class="nav-link active" href="{{ url_for('receptionist.payments') }}">
+                        <i class="fas fa-credit-card me-2"></i>Pagos
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 text-primary fw-bold">Gestión de Pagos</h1>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter me-2"></i>Filtrar
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="?status=all">Todos</a></li>
+                            <li><a class="dropdown-item" href="?status=pending">Pendientes</a></li>
+                            <li><a class="dropdown-item" href="?status=partial">Parciales</a></li>
+                            <li><a class="dropdown-item" href="?status=paid">Pagados</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Payment Statistics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-dollar-sign fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">${{ "%.2f"|format(total_revenue) }}</h4>
+                                <small class="text-muted">Ingresos Hoy</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">{{ pending_payments }}</h4>
+                                <small class="text-muted">Pagos Pendientes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">{{ completed_payments }}</h4>
+                                <small class="text-muted">Pagos Completados</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                                <h4 class="text-danger">${{ "%.2f"|format(overdue_amount) }}</h4>
+                                <small class="text-muted">Monto Vencido</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payments Table -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Estado de Pagos</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if reservations %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Reservación</th>
+                                        <th>Huésped</th>
+                                        <th>Habitación</th>
+                                        <th>Check-in/out</th>
+                                        <th>Total</th>
+                                        <th>Pagado</th>
+                                        <th>Pendiente</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reservation in reservations %}
+                                    <tr>
+                                        <td>#{{ reservation.id }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <div class="fw-bold">{{ reservation.guest.get_full_name() }}</div>
+                                                    <small class="text-muted">{{ reservation.guest.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ reservation.room.room_number }}</span>
+                                            <br><small class="text-muted">{{ reservation.room.room_type.title() }}</small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                {{ reservation.check_in_date.strftime('%d/%m') }} - 
+                                                {{ reservation.check_out_date.strftime('%d/%m') }}
+                                            </small>
+                                        </td>
+                                        <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
+                                        <td class="text-success">${{ "%.2f"|format(reservation.paid_amount or 0) }}</td>
+                                        <td class="text-danger">${{ "%.2f"|format(reservation.pending_amount or reservation.total_price) }}</td>
+                                        <td>
+                                            {% if reservation.payment_status == 'paid' %}
+                                            <span class="badge bg-success">Pagado</span>
+                                            {% elif reservation.payment_status == 'partial' %}
+                                            <span class="badge bg-warning">Parcial</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">Pendiente</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                {% if reservation.payment_status != 'paid' %}
+                                                <a href="{{ url_for('receptionist.process_payment', id=reservation.id) }}" 
+                                                   class="btn btn-success btn-sm" title="Procesar Pago">
+                                                    <i class="fas fa-credit-card"></i>
+                                                </a>
+                                                {% endif %}
+                                                <a href="{{ url_for('receptionist.payment_history', id=reservation.id) }}" 
+                                                   class="btn btn-info btn-sm" title="Historial">
+                                                    <i class="fas fa-history"></i>
+                                                </a>
+                                                <a href="{{ url_for('receptionist.print_receipt', id=reservation.id) }}" 
+                                                   class="btn btn-secondary btn-sm" title="Imprimir Recibo">
+                                                    <i class="fas fa-print"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-credit-card fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay pagos para procesar</h5>
+                            <p class="text-muted">Los pagos aparecerán aquí cuando haya reservaciones activas.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Recent Payments -->
+                {% if recent_payments %}
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Pagos Recientes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Reservación</th>
+                                        <th>Huésped</th>
+                                        <th>Monto</th>
+                                        <th>Método</th>
+                                        <th>Procesado por</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in recent_payments %}
+                                    <tr>
+                                        <td>{{ payment.payment_time.strftime('%H:%M') if payment.payment_time else '-' }}</td>
+                                        <td>#{{ payment.reservation.id }}</td>
+                                        <td>{{ payment.reservation.guest.get_full_name() }}</td>
+                                        <td class="fw-bold text-success">${{ "%.2f"|format(payment.amount) }}</td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ payment.payment_method.title() }}</span>
+                                        </td>
+                                        <td>{{ payment.processed_by.get_full_name() if payment.processed_by else '-' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

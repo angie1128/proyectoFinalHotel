@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Habitaciones - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="py-4">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-tie me-2"></i>Recepcionista
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link active" href="{{ url_for('receptionist.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.checkin') }}">
+                        <i class="fas fa-sign-in-alt me-2"></i>Check-in
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.checkout') }}">
+                        <i class="fas fa-sign-out-alt me-2"></i>Check-out
+                    </a>
+                    <a class="nav-link" href="{{ url_for('receptionist.payments') }}">
+                        <i class="fas fa-credit-card me-2"></i>Pagos
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 text-primary fw-bold">Estado de Habitaciones</h1>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter me-2"></i>Filtrar
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="?status=all">Todas</a></li>
+                            <li><a class="dropdown-item" href="?status=available">Disponibles</a></li>
+                            <li><a class="dropdown-item" href="?status=occupied">Ocupadas</a></li>
+                            <li><a class="dropdown-item" href="?status=maintenance">Mantenimiento</a></li>
+                            <li><a class="dropdown-item" href="?status=cleaning">Limpieza</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Room Statistics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">{{ total_rooms }}</h4>
+                                <small class="text-muted">Total</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-door-open fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">{{ available_rooms }}</h4>
+                                <small class="text-muted">Disponibles</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-door-closed fa-2x text-danger mb-2"></i>
+                                <h4 class="text-danger">{{ occupied_rooms }}</h4>
+                                <small class="text-muted">Ocupadas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-tools fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">{{ maintenance_rooms }}</h4>
+                                <small class="text-muted">Mantenimiento</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rooms Grid -->
+                <div class="row g-4">
+                    {% for room in rooms %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 {% if room.status == 'available' %}border-success{% elif room.status == 'occupied' %}border-danger{% elif room.status == 'maintenance' %}border-warning{% else %}border-info{% endif %}">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=200&width=300" 
+                                     class="card-img-top" alt="Habitación {{ room.room_number }}">
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="status-badge status-{{ room.status }}">
+                                        {{ room.get_status_display() }}
+                                    </span>
+                                </div>
+                                {% if room.status == 'occupied' and room.current_guest %}
+                                <div class="position-absolute bottom-0 start-0 m-2">
+                                    <span class="badge bg-dark">{{ room.current_guest.get_full_name() }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Habitación {{ room.room_number }}</h5>
+                                    <span class="badge bg-primary">{{ room.room_type.title() }}</span>
+                                </div>
+                                <p class="card-text flex-grow-1">
+                                    <small class="text-muted">
+                                        <i class="fas fa-users me-1"></i>{{ room.capacity }} personas<br>
+                                        <i class="fas fa-dollar-sign me-1"></i>${{ "%.2f"|format(room.price_per_night) }}/noche
+                                    </small>
+                                </p>
+                                
+                                {% if room.status == 'occupied' and room.current_reservation %}
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <strong>Check-out:</strong> {{ room.current_reservation.check_out_date.strftime('%d/%m/%Y') }}<br>
+                                        <strong>Noches restantes:</strong> {{ room.nights_remaining }}
+                                    </small>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex gap-2">
+                                        {% if room.status == 'occupied' %}
+                                        <a href="{{ url_for('receptionist.process_checkout', room_id=room.id) }}" 
+                                           class="btn btn-warning btn-sm flex-fill">
+                                            <i class="fas fa-sign-out-alt me-1"></i>Check-out
+                                        </a>
+                                        {% elif room.status == 'available' %}
+                                        <button class="btn btn-success btn-sm flex-fill" disabled>
+                                            <i class="fas fa-check me-1"></i>Disponible
+                                        </button>
+                                        {% endif %}
+                                        
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                                    type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><h6 class="dropdown-header">Cambiar Estado</h6></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('receptionist.update_room_status', id=room.id, status='available') }}">
+                                                    <i class="fas fa-door-open me-2 text-success"></i>Disponible
+                                                </a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('receptionist.update_room_status', id=room.id, status='maintenance') }}">
+                                                    <i class="fas fa-tools me-2 text-warning"></i>Mantenimiento
+                                                </a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('receptionist.update_room_status', id=room.id, status='cleaning') }}">
+                                                    <i class="fas fa-broom me-2 text-info"></i>Limpieza
+                                                </a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('receptionist.room_details', id=room.id) }}">
+                                                    <i class="fas fa-info-circle me-2"></i>Ver Detalles
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

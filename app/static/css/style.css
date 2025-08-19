@@ -1,0 +1,646 @@
+:root {
+  --primary-color: #E6A8B0; 
+  --secondary-color: #B76A7F; 
+  --accent-color: #C47A8C; 
+  --background-color: #FDF5F8;
+  --surface-color: #FFF0F5; 
+  --text-primary: #4A2C5A; 
+  --text-secondary: #8C5E7A; 
+  --border-color: #D1C2CC; 
+  --shadow: rgba(0, 0, 0, 0.08);
+  --hover-shadow: rgba(0, 0, 0, 0.16); 
+}
+
+[data-theme="dark"] {
+  --primary-color: #6B9ED6; 
+  --secondary-color: #8BB0D8; 
+  --accent-color: #5E8BBF; 
+  --background-color: #0A315F;
+  --surface-color: #42628F; 
+  --text-primary: #F5F8FF; 
+  --text-secondary: #C7D3E8;
+  --border-color: #A3BFFA; 
+  --shadow: rgba(70, 130, 180, 0.2); 
+  --hover-shadow: rgba(70, 130, 180, 0.3); 
+}
+
+/* Global Styles */
+body {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  padding-top: 76px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Improved Bootstrap overrides with better contrast */
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--hover-shadow);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+/* Enhanced card styling with better shadows */
+.card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px var(--hover-shadow);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Improved form controls with better dark mode visibility */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--surface-color);
+  border-color: var(--primary-color);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(70, 130, 180, 0.25);
+  border-color: var(--primary-color);
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+/* Mejorado hero section con gradiente más sutil y elegante */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  color: white;
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/placeholder.svg?height=600&width=1200") center / cover;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Room Cards */
+.room-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  border: none;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px var(--hover-shadow);
+}
+
+.room-image {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Carousel Styles */
+.carousel-item img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+/* Improved dashboard cards with better gradients */
+.dashboard-card {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px var(--hover-shadow);
+}
+
+.dashboard-card .card-body {
+  padding: 2rem;
+}
+
+.dashboard-card .display-4 {
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced status badges with better dark mode support */
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.status-disponible {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-ocupada {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.status-mantenimiento {
+  background-color: #fff8e1;
+  color: #f57c00;
+  border: 1px solid #ffecb3;
+}
+
+.status-limpieza {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+.status-pendiente {
+  background-color: #fff8e1;
+  color: #f57c00;
+  border: 1px solid #ffecb3;
+}
+
+.status-confirmada {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-cancelada {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.status-completada {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+/* Dark theme status badges with better visibility */
+[data-theme="dark"] .status-disponible {
+  background-color: #1b5e20;
+  color: #c8e6c9;
+  border: 1px solid #2e7d32;
+}
+
+[data-theme="dark"] .status-ocupada {
+  background-color: #b71c1c;
+  color: #ffcdd2;
+  border: 1px solid #c62828;
+}
+
+[data-theme="dark"] .status-mantenimiento {
+  background-color: #e65100;
+  color: #ffecb3;
+  border: 1px solid #f57c00;
+}
+
+[data-theme="dark"] .status-limpieza {
+  background-color: #0d47a1;
+  color: #bbdefb;
+  border: 1px solid #1565c0;
+}
+
+/* Enhanced tables with better dark mode support */
+.table {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.table th {
+  border-color: var(--border-color);
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  border-color: var(--border-color);
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Navigation */
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: white;
+}
+
+/* Improved sidebar with better contrast */
+.sidebar {
+  background-color: var(--surface-color);
+  border-right: 1px solid var(--border-color);
+  min-height: calc(100vh - 76px);
+  box-shadow: 2px 0 8px var(--shadow);
+  padding: 0;
+}
+
+.sidebar .nav-link {
+  color: var(--text-primary);
+  padding: 1rem 1.5rem;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateX(3px);
+  border-left: 4px solid var(--accent-color);
+}
+
+/* Enhanced alert styling */
+.alert {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.alert-success {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.alert-danger {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.alert-warning {
+  background-color: #fff8e1;
+  color: #f57c00;
+}
+
+.alert-info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+[data-theme="dark"] .alert-success {
+  background-color: #1b5e20;
+  color: #c8e6c9;
+}
+
+[data-theme="dark"] .alert-danger {
+  background-color: #b71c1c;
+  color: #ffcdd2;
+}
+
+[data-theme="dark"] .alert-warning {
+  background-color: #e65100;
+  color: #ffecb3;
+}
+
+[data-theme="dark"] .alert-info {
+  background-color: #0d47a1;
+  color: #bbdefb;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 0;
+  }
+
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .dashboard-card .display-4 {
+    font-size: 2rem;
+  }
+
+  .main-content-wrapper {
+    padding: 1rem 0;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .btn {
+    padding: 0.625rem 1.25rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Social Links */
+.social-links a {
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  color: var(--primary-color) !important;
+  transform: translateY(-2px);
+}
+
+/* Loading Spinner */
+.spinner-border-primary {
+  color: var(--primary-color);
+}
+
+/* Custom scrollbar with theme support */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+/* Dropdown menu styling for better dark mode */
+.dropdown-menu {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Footer improvements */
+footer {
+  background-color: var(--surface-color) !important;
+  color: var(--text-primary) !important;
+  border-top: 1px solid var(--border-color);
+}
+
+footer h5 {
+  color: var(--primary-color);
+}
+
+/* Añadir estilos para el botón de mostrar/ocultar contraseña */
+.password-toggle {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  z-index: 10;
+}
+
+.password-toggle-btn:hover {
+  color: var(--primary-color);
+}
+
+.password-toggle .form-control {
+  padding-right: 45px;
+}
+
+/* Mejorar visibilidad de texto en modo oscuro */
+[data-theme="dark"] .card {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Optimized flash messages styling to reduce space and improve layout */
+.flash-messages-container {
+  position: fixed;
+  top: 76px;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  max-height: 0;
+  overflow: visible;
+}
+
+.flash-messages-container .alert {
+  border-radius: 0;
+  border: none;
+  padding: 0.75rem 0;
+  margin-bottom: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flash-messages-container .alert .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flash-messages-container .alert .btn-close {
+  margin: 0;
+  padding: 0.375rem;
+}
+
+/* Better spacing for main content areas */
+.main-content-wrapper {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 0;
+}
+
+.dashboard-content {
+  padding: 1.5rem 0;
+}
+
+/* Improved button spacing and sizing */
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* Improved section spacing */
+.section-spacing {
+  padding: 3rem 0;
+}
+
+.section-spacing-sm {
+  padding: 2rem 0;
+}
+
+.section-spacing-lg {
+  padding: 4rem 0;
+}

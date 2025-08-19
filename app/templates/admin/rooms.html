@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Habitaciones - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="py-4">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-shield me-2"></i>Administrador
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link active" href="{{ url_for('admin.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.staff') }}">
+                        <i class="fas fa-users me-2"></i>Personal
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.users') }}">
+                        <i class="fas fa-user-friends me-2"></i>Usuarios
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 text-primary fw-bold">Gestión de Habitaciones</h1>
+                    <a href="{{ url_for('admin.create_room') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Agregar Habitación
+                    </a>
+                </div>
+                
+                <!-- Room Statistics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">{{ total_rooms }}</h4>
+                                <small class="text-muted">Total</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">{{ available_rooms }}</h4>
+                                <small class="text-muted">Disponibles</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-door-closed fa-2x text-danger mb-2"></i>
+                                <h4 class="text-danger">{{ occupied_rooms }}</h4>
+                                <small class="text-muted">Ocupadas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-tools fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">{{ maintenance_rooms }}</h4>
+                                <small class="text-muted">Mantenimiento</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rooms Grid -->
+                <div class="row g-4">
+                    {% for room in rooms %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            <div class="position-relative">
+                                <img src="/placeholder.svg?height=200&width=300" 
+                                     class="card-img-top" alt="Habitación {{ room.number }}">
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="status-badge status-{{ room.status }}">
+                                        {{ room.get_status_display() }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Habitación {{ room.number }}</h5>
+                                    <span class="badge bg-primary">{{ room.type.title() }}</span>
+                                </div>
+                                <p class="card-text flex-grow-1">{{ room.description[:100] }}...</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="h6 mb-0 text-primary">${{ "%.2f"|format(room.price) }}/noche</span>
+                                        <small class="text-muted">{{ room.max_occupancy }} personas</small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ url_for('admin.edit_room', id=room.id) }}" 
+                                           class="btn btn-outline-primary btn-sm flex-fill">
+                                            <i class="fas fa-edit me-1"></i>Editar
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                                    type="button" data-bs-toggle="dropdown">
+                                                Estado
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{{ url_for('admin.update_room_status', id=room.id, status='available') }}">Disponible</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('admin.update_room_status', id=room.id, status='occupied') }}">Ocupada</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('admin.update_room_status', id=room.id, status='maintenance') }}">Mantenimiento</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('admin.update_room_status', id=room.id, status='cleaning') }}">Limpieza</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not rooms %}
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-bed fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay habitaciones registradas</h5>
+                            <p class="text-muted">Agregue habitaciones para comenzar a gestionar el hotel.</p>
+                            <a href="{{ url_for('admin.create_room') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Agregar Primera Habitación
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

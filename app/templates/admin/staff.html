@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Personal - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="py-4">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-shield me-2"></i>Administrador
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link active" href="{{ url_for('admin.staff') }}">
+                        <i class="fas fa-users me-2"></i>Personal
+                    </a>
+                    <a class="nav-link" href="{{ url_for('admin.users') }}">
+                        <i class="fas fa-user-friends me-2"></i>Usuarios
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 text-primary fw-bold">Gestión de Personal</h1>
+                    <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Agregar Personal
+                    </a>
+                </div>
+                
+                <!-- Staff Cards -->
+                <div class="row g-4">
+                    {% for staff_member in staff %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    {% if staff_member.role == 'admin' %}
+                                        <i class="fas fa-user-shield fa-3x text-danger"></i>
+                                    {% elif staff_member.role == 'receptionist' %}
+                                        <i class="fas fa-user-tie fa-3x text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-user fa-3x text-secondary"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title">{{ staff_member.get_full_name() }}</h5>
+                                <p class="text-muted mb-2">{{ staff_member.email }}</p>
+                                <p class="text-muted mb-3">{{ staff_member.phone or 'Sin teléfono' }}</p>
+                                <span class="badge bg-{{ 'danger' if staff_member.role == 'admin' else 'primary' if staff_member.role == 'receptionist' else 'secondary' }} mb-3">
+                                    {{ staff_member.get_role_display() }}
+                                </span>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ url_for('admin.edit_staff', id=staff_member.id) }}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if staff_member.id != current_user.id %}
+                                    <a href="{{ url_for('admin.delete_staff', id=staff_member.id) }}" 
+                                       class="btn btn-outline-danger btn-sm"
+                                       data-confirm="¿Está seguro de eliminar este miembro del personal?">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not staff %}
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay personal registrado</h5>
+                            <p class="text-muted">Agregue miembros del personal para gestionar el hotel.</p>
+                            <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Agregar Primer Miembro
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

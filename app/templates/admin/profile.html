@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin.profile') }}">
+                            <i class="fas fa-user"></i> Mi Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.users') }}">
+                            <i class="fas fa-users"></i> Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.staff') }}">
+                            <i class="fas fa-user-tie"></i> Personal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.rooms') }}">
+                            <i class="fas fa-bed"></i> Habitaciones
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.reservations') }}">
+                            <i class="fas fa-calendar-check"></i> Reservaciones
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Mi Perfil</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Información Personal</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>Nombre de Usuario:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    {{ user.username }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>Nombre Completo:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    {{ user.first_name }} {{ user.last_name }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>Email:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    {{ user.email }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>Teléfono:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    {{ user.phone or 'No especificado' }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <strong>Rol:</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    <span class="badge bg-danger">{{ user.get_role_display() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Acciones Rápidas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i> Crear Personal
+                                </a>
+                                <a href="{{ url_for('admin.create_room') }}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Crear Habitación
+                                </a>
+                                <a href="{{ url_for('admin.reservations') }}" class="btn btn-info">
+                                    <i class="fas fa-calendar-check"></i> Ver Reservaciones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
