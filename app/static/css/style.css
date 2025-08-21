@@ -4,9 +4,9 @@
   --accent-color: #C47A8C; 
   --background-color: #FDF5F8;
   --surface-color: #FFF0F5; 
-  --text-primary: #4A2C5A; 
+  --text-primary: #B76A7F; 
   --text-secondary: #8C5E7A; 
-  --border-color: #D1C2CC; 
+  --border-color: #f6b3df; 
   --shadow: rgba(0, 0, 0, 0.08);
   --hover-shadow: rgba(0, 0, 0, 0.16); 
 }
@@ -18,7 +18,7 @@
   --background-color: #0A315F;
   --surface-color: #42628F; 
   --text-primary: #F5F8FF; 
-  --text-secondary: #C7D3E8;
+  --text-secondary: #F5F8FF;
   --border-color: #A3BFFA; 
   --shadow: rgba(70, 130, 180, 0.2); 
   --hover-shadow: rgba(70, 130, 180, 0.3); 
