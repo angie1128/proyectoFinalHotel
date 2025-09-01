@@ -1,57 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-content">
-        <div class="container text-center">
-            <h1 class="display-3 fw-bold mb-4 fade-in-up">Bienvenido a Pringamosa Hotel Boutique</h1>
-            <p class="lead mb-5 fade-in-up">Existen Lugares donde Cada Pieza tiene un Valor Importantísimo, nuestro Hotel
-                Rinde Homenaje al Campesino Colombiano, además es una vitrina de Artistas y Artesanos Veleños
-            </p>
-            <div class="fade-in-up">
-                {% if current_user.is_authenticated %}
-                    {% if current_user.is_guest() %}
-                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-light btn-lg me-3">
-                            <i class="fas fa-calendar-plus me-2"></i>Hacer Reservación
-                        </a>
-                        <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-tachometer-alt me-2"></i>Mi Dashboard
-                        </a>
-                    {% elif current_user.is_admin() %}
-                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light btn-lg me-3">
-                            <i class="fas fa-user-shield me-2"></i>Panel Administrador
-                        </a>
-                        <a href="{{ url_for('admin.rooms') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-bed me-2"></i>Gestionar Habitaciones
-                        </a>
-                    {% elif current_user.is_receptionist() %}
-                        <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-light btn-lg me-3">
-                            <i class="fas fa-user-tie me-2"></i>Panel Recepcionista
-                        </a>
-                        <a href="{{ url_for('receptionist.checkin') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Check-in
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-3">
-                        <i class="fas fa-user-plus me-2"></i>Únete a Nosotros
-                    </a>
-                    <!-- Cambiar "Ver Habitaciones" por "Iniciar Sesión" -->
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                    </a>
-                {% endif %}
+<section class="hero-section py-5" style="background: #fff; min-height: 80vh;">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Carrusel de imágenes -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div id="heroCarousel" class="carousel slide shadow rounded" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded">
+                        <div class="carousel-item active">
+                            <img src="{{ url_for('static', filename='img/hotel.png') }}" class="d-block w-100" alt="Hotel 1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ url_for('static', filename='img/piscina.jpeg') }}" class="d-block w-100" alt="Hotel 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{{ url_for('static', filename='img/floress.png') }}" class="d-block w-100" alt="Hotel 3">
+                        </div>
+                    </div>
+                    <!-- Controles -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Texto con fondo blanco -->
+            <div class="col-lg-6 d-flex flex-column center-content-center">
+                <div class="p-4 shadow rounded text-center" style="background: #fff;">
+                    <h1 class="display-4 fw-bold mb-4" style="color: var(--text-primary);">
+                        Bienvenido a Pringamosa Hotel Boutique
+                    </h1>
+                    <p class="lead mb-4" style="color: var(--text-secondary);">
+                        Existen lugares donde cada pieza tiene un valor importantísimo.  
+                        Nuestro Hotel rinde homenaje al campesino colombiano, además es una vitrina de artistas y artesanos veleños.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Featured Rooms Carousel -->
 <section class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">Nuestras Habitaciones</h2>
+            <h2 class="display-5 fw-bold mb-4 animate__animated animate__fadeInRight" style="color: var(--text-primary);">Nuestras Habitaciones</h2>
             <p class="lead text-secondary">Descubre el confort y elegancia en cada una de nuestras habitaciones</p>
         </div>
         
@@ -60,15 +58,16 @@
                 <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="0" class="active"></button>
                 <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="1"></button>
                 <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="2"></button>
+                <button type="button" data-bs-target="#roomsCarousel" data-bs-slide-to="3"></button>
             </div>
             
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="/static/img/hab1.png?height=400&width=800" 
+                    <img src="/static/img/hab1.png?height=600&width=800" 
                          class="d-block w-100" alt="Suite de Lujo">
                     <div class="carousel-caption">
                         <h3>Premium</h3>
-                        <p>Experimenta el Máximo Confort en Nuestra Suite Presidencial con Vista Panorámica  (Max. 2 Personas)</p>
+                        <p>Experimenta el Máximo Confort en Nuestra Suite Presidencial con Vista Panorámica (Max. 2 Personas)</p>
                         <p class="fw-bold">$490.000 por noche</p>
                         {% if current_user.is_authenticated and current_user.is_guest() %}
                         <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
@@ -76,11 +75,10 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="/static/img/hab1.2.png?height=400&width=800" 
-                         class="d-block w-100" alt="Habitación Deluxe">
+                    <img src="/static/img/hab1.2.png" class="d-block w-100" alt="Habitación Deluxe" style="width:800px; height:600px; object-fit:cover;">
                     <div class="carousel-caption">
                         <h3>Suite</h3>
-                        <p>Habitación Espaciosa con todas las Comodidades Modernas y Decoración Elegante  (Max. 2 Personas)</p>
+                        <p>Habitación Espaciosa con todas las Comodidades Modernas y Decoración Elegante (Max. 2 Personas)</p>
                         <p class="fw-bold">$450.000 por noche</p>
                         {% if current_user.is_authenticated and current_user.is_guest() %}
                         <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
@@ -88,8 +86,7 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="/static/img/hab2.png?height=400&width=800" 
-                         class="d-block w-100" alt="Habitación Estándar">
+                    <img src="/static/img/hab2.png" class="d-block w-100" alt="Habitación Estándar" style="width:800px; height:600px; object-fit:cover;">
                     <div class="carousel-caption">
                         <h3>Estándar</h3>
                         <p>Confort y Funcionalidad en un Ambiente Acogedor y Moderno (Max. 2 Personas)</p>
@@ -99,14 +96,11 @@
                         {% endif %}
                     </div>
                 </div>
-                 <div class="carousel-item">
-                    <img src="/static/img/hab3.png?height=400&width=800" 
-                         class="d-block w-100" alt="Habitación Estándar">
+                <div class="carousel-item">
+                    <img src="/static/img/hab3.png" class="d-block w-100" alt="Habitación Estándar" style="width:800px; height:600px; object-fit:cover;">
                     <div class="carousel-caption">
                         <h3>Múltiple</h3>
-                        <p>Un Espacio donde la Comodidad y la Funcionalidad se Unen para Crear un Refugio Moderno
-                            (Max. 4 Personas)
-                        </p>
+                        <p>Un Espacio donde la Comodidad y la Funcionalidad se Unen para Crear un Refugio Moderno (Max. 4 Personas)</p>
                         <p class="fw-bold">$390.000 por noche</p>
                         {% if current_user.is_authenticated and current_user.is_guest() %}
                         <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Reservar Ahora</a>
@@ -126,10 +120,10 @@
 </section>
 
 <!-- Features Section -->
-<section class="py-5 bg-light">
+<section class="py-4 "style="background: #ffffff; min-height: 70vh;">>
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">¿Por qué elegir Hotel Paradise?</h2>
+            <h2 class="display-5 fw-bold mb-4 animate__animated animate__fadeInRight" style="color: var(--text-primary);">¿Por qué Elegir Pringamosa Hotel Boutique?</h2>
         </div>
         
         <div class="row g-4">
@@ -176,7 +170,7 @@
 <section class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">Galería</h2>
+            <h2 class="display-5 fw-bold mb-4 animate__animated animate__fadeInRight" style="color: var(--text-primary);">Galería</h2>
             <p class="lead text-secondary">Conoce nuestras instalaciones</p>
         </div>
         
