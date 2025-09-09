@@ -3,28 +3,28 @@
 {% block title %}Dashboard Administrador - Hotel Paradise{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar">
-            <div class="py-4">
+        <div class="col-md-3 col-lg-2 sidebar border-end bg-light">
+            <div class="py-3 px-0">
                 <h5 class="text-primary fw-bold mb-4">
                     <i class="fas fa-user-shield me-2"></i>Administrador
                 </h5>
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="{{ url_for('admin.dashboard') }}">
+                    <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.dashboard') }}">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <a class="nav-link" href="{{ url_for('admin.rooms') }}">
+                    <a class="nav-link {% if request.endpoint == 'admin.rooms' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.rooms') }}">
                         <i class="fas fa-bed me-2"></i>Habitaciones
                     </a>
-                    <a class="nav-link" href="{{ url_for('admin.reservations') }}">
+                    <a class="nav-link {% if request.endpoint == 'admin.reservations' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.reservations') }}">
                         <i class="fas fa-calendar-alt me-2"></i>Reservaciones
                     </a>
-                    <a class="nav-link" href="{{ url_for('admin.staff') }}">
+                    <a class="nav-link {% if request.endpoint == 'admin.staff' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.staff') }}">
                         <i class="fas fa-users me-2"></i>Personal
                     </a>
-                    <a class="nav-link" href="{{ url_for('admin.users') }}">
+                    <a class="nav-link {% if request.endpoint == 'admin.users' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.users') }}">
                         <i class="fas fa-user-friends me-2"></i>Usuarios
                     </a>
                 </nav>
@@ -32,8 +32,8 @@
         </div>
         
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="py-4">
+        <div class="col-md-9 col-lg-10 bg-white">
+            <div class="py-4 px-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h3 text-primary fw-bold">Dashboard Administrador</h1>
                     <span class="text-muted">Bienvenido, {{ current_user.get_full_name() }}</span>
@@ -42,92 +42,75 @@
                 <!-- Statistics Cards -->
                 <div class="row g-4 mb-5">
                     <div class="col-md-3">
-                        <div class="card dashboard-card">
+                        <div class="card shadow-sm border-0">
                             <div class="card-body text-center">
-                                <i class="fas fa-bed fa-2x mb-3"></i>
-                                <div class="display-4">{{ total_rooms }}</div>
-                                <p class="mb-0">Total Habitaciones</p>
+                                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                                <h2 class="fw-bold">{{ total_rooms }}</h2>
+                                <p class="text-muted mb-0">Habitaciones</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card dashboard-card">
+                        <div class="card shadow-sm border-0">
                             <div class="card-body text-center">
-                                <i class="fas fa-check-circle fa-2x mb-3"></i>
-                                <div class="display-4">{{ available_rooms }}</div>
-                                <p class="mb-0">Disponibles</p>
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h2 class="fw-bold">{{ available_rooms }}</h2>
+                                <p class="text-muted mb-0">Disponibles</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card dashboard-card">
+                        <div class="card shadow-sm border-0">
                             <div class="card-body text-center">
-                                <i class="fas fa-door-closed fa-2x mb-3"></i>
-                                <div class="display-4">{{ occupied_rooms }}</div>
-                                <p class="mb-0">Ocupadas</p>
+                                <i class="fas fa-door-closed fa-2x text-danger mb-2"></i>
+                                <h2 class="fw-bold">{{ occupied_rooms }}</h2>
+                                <p class="text-muted mb-0">Ocupadas</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card dashboard-card">
+                        <div class="card shadow-sm border-0">
                             <div class="card-body text-center">
-                                <i class="fas fa-users fa-2x mb-3"></i>
-                                <div class="display-4">{{ total_users }}</div>
-                                <p class="mb-0">Total Usuarios</p>
+                                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                                <h2 class="fw-bold">{{ total_users }}</h2>
+                                <p class="text-muted mb-0">Usuarios</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Quick Actions -->
-                <div class="row g-4 mb-5">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Acciones Rápidas</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <a href="{{ url_for('admin.create_room') }}" class="btn btn-outline-primary">
-                                        <i class="fas fa-bed me-2"></i>Agregar Habitación
-                                    </a>
-                                    <a href="{{ url_for('admin.create_staff') }}" class="btn btn-outline-primary">
-                                        <i class="fas fa-user-plus me-2"></i>Agregar Personal
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Alertas</h5>
-                            </div>
-                            <div class="card-body">
-                                {% if pending_reservations > 0 %}
-                                <div class="alert alert-warning mb-2">
-                                    <i class="fas fa-clock me-2"></i>{{ pending_reservations }} reservaciones pendientes
-                                </div>
-                                {% endif %}
-                                <div class="alert alert-info mb-0">
-                                    <i class="fas fa-info-circle me-2"></i>Sistema funcionando correctamente
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="row g-4 mb-5 justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('admin.add_room') }}" class="btn btn-primary">
+                        <i class="fas fa-bed me-2"></i>Agregar Habitación
+                    </a>
+                    <a href="{{ url_for('admin.create_staff') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Agregar Personal
+                    </a>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                 
                 <!-- Recent Reservations -->
-                <div class="card">
+                <div class="card shadow-sm border-0">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="fas fa-history me-2"></i>Reservaciones Recientes</h5>
                     </div>
                     <div class="card-body">
                         {% if recent_reservations %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
                                         <th>Huésped</th>
@@ -147,11 +130,15 @@
                                         <td>{{ reservation.check_in_date.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ reservation.check_out_date.strftime('%d/%m/%Y') }}</td>
                                         <td>
-                                            <span class="status-badge status-{{ reservation.status }}">
+                                            <span class="badge 
+                                                {% if reservation.status == 'pendiente' %} bg-warning text-dark
+                                                {% elif reservation.status == 'confirmada' %} bg-success
+                                                {% elif reservation.status == 'cancelada' %} bg-danger
+                                                {% else %} bg-secondary {% endif %}">
                                                 {{ reservation.get_status_display() }}
                                             </span>
                                         </td>
-                                        <td>${{ "%.2f"|format(reservation.total_price) }}</td>
+                                        <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

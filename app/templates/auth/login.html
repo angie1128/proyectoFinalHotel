@@ -4,9 +4,10 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-lg border-0">
+    <div class="row align-items-center">
+        <!-- Columna Izquierda: Login -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="card shadow-lg border-0 login-card h-100">
                 <div class="card-header bg-primary text-white text-center py-4">
                     <h3 class="mb-0">
                         <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
@@ -30,8 +31,7 @@
                         
                         <div class="mb-4">
                             {{ form.password.label(class="form-label") }}
-                            <!-- Agregar funcionalidad de mostrar/ocultar contraseña -->
-                            <div class="password-toggle">
+                            <div class="password-toggle position-relative">
                                 {{ form.password(class="form-control form-control-lg", id="password") }}
                                 <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">
                                     <i class="fas fa-eye" id="password-icon"></i>
@@ -51,14 +51,29 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center py-3">
+                <div class="card-footer text-center py-3 bg-light">
                     <p class="mb-0">¿No tienes cuenta? 
                         <a href="{{ url_for('auth.register') }}" class="text-primary fw-bold">Regístrate aquí</a>
                     </p>
                 </div>
             </div>
+        </div>
 
-<!-- Agregar script para mostrar/ocultar contraseña -->
+      <!-- Columna Derecha: Imagen -->
+<div class="col-lg-6">
+    <div class="image-card shadow-lg h-100 d-flex align-items-center justify-content-center">
+        <img src="{{ url_for('static', filename='img/flores/Flor3.jpeg') }}" 
+             alt="Hotel Paradise" class="img-fluid rounded image-full">
+    </div>
+</div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script toggle -->
 <script>
 function togglePassword(fieldId) {
     const field = document.getElementById(fieldId);

@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Crear Habitación - Hotel Paradise{% endblock %}
-
+{% block title %}Crear Habitación - Pringamos Hotel Boutique{% endblock %}
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 col-lg-2 sidebar">
@@ -48,7 +47,8 @@
                                 <h5 class="mb-0"><i class="fas fa-bed me-2"></i>Información de la Habitación</h5>
                             </div>
                             <div class="card-body">
-                                <form method="POST">
+                                <!-- IMPORTANTE enctype -->
+                                <form method="POST" enctype="multipart/form-data">
                                     {{ form.hidden_tag() }}
                                     
                                     <div class="row">
@@ -108,10 +108,46 @@
                                     
                                     <div class="mb-3">
                                         {{ form.description.label(class="form-label") }}
-                                        {{ form.description(class="form-control", rows="4") }}
+                                        {{ form.description(class="form-control", rows="3") }}
                                         {% if form.description.errors %}
                                             <div class="text-danger small">
                                                 {% for error in form.description.errors %}
+                                                    <div>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.amenities.label(class="form-label") }}
+                                        {{ form.amenities(class="form-control", rows="3") }}
+                                        {% if form.amenities.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.amenities.errors %}
+                                                    <div>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.status.label(class="form-label") }}
+                                        {{ form.status(class="form-select") }}
+                                        {% if form.status.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.status.errors %}
+                                                    <div>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.image.label(class="form-label") }}
+                                        {{ form.image(class="form-control") }}
+                                        {% if form.image.errors %}
+                                            <div class="text-danger small">
+                                                {% for error in form.image.errors %}
                                                     <div>{{ error }}</div>
                                                 {% endfor %}
                                             </div>
@@ -129,6 +165,7 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>

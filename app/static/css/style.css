@@ -644,3 +644,88 @@ footer h5 {
 .section-spacing-lg {
   padding: 4rem 0;
 }
+
+/* Hover suave */
+.login-card, .image-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+}
+.login-card:hover, .image-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Botón del ojo */
+.password-toggle {
+    position: relative;
+}
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #666;
+}
+.password-toggle-btn:hover {
+    color: #000;
+}
+
+/* Ajustar la imagen a la altura de la card */
+.image-card {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.image-card img.image-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* recorta proporcionalmente */
+    transition: transform 0.4s ease;
+}
+
+.image-card:hover img.image-full {
+    transform: scale(1.05); /* zoom suave */
+}
+
+.image-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.image-fixed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.register-card {
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.register-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+}
+.password-toggle {
+    position: relative;
+}
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #666;
+}
+.password-toggle-btn:hover {
+    color: #000;
+}
+.alert:empty {
+    display: none;
+    margin: 0;
+    padding: 0;
+}

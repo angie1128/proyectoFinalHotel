@@ -1,10 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 import os
 
+# -------------------------------
+# Extensiones
+# -------------------------------
 db = SQLAlchemy()
 login_manager = LoginManager()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -12,14 +17,26 @@ def create_app():
     # -------------------------------
     # Configuración
     # -------------------------------
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///hotel.db')
+    app.config['SECRET_KEY'] = os.environ.get(
+        'SECRET_KEY',
+        'dev-secret-key-change-in-production'
+    )
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'DATABASE_URL',
+        'sqlite:///hotel.db'   # solo fallback si no hay env
+    )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
+    # Carpeta de subida de imágenes
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'img', 'hab')
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
     # -------------------------------
     # Inicializar extensiones
     # -------------------------------
     db.init_app(app)
+    migrate.init_app(app, db)
+    
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Por favor inicia sesión para acceder a esta página.'
@@ -50,35 +67,5 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(receptionist_bp, url_prefix="/receptionist")
     app.register_blueprint(guest_bp, url_prefix="/guest")
-    
-    # -------------------------------
-    # Crear tablas y datos de prueba
-    # -------------------------------
-    with app.app_context():
-        db.create_all()
-        
-        # Crear usuario admin si no existe
-        admin_user = User.query.filter_by(email='admin@hotel.com').first()
-        if not admin_user:
-            admin_user = User(
-                username='admin',
-                email='admin@hotel.com',
-                role='administrador'
-            )
-            admin_user.set_password('admin123')
-            db.session.add(admin_user)
-            
-            # Habitaciones de ejemplo
-            sample_rooms = [
-                Room(number='101', type='individual', price=80.00, status='disponible', description='Habitación individual con vista al jardín'),
-                Room(number='102', type='doble', price=120.00, status='disponible', description='Habitación doble con balcón'),
-                Room(number='201', type='suite', price=200.00, status='disponible', description='Suite presidencial con jacuzzi'),
-                Room(number='202', type='familiar', price=150.00, status='disponible', description='Habitación familiar para 4 personas'),
-            ]
-            
-            for room in sample_rooms:
-                db.session.add(room)
-            
-            db.session.commit()
     
     return app

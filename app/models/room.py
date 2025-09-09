@@ -8,6 +8,7 @@ class Room(db.Model):
     price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(20), default='disponible')  # disponible, ocupada, mantenimiento, limpieza
     description = db.Column(db.Text)
+    image = db.Column(db.String(255), nullable=True)  # solo guardamos "Hab1.png"
     amenities = db.Column(db.Text)  # JSON string of amenities
     max_occupancy = db.Column(db.Integer, default=2)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -35,6 +36,14 @@ class Room(db.Model):
             'limpieza': 'En Limpieza'
         }
         return statuses.get(self.status, self.status.title())
+    
+    def get_image_path(self):
+        """
+        Devuelve la ruta relativa al static para renderizar en templates.
+        """
+        if self.image:
+            return f"img/hab/{self.image}"
+        return "img/hab/default.jpg"
     
     def __repr__(self):
         return f'<Room {self.number}>'

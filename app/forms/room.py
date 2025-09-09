@@ -1,34 +1,28 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, FloatField, SelectField, IntegerField, SubmitField
-from wtforms.validators import DataRequired, NumberRange, Length
+from wtforms import StringField, IntegerField, FloatField, TextAreaField, SelectField, FileField, SubmitField
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError
 from app.models.room import Room
 
 class RoomForm(FlaskForm):
-    number = StringField('Número de Habitación', validators=[DataRequired(), Length(max=10)])
-    type = SelectField('Tipo', choices=[
-        ('individual', 'Individual'),
-        ('doble', 'Doble'),
-        ('suite', 'Suite'),
-        ('familiar', 'Familiar')
-    ], validators=[DataRequired()])
+    number = StringField('Número de Habitación', validators=[DataRequired(), Length(max=50)])
+    type = SelectField('Tipo', choices=[('individual', 'Individual'), ('doble', 'Doble'), ('suite', 'Suite'), ('familiar', 'Familiar')], validators=[DataRequired()])
+    max_occupancy = IntegerField('Capacidad Máxima', validators=[DataRequired(), NumberRange(min=1)])
     price = FloatField('Precio por Noche', validators=[DataRequired(), NumberRange(min=0)])
-    max_occupancy = IntegerField('Capacidad Máxima', validators=[DataRequired(), NumberRange(min=1, max=10)])
-    description = TextAreaField('Descripción')
-    amenities = TextAreaField('Comodidades')
-    status = SelectField('Estado', choices=[
-        ('disponible', 'Disponible'),
-        ('ocupada', 'Ocupada'),
-        ('mantenimiento', 'En Mantenimiento'),
-        ('limpieza', 'En Limpieza')
-    ], validators=[DataRequired()])
+    description = TextAreaField('Descripción', validators=[Length(max=500)])
+    amenities = TextAreaField('Comodidades', validators=[Length(max=500)])
+    status = SelectField('Estado', choices=[('disponible', 'Disponible'), ('ocupada', 'Ocupada'), ('mantenimiento', 'Mantenimiento'), ('limpieza', 'Limpieza')], validators=[DataRequired()])
+    image = FileField('Imagen')
     submit = SubmitField('Guardar')
-    
-    def __init__(self, original_room=None, *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
         super(RoomForm, self).__init__(*args, **kwargs)
-        self.original_room = original_room
-    
+        self.room = kwargs.get('obj')  # Obtener el objeto Room si existe (para edición)
+
     def validate_number(self, number):
-        if self.original_room is None or number.data != self.original_room.number:
-            room = Room.query.filter_by(number=number.data).first()
-            if room:
+        # Excluir el registro actual si estamos editando
+        if self.room and self.room.id:
+            if Room.query.filter_by(number=number.data).filter(Room.id != self.room.id).first():
+                raise ValidationError('Este número de habitación ya existe.')
+        else:
+            if Room.query.filter_by(number=number.data).first():
                 raise ValidationError('Este número de habitación ya existe.')

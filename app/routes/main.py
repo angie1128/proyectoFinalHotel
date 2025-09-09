@@ -5,25 +5,23 @@ from app.models.reservation import Reservation
 
 main_bp = Blueprint('main', __name__)
 
-@main_bp.route('/')
+# Página principal (Index) con habitaciones dinámicas
+@main_bp.route("/")
 def index():
-    # Get featured rooms for carousel
-    featured_rooms = Room.query.filter_by(status='disponible').limit(6).all()
-    return render_template('main/index.html', featured_rooms=featured_rooms)
+    rooms = Room.query.filter_by(status="disponible").all()
+    return render_template("main/index.html", rooms=rooms)
 
-@main_bp.route('/rooms')
-def rooms():
-    rooms = Room.query.filter_by(status='disponible').all()
-    return render_template('main/rooms.html', rooms=rooms)
-
+# Página "Sobre nosotros"
 @main_bp.route('/about')
 def about():
     return render_template('main/about.html')
 
+# Página "Contacto"
 @main_bp.route('/contact')
 def contact():
     return render_template('main/contact.html')
 
+# Dashboard según el rol del usuario
 @main_bp.route('/dashboard')
 @login_required
 def dashboard():
