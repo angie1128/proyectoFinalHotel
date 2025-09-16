@@ -1,16 +1,18 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, DateField, IntegerField, TextAreaField, SubmitField, HiddenField
+from wtforms import StringField, SelectField, DateField, IntegerField, TextAreaField, SubmitField, FloatField, HiddenField, RadioField
 from wtforms.validators import DataRequired, NumberRange, ValidationError
 from datetime import date, datetime
 from app.models.room import Room
 
 class ReservationForm(FlaskForm):
-    room_id = SelectField('Habitación', coerce=int, validators=[DataRequired()])
-    check_in_date = DateField('Fecha de Check-in', validators=[DataRequired()])
-    check_out_date = DateField('Fecha de Check-out', validators=[DataRequired()])
-    guests_count = IntegerField('Número de Huéspedes', validators=[DataRequired(), NumberRange(min=1)])
-    special_requests = TextAreaField('Solicitudes Especiales')
-    submit = SubmitField('Reservar')
+    guest_id = SelectField("Huésped", coerce=int, validators=[DataRequired()])
+    check_in_date = DateField("Check-in", validators=[DataRequired()])
+    check_out_date = DateField("Check-out", validators=[DataRequired()])
+    guests_count = IntegerField("Número de huéspedes", validators=[DataRequired(), NumberRange(min=1)])
+    room_id = RadioField("Habitación", coerce=int, validators=[DataRequired(message="Debes seleccionar una habitación")])
+    total_price = HiddenField()
+    special_requests = TextAreaField("Peticiones especiales")
+    submit = SubmitField("Confirmar Reserva")
     
     def __init__(self, *args, **kwargs):
         super(ReservationForm, self).__init__(*args, **kwargs)

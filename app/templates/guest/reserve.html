@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 text-primary fw-bold">Hacer Reservación</h1>
-                <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
+                <a href="{{ url_for('guest.reservations') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Volver
                 </a>
             </div>
@@ -31,48 +31,34 @@
                             <div class="col-md-6 mb-3">
                                 {{ form.check_in_date.label(class="form-label") }}
                                 {{ form.check_in_date(class="form-control", id="checkInDate") }}
-                                {% if form.check_in_date.errors %}
-                                    <div class="text-danger small">
-                                        {% for error in form.check_in_date.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
+                                {% for error in form.check_in_date.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
                             </div>
-                            
                             <div class="col-md-6 mb-3">
                                 {{ form.check_out_date.label(class="form-label") }}
                                 {{ form.check_out_date(class="form-control", id="checkOutDate") }}
-                                {% if form.check_out_date.errors %}
-                                    <div class="text-danger small">
-                                        {% for error in form.check_out_date.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
+                                {% for error in form.check_out_date.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
                             </div>
                         </div>
-                        
-                        <!-- Guest Count -->
+
+                        <!-- Guests and Nights -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.guests_count.label(class="form-label") }}
                                 {{ form.guests_count(class="form-control", id="guestsCount") }}
-                                {% if form.guests_count.errors %}
-                                    <div class="text-danger small">
-                                        {% for error in form.guests_count.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
+                                {% for error in form.guests_count.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
                             </div>
-                            
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Noches</label>
                                 <input type="text" class="form-control" id="nightsDisplay" readonly>
                             </div>
                         </div>
-                        
+
                         <!-- Room Selection -->
                         <div class="mb-4">
                             <label class="form-label">Seleccionar Habitación</label>
@@ -81,16 +67,23 @@
                                 <div class="col-md-6">
                                     <div class="card room-option" data-room-id="{{ room.id }}" data-price="{{ room.price }}">
                                         <div class="position-relative">
-                                            <img src="/placeholder.svg?height=200&width=300" 
-                                                 class="card-img-top" alt="Habitación {{ room.number }}">
+                                            {% if room.image %}
+                                                <img src="{{ url_for('static', filename='uploads/' + room.image) }}" 
+                                                     class="card-img-top" alt="Habitación {{ room.number }}">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename='placeholder.svg') }}" 
+                                                     class="card-img-top" alt="Habitación {{ room.number }}">
+                                            {% endif %}
                                             <div class="position-absolute top-0 end-0 m-2">
                                                 <span class="badge bg-success">Disponible</span>
                                             </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="room_id" 
-                                                       value="{{ room.id }}" id="room{{ room.id }}">
+                                                <input class="form-check-input" type="radio" 
+                                                       name="{{ form.room_id.name }}" 
+                                                       value="{{ room.id }}" 
+                                                       id="room{{ room.id }}">
                                                 <label class="form-check-label w-100" for="room{{ room.id }}">
                                                     <div class="d-flex justify-content-between align-items-start">
                                                         <div>
@@ -115,30 +108,19 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            {% if form.room_id.errors %}
-                                <div class="text-danger small mt-2">
-                                    {% for error in form.room_id.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                            {% for error in form.room_id.errors %}
+                                <div class="text-danger small mt-2">{{ error }}</div>
+                            {% endfor %}
                         </div>
-                        
+
                         <!-- Special Requests -->
                         <div class="mb-3">
                             {{ form.special_requests.label(class="form-label") }}
                             {{ form.special_requests(class="form-control", rows="3", placeholder="Solicitudes especiales (opcional)") }}
-                            {% if form.special_requests.errors %}
-                                <div class="text-danger small">
-                                    {% for error in form.special_requests.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         </div>
-                        
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary me-md-2">
+                            <a href="{{ url_for('guest.reservations') }}" class="btn btn-outline-secondary me-md-2">
                                 Cancelar
                             </a>
                             {{ form.submit(class="btn btn-primary", id="submitBtn", disabled=true) }}
@@ -147,7 +129,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Reservation Summary -->
         <div class="col-lg-4">
             <div class="card shadow sticky-top" style="top: 100px;">
@@ -155,57 +137,21 @@
                     <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Resumen de Reservación</h5>
                 </div>
                 <div class="card-body">
-                    <div id="reservationSummary">
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-calendar-alt fa-2x mb-3"></i>
-                            <p>Selecciona las fechas y habitación para ver el resumen</p>
-                        </div>
+                    <div id="reservationSummary" class="text-center text-muted py-4">
+                        <i class="fas fa-calendar-alt fa-2x mb-3"></i>
+                        <p>Selecciona las fechas y habitación para ver el resumen</p>
                     </div>
-                    
                     <div id="summaryDetails" style="display: none;">
-                        <div class="mb-3">
-                            <strong>Fechas:</strong>
-                            <div id="summaryDates" class="text-muted"></div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <strong>Habitación:</strong>
-                            <div id="summaryRoom" class="text-muted"></div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <strong>Huéspedes:</strong>
-                            <div id="summaryGuests" class="text-muted"></div>
-                        </div>
-                        
+                        <div class="mb-2"><strong>Fechas:</strong> <span id="summaryDates"></span></div>
+                        <div class="mb-2"><strong>Habitación:</strong> <span id="summaryRoom"></span></div>
+                        <div class="mb-2"><strong>Huéspedes:</strong> <span id="summaryGuests"></span></div>
                         <hr>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Precio por noche:</span>
-                            <span id="pricePerNight">$0.00</span>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Número de noches:</span>
-                            <span id="summaryNights">0</span>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span id="subtotal">$0.00</span>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Impuestos (10%):</span>
-                            <span id="taxes">$0.00</span>
-                        </div>
-                        
+                        <div class="d-flex justify-content-between mb-2"><span>Precio por noche:</span> <span id="pricePerNight">$0.00</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Número de noches:</span> <span id="summaryNights">0</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Subtotal:</span> <span id="subtotal">$0.00</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Impuestos (10%):</span> <span id="taxes">$0.00</span></div>
                         <hr>
-                        
-                        <div class="d-flex justify-content-between">
-                            <strong>Total:</strong>
-                            <strong class="text-primary" id="totalPrice">$0.00</strong>
-                        </div>
+                        <div class="d-flex justify-content-between"><strong>Total:</strong> <strong class="text-primary" id="totalPrice">$0.00</strong></div>
                     </div>
                 </div>
             </div>
@@ -219,29 +165,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkOutDate = document.getElementById('checkOutDate');
     const nightsDisplay = document.getElementById('nightsDisplay');
     const guestsSelect = document.getElementById('guestsCount');
-    const roomOptions = document.querySelectorAll('input[name="room_id"]');
+    const roomOptions = document.querySelectorAll('input[name="{{ form.room_id.name }}"]');
     const submitBtn = document.getElementById('submitBtn');
-    
+
     function updateSummary() {
         const checkIn = new Date(checkInDate.value);
         const checkOut = new Date(checkOutDate.value);
-        const selectedRoom = document.querySelector('input[name="room_id"]:checked');
-        
+        const selectedRoom = document.querySelector('input[name="{{ form.room_id.name }}"]:checked');
+
         if (checkInDate.value && checkOutDate.value && checkOut > checkIn) {
             const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
             nightsDisplay.value = nights + (nights === 1 ? ' noche' : ' noches');
-            
+
             if (selectedRoom) {
                 const roomCard = selectedRoom.closest('.room-option');
                 const roomPrice = parseFloat(roomCard.dataset.price);
                 const roomNumber = selectedRoom.closest('.card-body').querySelector('h6').textContent;
-                
+
                 const subtotal = roomPrice * nights;
                 const taxes = subtotal * 0.1;
                 const total = subtotal + taxes;
-                
-                document.getElementById('summaryDates').textContent = 
-                    checkIn.toLocaleDateString() + ' - ' + checkOut.toLocaleDateString();
+
+                document.getElementById('summaryDates').textContent = checkIn.toLocaleDateString() + ' - ' + checkOut.toLocaleDateString();
                 document.getElementById('summaryRoom').textContent = roomNumber;
                 document.getElementById('summaryGuests').textContent = guestsSelect.value + ' huéspedes';
                 document.getElementById('pricePerNight').textContent = '$' + roomPrice.toFixed(2);
@@ -249,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
                 document.getElementById('taxes').textContent = '$' + taxes.toFixed(2);
                 document.getElementById('totalPrice').textContent = '$' + total.toFixed(2);
-                
+
                 document.getElementById('reservationSummary').style.display = 'none';
                 document.getElementById('summaryDetails').style.display = 'block';
                 submitBtn.disabled = false;
@@ -265,18 +210,16 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
         }
     }
-    
+
     checkInDate.addEventListener('change', updateSummary);
     checkOutDate.addEventListener('change', updateSummary);
     guestsSelect.addEventListener('change', updateSummary);
     roomOptions.forEach(option => option.addEventListener('change', updateSummary));
-    
-    // Set minimum date to today
+
     const today = new Date().toISOString().split('T')[0];
     checkInDate.min = today;
     checkOutDate.min = today;
-    
-    // Update checkout minimum when checkin changes
+
     checkInDate.addEventListener('change', function() {
         const checkInValue = new Date(this.value);
         checkInValue.setDate(checkInValue.getDate() + 1);

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Reserva - Hotel Paradise{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <h2 class="text-center text-primary mb-4">Detalle de la Reserva</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-primary">Habitación {{ reservation.room.number }}</h5>
+            <p><strong>Tipo:</strong> {{ reservation.room.get_type_display() }}</p>
+            <p><strong>Nombre:</strong> {{ reservation.guest.get_full_name() }}</p>
+<p><strong>Email:</strong> {{ reservation.guest.email }}</p>
+<p><strong>Teléfono:</strong> {{ reservation.guest.phone }}</p>
+
+            <p><strong>Check-in:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}</p>
+            <p><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</p>
+            <p><strong>Estado:</strong> 
+                <span class="badge bg-info text-dark">{{ reservation.get_status_display() }}</span>
+            </p>
+            <p><strong>Solicitudes especiales:</strong> 
+                {{ reservation.special_requests or "Ninguna" }}
+            </p>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ url_for('receptionist.reservations') }}" class="btn btn-outline-secondary">
+                ⬅ Volver a Reservas
+            </a>
+            <div>
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkin') }}" 
+                   class="btn btn-success me-2">🏨 Check-in</a>
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkout') }}" 
+                   class="btn btn-warning me-2">📤 Check-out</a>
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}" 
+                   class="btn btn-danger">❌ Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

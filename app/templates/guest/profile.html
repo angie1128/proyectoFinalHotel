@@ -3,149 +3,102 @@
 {% block title %}Mi Perfil - Hotel Paradise{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 text-primary fw-bold">Mi Perfil</h1>
-                <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-                </a>
-            </div>
-        </div>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-primary fw-bold"><i class="fas fa-user me-2"></i>Mi Perfil</h1>
+        <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+        </a>
     </div>
-    
-    <div class="row">
-        <!-- Profile Information -->
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Información Personal</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Simplified profile display without forms since no form is passed from backend -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nombre</label>
-                            <div class="form-control-plaintext">{{ current_user.first_name }}</div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Apellido</label>
-                            <div class="form-control-plaintext">{{ current_user.last_name }}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <div class="form-control-plaintext">{{ current_user.email }}</div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Teléfono</label>
-                            <div class="form-control-plaintext">{{ current_user.phone or 'No especificado' }}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nombre de Usuario</label>
-                            <div class="form-control-plaintext">{{ current_user.username }}</div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Rol</label>
-                            <div class="form-control-plaintext">
-                                <span class="badge bg-info">{{ current_user.get_role_display() }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Profile Summary -->
+
+    <div class="row g-4">
+        <!-- Perfil Principal -->
         <div class="col-lg-4">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Resumen de Cuenta</h5>
-                </div>
+            <div class="card shadow-sm text-center">
                 <div class="card-body">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
-                        <h5>{{ current_user.get_full_name() }}</h5>
-                        <p class="text-muted">{{ current_user.email }}</p>
-                        <span class="badge bg-info">{{ current_user.get_role_display() }}</span>
-                    </div>
-                    
-                    <hr>
-                    
-                    <div class="row text-center">
-                        <div class="col-6">
-                            <div class="border-end">
-                                <h4 class="text-primary">{{ current_user.guest_reservations|length }}</h4>
-                                <small class="text-muted">Reservaciones</small>
-                            </div>
+                    <i class="fas fa-user-circle fa-6x text-primary mb-3"></i>
+                    <h4 class="fw-bold">{{ current_user.get_full_name() }}</h4>
+                    <p class="text-muted">{{ current_user.email }}</p>
+                    <span class="badge bg-info mb-3">{{ current_user.get_role_display() }}</span>
+
+                    <div class="row text-center mb-3">
+                        <div class="col-6 border-end">
+                            <h5 class="text-primary mb-0">{{ current_user.guest_reservations|length }}</h5>
+                            <small class="text-muted">Reservaciones</small>
                         </div>
                         <div class="col-6">
-                            <h4 class="text-success">
-                                {% set total_nights = 0 %}
-                                {% for reservation in current_user.guest_reservations %}
-                                    {% set nights = (reservation.check_out_date - reservation.check_in_date).days %}
-                                    {% set total_nights = total_nights + nights %}
-                                {% endfor %}
-                                {{ total_nights }}
-                            </h4>
+                            {% set total_nights = 0 %}
+                            {% for reservation in current_user.guest_reservations %}
+                                {% set nights = (reservation.check_out_date - reservation.check_in_date).days %}
+                                {% set total_nights = total_nights + nights %}
+                            {% endfor %}
+                            <h5 class="text-success mb-0">{{ total_nights }}</h5>
                             <small class="text-muted">Noches</small>
                         </div>
                     </div>
-                    
-                    <hr>
-                    
-                    <div class="mb-3">
-                        <small class="text-muted">Miembro desde</small>
-                        <div class="fw-bold">{{ current_user.created_at.strftime('%B %Y') if current_user.created_at else 'Fecha no disponible' }}</div>
-                    </div>
-                    
-                    {% if current_user.guest_reservations %}
-                        {% set last_stay = current_user.guest_reservations|selectattr('status', 'equalto', 'completada')|list|last %}
-                        {% if last_stay %}
-                        <div class="mb-3">
-                            <small class="text-muted">Última estadía</small>
-                            <div class="fw-bold">{{ last_stay.check_out_date.strftime('%d/%m/%Y') }}</div>
-                        </div>
-                        {% endif %}
-                    {% endif %}
-                    
+
                     <div class="d-grid gap-2">
-                        <a href="{{ url_for('guest.reservations') }}" class="btn btn-outline-primary">
-                            Ver Mis Reservaciones
-                        </a>
-                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">
-                            Nueva Reservación
-                        </a>
+                        <a href="{{ url_for('guest.reservations') }}" class="btn btn-outline-primary">Mis Reservaciones</a>
+                        <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">Nueva Reservación</a>
                     </div>
                 </div>
             </div>
-            
-            <!-- Quick Actions -->
-            <div class="card shadow mt-4">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+        </div>
+
+        <!-- Información Personal Editable -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="fas fa-id-card me-2"></i>Información Personal</h6>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('main.rooms') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-bed me-2"></i>Ver Habitaciones
-                        </a>
-                        <a href="{{ url_for('main.contact') }}" class="btn btn-outline-info">
-                            <i class="fas fa-phone me-2"></i>Contactar Hotel
-                        </a>
-                        <a href="{{ url_for('main.about') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-info-circle me-2"></i>Sobre Nosotros
-                        </a>
-                    </div>
+                    <form method="POST" action="{{ url_for('guest.update_profile') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nombre</label>
+                                <input type="text" class="form-control" value="{{ current_user.first_name }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Apellido</label>
+                                <input type="text" class="form-control" value="{{ current_user.last_name }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ current_user.email }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Teléfono</label>
+                                <input type="text" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Usuario</label>
+                                <input type="text" name="username" class="form-control" value="{{ current_user.username }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Rol</label>
+                                <input type="text" class="form-control" value="{{ current_user.get_role_display() }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Miembro desde</label>
+                                <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%B %Y') if current_user.created_at else 'No disponible' }}" disabled>
+                            </div>
+                            {% if current_user.guest_reservations %}
+                                {% set last_stay = current_user.guest_reservations|selectattr('status', 'equalto', 'completada')|list|last %}
+                                {% if last_stay %}
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Última estadía</label>
+                                        <input type="text" class="form-control" value="{{ last_stay.check_out_date.strftime('%d/%m/%Y') }}" disabled>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

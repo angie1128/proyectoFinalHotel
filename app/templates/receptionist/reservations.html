@@ -1,223 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Reservaciones - Hotel Paradise{% endblock %}
+{% block title %}Reservas - Hotel Paradise{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar">
-            <div class="py-4">
-                <h5 class="text-primary fw-bold mb-4">
-                    <i class="fas fa-user-tie me-2"></i>Recepcionista
-                </h5>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.rooms') }}">
-                        <i class="fas fa-bed me-2"></i>Habitaciones
-                    </a>
-                    <a class="nav-link active" href="{{ url_for('receptionist.reservations') }}">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.checkin') }}">
-                        <i class="fas fa-sign-in-alt me-2"></i>Check-in
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.checkout') }}">
-                        <i class="fas fa-sign-out-alt me-2"></i>Check-out
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.payments') }}">
-                        <i class="fas fa-credit-card me-2"></i>Pagos
-                    </a>
-                </nav>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="py-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold">Gestión de Reservaciones</h1>
-                    <div class="d-flex gap-2">
-                        <div class="btn-group">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-filter me-2"></i>Filtrar
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?status=all">Todas</a></li>
-                                <li><a class="dropdown-item" href="?status=pending">Pendientes</a></li>
-                                <li><a class="dropdown-item" href="?status=confirmed">Confirmadas</a></li>
-                                <li><a class="dropdown-item" href="?status=checked_in">Check-in</a></li>
-                                <li><a class="dropdown-item" href="?status=completed">Completadas</a></li>
-                            </ul>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Buscar..." 
-                               id="searchInput" style="width: 250px;">
-                    </div>
-                </div>
-                
-                <!-- Reservation Statistics -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
-                                <h4 class="text-primary">{{ total_reservations }}</h4>
-                                <small class="text-muted">Total</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                                <h4 class="text-warning">{{ pending_reservations }}</h4>
-                                <small class="text-muted">Pendientes</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                <h4 class="text-success">{{ confirmed_reservations }}</h4>
-                                <small class="text-muted">Confirmadas</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-bed fa-2x text-info mb-2"></i>
-                                <h4 class="text-info">{{ active_reservations }}</h4>
-                                <small class="text-muted">Activas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Reservations Table -->
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Lista de Reservaciones</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if reservations %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Huésped</th>
-                                        <th>Habitación</th>
-                                        <th>Fechas</th>
-                                        <th>Huéspedes</th>
-                                        <th>Estado</th>
-                                        <th>Total</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reservationsTable">
-                                    {% for reservation in reservations %}
-                                    <tr data-guest-name="{{ reservation.guest.get_full_name().lower() }}" 
-                                        data-reservation-id="{{ reservation.id }}"
-                                        data-room-number="{{ reservation.room.room_number }}">
-                                        <td>#{{ reservation.id }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <div class="fw-bold">{{ reservation.guest.get_full_name() }}</div>
-                                                    <small class="text-muted">{{ reservation.guest.email }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">{{ reservation.room.room_number }}</span>
-                                            <br><small class="text-muted">{{ reservation.room.room_type.title() }}</small>
-                                        </td>
-                                        <td>
-                                            <small>
-                                                <strong>In:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}<br>
-                                                <strong>Out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}
-                                            </small>
-                                        </td>
-                                        <td>{{ reservation.guests }}</td>
-                                        <td>
-                                            <span class="status-badge status-{{ reservation.status }}">
-                                                {{ reservation.get_status_display() }}
-                                            </span>
-                                        </td>
-                                        <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                {% if reservation.status == 'pending' %}
-                                                <a href="{{ url_for('receptionist.confirm_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-success btn-sm" title="Confirmar">
-                                                    <i class="fas fa-check"></i>
-                                                </a>
-                                                {% elif reservation.status == 'confirmed' %}
-                                                <a href="{{ url_for('receptionist.process_checkin', id=reservation.id) }}" 
-                                                   class="btn btn-primary btn-sm" title="Check-in">
-                                                    <i class="fas fa-sign-in-alt"></i>
-                                                </a>
-                                                {% elif reservation.status == 'checked_in' %}
-                                                <a href="{{ url_for('receptionist.process_checkout', id=reservation.id) }}" 
-                                                   class="btn btn-warning btn-sm" title="Check-out">
-                                                    <i class="fas fa-sign-out-alt"></i>
-                                                </a>
-                                                {% endif %}
-                                                <a href="{{ url_for('receptionist.view_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-info btn-sm" title="Ver">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                {% if reservation.status in ['pending', 'confirmed'] %}
-                                                <a href="{{ url_for('receptionist.cancel_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-danger btn-sm" title="Cancelar"
-                                                   data-confirm="¿Está seguro de cancelar esta reservación?">
-                                                    <i class="fas fa-times"></i>
-                                                </a>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No hay reservaciones</h5>
-                            <p class="text-muted">Las reservaciones aparecerán aquí cuando los huéspedes las realicen.</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+<div class="container mt-5 pt-4">
+    <h2 class="text-center text-primary mb-4">Gestión de Reservas</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-outline-secondary">
+            ⬅ Volver al Dashboard
+        </a>
+        <div>
+            <a href="{{ url_for('receptionist.new_reservation') }}" class="btn btn-success me-2">
+                ➕ Nueva Reserva
+            </a>
+            <a href="{{ url_for('receptionist.reservations_pdf') }}" class="btn btn-danger">
+                📄 Descargar PDF
+            </a>
         </div>
     </div>
-</div>
 
-<script>
-// Search functionality
-document.getElementById('searchInput').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#reservationsTable tr');
-    
-    rows.forEach(row => {
-        const guestName = row.dataset.guestName || '';
-        const reservationId = row.dataset.reservationId || '';
-        const roomNumber = row.dataset.roomNumber || '';
-        
-        if (guestName.includes(searchTerm) || 
-            reservationId.includes(searchTerm) || 
-            roomNumber.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-</script>
+    <div class="row">
+        {% for reservation in reservations %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="{{ url_for('static', filename=reservation.room.get_image_path()) }}" 
+                     class="card-img-top" 
+                     alt="Imagen de habitación {{ reservation.room.number }}"
+                     style="max-height: 220px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Habitación {{ reservation.room.number }}</h5>
+                    <p><strong>Tipo:</strong> {{ reservation.room.get_type_display() }}</p>
+                    <p><strong>Huésped:</strong> {{ reservation.guest.get_full_name() }}</p>
+<p><strong>Email:</strong> {{ reservation.guest.email }}</p>
+<p><strong>Teléfono:</strong> {{ reservation.guest.phone }}</p>
+
+                    <p><strong>Check-in:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Estado:</strong> 
+                        <span class="badge bg-info text-dark">{{ reservation.get_status_display() }}</span>
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{{ url_for('receptionist.reservation_detail', reservation_id=reservation.id) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                        🔍 Ver Detalles
+                    </a>
+                    <div>
+                        <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='confirmada') }}" 
+                           class="btn btn-sm btn-success me-1">
+                            ✅ Confirmar
+                        </a>
+                        <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}" 
+                           class="btn btn-sm btn-danger">
+                            ❌ Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No hay reservas registradas.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

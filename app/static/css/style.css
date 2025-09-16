@@ -32,6 +32,12 @@ body {
   padding-top: 70px; /* Ajusta según la altura de tu navbar */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+/* Ajustar altura del navbar para que no deje hueco */
+.navbar {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+  min-height: 50px; /* más compacto */
+}
 
 /* Improved Bootstrap overrides with better contrast */
 .bg-primary {

@@ -8,12 +8,12 @@ class Room(db.Model):
     price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(20), default='disponible')  # disponible, ocupada, mantenimiento, limpieza
     description = db.Column(db.Text)
-    image = db.Column(db.String(255), nullable=True)  # solo guardamos "Hab1.png"
+    image = db.Column(db.String(255), nullable=True)  # nombre del archivo de imagen
     amenities = db.Column(db.Text)  # JSON string of amenities
     max_occupancy = db.Column(db.Integer, default=2)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relationships
+    # Relaciones
     reservations = db.relationship('Reservation', backref='room', lazy=True)
     
     def is_available(self):
@@ -39,10 +39,15 @@ class Room(db.Model):
     
     def get_image_path(self):
         """
-        Devuelve la ruta relativa al static para renderizar en templates.
+        Devuelve la ruta correcta de la imagen según de dónde provenga.
         """
         if self.image:
+            # Si es una imagen subida por el admin, debe estar en /static/uploads/
+            if self.image.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                return f"uploads/{self.image}"
+            # Si es una imagen fija del proyecto (ej: Hab1.png), debe estar en /static/img/hab/
             return f"img/hab/{self.image}"
+        # Si no tiene imagen asignada
         return "img/hab/default.jpg"
     
     def __repr__(self):

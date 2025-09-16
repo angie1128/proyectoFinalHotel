@@ -16,17 +16,35 @@
             <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
                 <i class="fas fa-hotel me-2"></i>Pringamosa Hotel Boutique
             </a>
-            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Enlaces principales -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.rooms') }}">Habitaciones</a></li>
+
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_admin() %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.rooms') }}">Habitaciones</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Usuarios</a></li>
+
+                        {% elif current_user.is_receptionist() %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">Dashboard </a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.reservations') }}">Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.payments') }}">Pagos</a></li>
+
+                        {% elif current_user.is_guest() %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('guest.rooms') }}">Habitaciones</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('guest.reservations') }}">Mis Reservas</a></li>
+                        {% endif %}
+                    {% endif %}
+
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">Nosotros</a></li>
                 </ul>
+
+                <!-- Dropdown usuario -->
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
@@ -37,12 +55,16 @@
                                 {% if current_user.is_admin() %}
                                     <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
                                     <li><a class="dropdown-item" href="{{ url_for('admin.profile') }}">Mi Perfil</a></li>
+
+                                {% elif current_user.is_receptionist() %}
+                                    <li><a class="dropdown-item" href="{{ url_for('receptionist.dashboard') }}">Dashboard </a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('receptionist.profile') }}">Mi Perfil</a></li>
+
                                 {% elif current_user.is_guest() %}
                                     <li><a class="dropdown-item" href="{{ url_for('guest.profile') }}">Mi Perfil</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('guest.reservations') }}">Mis Reservaciones</a></li>
-                                {% else %}
-                                    <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('guest.reservations') }}">Mis Reservas</a></li>
                                 {% endif %}
+                                
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
                                     <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
@@ -76,7 +98,7 @@
     {% block hero %}{% endblock %}
 
     <!-- Main Content -->
-    <main class="container-fluid px-0" style="padding-top: 70px;">
+    <main class="container-fluid px-0 {% if not self.hero() %}mt-3{% endif %}">
         {% block content %}{% endblock %}
     </main>
 

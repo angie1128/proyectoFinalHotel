@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Reservaciones - Hotel Paradise{% endblock %}
 
 {% block content %}
@@ -30,71 +29,31 @@
                 </nav>
             </div>
         </div>
-        
+
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10">
             <div class="py-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h3 text-primary fw-bold">Gestión de Reservaciones</h1>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-filter me-2"></i>Filtrar
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="?status=all">Todas</a></li>
-                            <li><a class="dropdown-item" href="?status=pending">Pendientes</a></li>
-                            <li><a class="dropdown-item" href="?status=confirmed">Confirmadas</a></li>
-                            <li><a class="dropdown-item" href="?status=cancelled">Canceladas</a></li>
-                        </ul>
-                    </div>
                 </div>
-                
-                <!-- Statistics Cards -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
-                                <h4 class="text-primary">{{ total_reservations }}</h4>
-                                <small class="text-muted">Total</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                                <h4 class="text-warning">{{ pending_reservations }}</h4>
-                                <small class="text-muted">Pendientes</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                <h4 class="text-success">{{ confirmed_reservations }}</h4>
-                                <small class="text-muted">Confirmadas</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
-                                <h4 class="text-danger">{{ cancelled_reservations }}</h4>
-                                <small class="text-muted">Canceladas</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Reservations Table -->
+
+                <!-- Card de Reservaciones -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="fas fa-list me-2"></i>Lista de Reservaciones</h5>
                     </div>
                     <div class="card-body">
+                        <!-- Botón estilizado para descargar todas las reservas -->
+                        <div class="d-flex justify-content-end mb-3">
+                            <a href="{{ url_for('admin.download_all_reservations_pdf') }}" 
+                               class="btn btn-danger btn-sm" 
+                               data-bs-toggle="tooltip" 
+                               data-bs-placement="top" 
+                               title="Descargar todas las reservas en PDF">
+                                <i class="fas fa-file-pdf me-2"></i> Descargar Todas
+                            </a>
+                        </div>
+
                         {% if reservations %}
                         <div class="table-responsive">
                             <table class="table table-hover">
@@ -116,20 +75,16 @@
                                     <tr>
                                         <td>#{{ reservation.id }}</td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <div class="fw-bold">{{ reservation.guest.get_full_name() }}</div>
-                                                    <small class="text-muted">{{ reservation.guest.email }}</small>
-                                                </div>
-                                            </div>
+                                            <div class="fw-bold">{{ reservation.guest.get_full_name() }}</div>
+                                            <small class="text-muted">{{ reservation.guest.email }}</small>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ reservation.room.room_number }}</span>
-                                            <br><small class="text-muted">{{ reservation.room.room_type.title() }}</small>
+                                            <span class="badge bg-info">{{ reservation.room.number }}</span>
+                                            <br><small class="text-muted">{{ reservation.room.type }}</small>
                                         </td>
                                         <td>{{ reservation.check_in_date.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ reservation.check_out_date.strftime('%d/%m/%Y') }}</td>
-                                        <td>{{ reservation.guests }}</td>
+                                        <td>{{ reservation.guests_count }}</td>
                                         <td>
                                             <span class="status-badge status-{{ reservation.status }}">
                                                 {{ reservation.get_status_display() }}
@@ -138,23 +93,14 @@
                                         <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                {% if reservation.status == 'pending' %}
-                                                <a href="{{ url_for('admin.confirm_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-success btn-sm" title="Confirmar">
-                                                    <i class="fas fa-check"></i>
-                                                </a>
-                                                {% endif %}
-                                                <a href="{{ url_for('admin.view_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-info btn-sm" title="Ver">
+                                                <a href="{{ url_for('admin.reservation_detail', reservation_id=reservation.id) }}" 
+                                                   class="btn btn-info" title="Ver Detalles">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                {% if reservation.status != 'cancelled' %}
-                                                <a href="{{ url_for('admin.cancel_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-danger btn-sm" title="Cancelar"
-                                                   data-confirm="¿Está seguro de cancelar esta reservación?">
-                                                    <i class="fas fa-times"></i>
+                                                <a href="{{ url_for('admin.download_reservation_pdf', reservation_id=reservation.id) }}" 
+                                                   class="btn btn-success" title="Descargar PDF">
+                                                    <i class="fas fa-file-pdf"></i>
                                                 </a>
-                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
@@ -166,7 +112,6 @@
                         <div class="text-center py-5">
                             <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No hay reservaciones</h5>
-                            <p class="text-muted">Las reservaciones aparecerán aquí cuando los huéspedes las realicen.</p>
                         </div>
                         {% endif %}
                     </div>
@@ -175,4 +120,13 @@
         </div>
     </div>
 </div>
+
+<!-- Inicializar tooltips de Bootstrap -->
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+
 {% endblock %}

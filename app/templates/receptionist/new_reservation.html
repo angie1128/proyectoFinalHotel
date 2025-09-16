@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Reserva - Recepcionista{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Crear Nueva Reserva</h2>
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-lg-8">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <!-- Selección del huésped -->
+                <div class="mb-3">
+                    {{ form.guest_id.label(class="form-label") }}
+                    {{ form.guest_id(class="form-select") }}
+                </div>
+
+                <!-- Fechas -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.check_in_date.label(class="form-label") }}
+                        {{ form.check_in_date(class="form-control", type="date") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.check_out_date.label(class="form-label") }}
+                        {{ form.check_out_date(class="form-control", type="date") }}
+                    </div>
+                </div>
+
+                <!-- Número de huéspedes -->
+                <div class="mb-3">
+                    {{ form.guests_count.label(class="form-label") }}
+                    {{ form.guests_count(class="form-control", min="1") }}
+                </div>
+
+                <!-- Selección de Habitación con imágenes -->
+                <div class="mb-4">
+                    <label class="form-label">Seleccionar Habitación</label>
+                    <div class="row g-3">
+                        {% for room in available_rooms %}
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm position-relative">
+                                {% if room.image %}
+                                    <img src="{{ url_for('static', filename='uploads/' ~ room.image) }}"
+                                         class="card-img-top" alt="Habitación {{ room.number }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='placeholder.svg') }}"
+                                         class="card-img-top" alt="Habitación {{ room.number }}">
+                                {% endif %}
+
+                                {% if room.status == 'ocupada' %}
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Ocupada</span>
+                                {% else %}
+                                    <span class="badge bg-success position-absolute top-0 end-0 m-2">Disponible</span>
+                                {% endif %}
+
+                                <div class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="{{ form.room_id.name }}"
+                                               value="{{ room.id }}"
+                                               id="room{{ room.id }}"
+                                               {% if room.status != 'disponible' %}disabled{% endif %}>
+                                        <label class="form-check-label" for="room{{ room.id }}">
+                                            <h6 class="mb-1">Habitación {{ room.number }}</h6>
+                                            <p class="text-muted small mb-1">{{ room.type.title() }}</p>
+                                            <p class="small mb-0">
+                                                {{ room.description[:80] if room.description else 'Sin descripción' }}...
+                                            </p>
+                                            <div class="fw-bold text-primary mt-2">${{ "%.2f"|format(room.price) }}</div>
+                                            <small class="text-muted">por noche</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Peticiones especiales -->
+                <div class="mb-3">
+                    {{ form.special_requests.label(class="form-label") }}
+                    {{ form.special_requests(class="form-control", rows="3") }}
+                </div>
+
+                <!-- Botones -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Guardar Reserva</button>
+                    <a href="{{ url_for('receptionist.reservations') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Resumen -->
+        <div class="col-lg-4">
+            <div class="card shadow sticky-top" style="top: 100px;">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Resumen de Reservación</h5>
+                </div>
+                <div class="card-body">
+                    <div id="reservationSummary" class="text-center text-muted py-4">
+                        <i class="fas fa-calendar-alt fa-2x mb-3"></i>
+                        <p>Selecciona las fechas y habitación para ver el resumen</p>
+                    </div>
+                    <div id="summaryDetails" style="display: none;">
+                        <div class="mb-2"><strong>Fechas:</strong> <span id="summaryDates"></span></div>
+                        <div class="mb-2"><strong>Habitación:</strong> <span id="summaryRoom"></span></div>
+                        <div class="mb-2"><strong>Huésped:</strong> <span id="summaryGuest"></span></div>
+                        <div class="mb-2"><strong>Número de huéspedes:</strong> <span id="summaryGuestsCount"></span></div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2"><span>Precio por noche:</span> <span id="pricePerNight">$0.00</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Noches:</span> <span id="summaryNights">0</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Subtotal:</span> <span id="subtotal">$0.00</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Impuestos (10%):</span> <span id="taxes">$0.00</span></div>
+                        <hr>
+                        <div class="d-flex justify-content-between"><strong>Total:</strong> <strong class="text-primary" id="totalPrice">$0.00</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkInDate = document.getElementById("{{ form.check_in_date.id }}");
+    const checkOutDate = document.getElementById("{{ form.check_out_date.id }}");
+    const guestsCount = document.getElementById("{{ form.guests_count.id }}");
+    const roomRadios = document.querySelectorAll('input[name="{{ form.room_id.name }}"]');
+    const guestSelect = document.getElementById("{{ form.guest_id.id }}");
+
+    function updateSummary() {
+        const checkIn = new Date(checkInDate.value);
+        const checkOut = new Date(checkOutDate.value);
+        const selectedRoom = document.querySelector('input[name="{{ form.room_id.name }}"]:checked');
+        const guestName = guestSelect ? guestSelect.options[guestSelect.selectedIndex].text : "";
+        const numGuests = guestsCount.value;
+
+        if (checkInDate.value && checkOutDate.value && checkOut > checkIn && selectedRoom) {
+            const roomCard = selectedRoom.closest('.card');
+            const roomPrice = parseFloat(roomCard.querySelector('.text-primary').textContent.replace('$', ''));
+            const roomNumber = roomCard.querySelector('h6').textContent;
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+
+            const subtotal = roomPrice * nights;
+            const taxes = subtotal * 0.1;
+            const total = subtotal + taxes;
+
+            document.getElementById('summaryDates').textContent = checkIn.toLocaleDateString() + ' - ' + checkOut.toLocaleDateString();
+            document.getElementById('summaryRoom').textContent = roomNumber;
+            document.getElementById('summaryGuest').textContent = guestName;
+            document.getElementById('summaryGuestsCount').textContent = numGuests;
+            document.getElementById('pricePerNight').textContent = '$' + roomPrice.toFixed(2);
+            document.getElementById('summaryNights').textContent = nights;
+            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('taxes').textContent = '$' + taxes.toFixed(2);
+            document.getElementById('totalPrice').textContent = '$' + total.toFixed(2);
+
+            document.getElementById('reservationSummary').style.display = 'none';
+            document.getElementById('summaryDetails').style.display = 'block';
+        } else {
+            document.getElementById('reservationSummary').style.display = 'block';
+            document.getElementById('summaryDetails').style.display = 'none';
+        }
+    }
+
+    checkInDate.addEventListener('change', updateSummary);
+    checkOutDate.addEventListener('change', updateSummary);
+    guestsCount.addEventListener('input', updateSummary);
+    roomRadios.forEach(r => r.addEventListener('change', updateSummary));
+});
+</script>
+{% endblock %}

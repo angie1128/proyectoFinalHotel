@@ -17,15 +17,21 @@ class Reservation(db.Model):
     checked_out_at = db.Column(db.DateTime)
     confirmed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
+    payment_type = db.Column(db.String(50))      # NUEVO
+    payment_detail = db.Column(db.String(200)) 
     def get_status_display(self):
-        statuses = {
-            'pendiente': 'Pendiente',
-            'confirmada': 'Confirmada',
-            'cancelada': 'Cancelada',
-            'completada': 'Completada'
+        status_map = {
+        'pending': 'Pendiente',
+        'pendiente': 'Pendiente',
+        'confirmed': 'Confirmada',
+        'confirmada': 'Confirmada',
+        'cancelled': 'Cancelada',
+        'cancelada': 'Cancelada',
+        'completed': 'Completada',
+        'completada': 'Completada'
         }
-        return statuses.get(self.status, self.status.title())
-    
+        return status_map.get(self.status, self.status)
+
     def get_nights_count(self):
         return (self.check_out_date - self.check_in_date).days
     

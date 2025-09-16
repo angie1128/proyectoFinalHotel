@@ -1,236 +1,27 @@
 {% extends "base.html" %}
-
-{% block title %}Check-out - Hotel Paradise{% endblock %}
+{% block title %}Check-out - Recepcionista{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar">
-            <div class="py-4">
-                <h5 class="text-primary fw-bold mb-4">
-                    <i class="fas fa-user-tie me-2"></i>Recepcionista
-                </h5>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.rooms') }}">
-                        <i class="fas fa-bed me-2"></i>Habitaciones
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.reservations') }}">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.checkin') }}">
-                        <i class="fas fa-sign-in-alt me-2"></i>Check-in
-                    </a>
-                    <a class="nav-link active" href="{{ url_for('receptionist.checkout') }}">
-                        <i class="fas fa-sign-out-alt me-2"></i>Check-out
-                    </a>
-                    <a class="nav-link" href="{{ url_for('receptionist.payments') }}">
-                        <i class="fas fa-credit-card me-2"></i>Pagos
-                    </a>
-                </nav>
+<div class="container mt-4">
+    <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-secondary mb-3">Volver al Dashboard</a>
+
+    <h2 class="text-warning mb-4">Check-out de Huéspedes</h2>
+
+    {% if todays_checkouts %}
+    <div class="list-group">
+        {% for res in todays_checkouts %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ res.guest.get_full_name() }}</strong> - Habitación {{ res.room.number }}
+            </div>
+            <div>
+                <a href="{{ url_for('receptionist.checkout', reservation_id=res.id) }}" class="btn btn-warning btn-sm">Realizar Check-out</a>
             </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="py-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold">Gestión de Check-out</h1>
-                    <div class="d-flex gap-2">
-                        <input type="text" class="form-control" placeholder="Buscar por habitación o huésped..." 
-                               id="searchInput" style="width: 300px;">
-                        <button class="btn btn-outline-primary" onclick="searchCheckouts()">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Check-out Statistics -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-day fa-2x text-warning mb-2"></i>
-                                <h4 class="text-warning">{{ todays_checkouts }}</h4>
-                                <small class="text-muted">Check-outs Hoy</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-clock fa-2x text-danger mb-2"></i>
-                                <h4 class="text-danger">{{ pending_checkouts }}</h4>
-                                <small class="text-muted">Pendientes</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                <h4 class="text-success">{{ completed_checkouts }}</h4>
-                                <small class="text-muted">Completados</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Pending Check-outs -->
-                <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Huéspedes para Check-out</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if pending_checkouts_list %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Habitación</th>
-                                        <th>Huésped</th>
-                                        <th>Check-in</th>
-                                        <th>Check-out Programado</th>
-                                        <th>Noches</th>
-                                        <th>Total</th>
-                                        <th>Estado Pago</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="checkoutTable">
-                                    {% for reservation in pending_checkouts_list %}
-                                    <tr data-guest-name="{{ reservation.guest.get_full_name().lower() }}" 
-                                        data-room-number="{{ reservation.room.room_number }}">
-                                        <td>
-                                            <span class="badge bg-info fs-6">{{ reservation.room.room_number }}</span>
-                                            <br><small class="text-muted">{{ reservation.room.room_type.title() }}</small>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <div class="fw-bold">{{ reservation.guest.get_full_name() }}</div>
-                                                    <small class="text-muted">{{ reservation.guest.email }}</small>
-                                                    <br><small class="text-muted">{{ reservation.guests }} huéspedes</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ reservation.check_in_date.strftime('%d/%m/%Y') }}</td>
-                                        <td>
-                                            {{ reservation.check_out_date.strftime('%d/%m/%Y') }}
-                                            {% if reservation.check_out_date.date() == today %}
-                                            <br><span class="badge bg-warning">Hoy</span>
-                                            {% elif reservation.check_out_date.date() < today %}
-                                            <br><span class="badge bg-danger">Atrasado</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ reservation.nights }}</td>
-                                        <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
-                                        <td>
-                                            {% if reservation.payment_status == 'paid' %}
-                                            <span class="badge bg-success">Pagado</span>
-                                            {% elif reservation.payment_status == 'partial' %}
-                                            <span class="badge bg-warning">Parcial</span>
-                                            {% else %}
-                                            <span class="badge bg-danger">Pendiente</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                {% if reservation.payment_status != 'paid' %}
-                                                <a href="{{ url_for('receptionist.process_payment', id=reservation.id) }}" 
-                                                   class="btn btn-info btn-sm" title="Procesar Pago">
-                                                    <i class="fas fa-credit-card"></i>
-                                                </a>
-                                                {% endif %}
-                                                <a href="{{ url_for('receptionist.process_checkout', id=reservation.id) }}" 
-                                                   class="btn btn-warning btn-sm" title="Procesar Check-out">
-                                                    <i class="fas fa-sign-out-alt"></i> Check-out
-                                                </a>
-                                                <a href="{{ url_for('receptionist.view_reservation', id=reservation.id) }}" 
-                                                   class="btn btn-secondary btn-sm" title="Ver Detalles">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No hay check-outs pendientes</h5>
-                            <p class="text-muted">Todos los huéspedes han completado su check-out.</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <!-- Recent Check-outs -->
-                {% if recent_checkouts %}
-                <div class="card mt-4">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Check-outs Recientes</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Hora</th>
-                                        <th>Habitación</th>
-                                        <th>Huésped</th>
-                                        <th>Total</th>
-                                        <th>Procesado por</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for checkout in recent_checkouts %}
-                                    <tr>
-                                        <td>{{ checkout.checkout_time.strftime('%H:%M') if checkout.checkout_time else '-' }}</td>
-                                        <td>{{ checkout.room.room_number }}</td>
-                                        <td>{{ checkout.guest.get_full_name() }}</td>
-                                        <td>${{ "%.2f"|format(checkout.total_price) }}</td>
-                                        <td>{{ checkout.checked_out_by.get_full_name() if checkout.checked_out_by else '-' }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
+        {% endfor %}
     </div>
+    {% else %}
+        <p class="text-muted">No hay check-outs programados para hoy.</p>
+    {% endif %}
 </div>
-
-<script>
-function searchCheckouts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#checkoutTable tr');
-    
-    rows.forEach(row => {
-        const guestName = row.dataset.guestName;
-        const roomNumber = row.dataset.roomNumber;
-        
-        if (guestName.includes(searchTerm) || roomNumber.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
-// Search on Enter key
-document.getElementById('searchInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        searchCheckouts();
-    }
-});
-</script>
 {% endblock %}

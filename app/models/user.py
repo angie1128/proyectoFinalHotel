@@ -15,10 +15,21 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
     
-    # Relationships
-    reservations = db.relationship('Reservation', foreign_keys='Reservation.guest_id', backref='guest', lazy=True)
-    confirmed_reservations = db.relationship('Reservation', foreign_keys='Reservation.confirmed_by_id', backref='confirmed_by_staff', lazy=True)
-    
+    # Relaciones claras (sin duplicados)
+    reservations = db.relationship(
+        'Reservation',
+        foreign_keys='Reservation.guest_id',
+        backref='guest',
+        lazy=True
+    )
+
+    confirmed_reservations = db.relationship(
+        'Reservation',
+        foreign_keys='Reservation.confirmed_by_id',
+        backref='confirmed_by_staff',
+        lazy=True
+    )
+      
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     

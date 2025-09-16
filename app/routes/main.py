@@ -31,3 +31,8 @@ def dashboard():
         return redirect(url_for('receptionist.dashboard'))
     else:
         return redirect(url_for('guest.dashboard'))
+@main_bp.route("/rooms")
+def rooms():
+    from app.models.room import Room
+    rooms = Room.query.all()
+    return render_template("rooms.html", rooms=rooms)
