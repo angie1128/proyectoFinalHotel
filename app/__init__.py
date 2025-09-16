@@ -2,49 +2,35 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from config import Config
 import os
 
-# -------------------------------
-# Extensiones
-# -------------------------------
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 
-def create_app():
+def create_app(config_class=None):
     app = Flask(__name__)
     
-    # -------------------------------
-    # Configuración
-    # -------------------------------
-    app.config['SECRET_KEY'] = os.environ.get(
-        'SECRET_KEY',
-        'dev-secret-key-change-in-production'
-    )
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-        'DATABASE_URL',
-        'sqlite:///hotel.db'   # solo fallback si no hay env
-    )
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    
+    # Cargar configuración desde Config
+    if config_class is None:
+        from config import DevelopmentConfig
+        config_class = DevelopmentConfig
+    app.config.from_object(config_class)
+
     # Carpeta de subida de imágenes
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'img', 'hab')
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-    # -------------------------------
     # Inicializar extensiones
-    # -------------------------------
     db.init_app(app)
     migrate.init_app(app, db)
-    
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Por favor inicia sesión para acceder a esta página.'
     login_manager.login_message_category = 'info'
-    
-    # -------------------------------
+
     # Modelos
-    # -------------------------------
     from app.models.user import User
     from app.models.room import Room
     from app.models.reservation import Reservation
@@ -52,10 +38,8 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-    
-    # -------------------------------
+
     # Blueprints
-    # -------------------------------
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
     from app.routes.admin import admin_bp

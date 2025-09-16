@@ -22,7 +22,6 @@ def seed():
             admin_user.set_password('admin123')
             db.session.add(admin_user)
             click.echo("✅ Usuario admin creado")
-
         else:
             click.echo("ℹ️ Usuario admin ya existe")
 
