@@ -3,7 +3,7 @@
 {% block title %}Habitaciones - Hotel Paradise{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-0">{{ room.room_type }}
+<div class="container-fluid p-0">
 
     <div class="row">
         <!-- Sidebar -->
@@ -37,7 +37,7 @@
             <div class="py-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h3 text-primary fw-bold">Gestión de Habitaciones</h1>
-                    <a href="{{ url_for('admin.add_room') }}" class="btn btn-primary">
+                    <a href="{{ url_for('admin.create_room') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Agregar Habitación
                     </a>
                 </div>
@@ -89,7 +89,7 @@
                         <div class="card h-100">
                             <div class="position-relative">
                                 <img src="{{ url_for('static', filename='img/hab/' + (room.image or 'placeholder.svg?height=200&width=300')) }}" 
-     class="card-img-top" alt="Habitación {{ room.number }}">
+                                     class="card-img-top" alt="Habitación {{ room.number }}">
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <span class="status-badge status-{{ room.status }}">
                                         {{ room.get_status_display() }}

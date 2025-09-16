@@ -35,7 +35,11 @@ def admin_required(f):
 # -------------------------
 def create_pdf(title, headers, data_rows):
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18
+    )
     elements = []
     styles = getSampleStyleSheet()
 
@@ -60,7 +64,6 @@ def create_pdf(title, headers, data_rows):
     doc.build(elements)
     buffer.seek(0)
     return buffer
-
 # -------------------------
 # Dashboard
 # -------------------------
@@ -243,9 +246,8 @@ def download_reservation_pdf(reservation_id):
         ["Total", f"${reservation.total_price:.2f}"]
     ]
 
-    buffer = create_pdf(f"Reservación #{reservation.id}", headers, data_rows)
-    return send_file(buffer, as_attachment=True, download_name=f"Reservacion_{reservation.id}.pdf", mimetype='application/pdf')
-
+    buffer = create_pdf("Detalle de Reservación", headers, data_rows)
+    return send_file(buffer, as_attachment=True, download_name="Reservacion.pdf", mimetype='application/pdf')
 # -------------------------
 # Descarga PDF de todas las reservas
 # -------------------------
@@ -258,11 +260,10 @@ def download_all_reservations_pdf():
         flash("No hay reservas registradas para generar el PDF.", "warning")
         return redirect(url_for('admin.reservations'))
 
-    headers = ["ID", "Huésped", "Email", "Habitación", "Check-in", "Check-out", "Estado"]
+    headers = ["Huésped", "Email", "Habitación", "Check-in", "Check-out", "Estado"]
     data_rows = []
     for res in reservations:
         data_rows.append([
-            str(res.id),
             res.guest.get_full_name() if res.guest else "-",
             res.guest.email if res.guest else "-",
             f"{res.room.number} ({res.room.type})" if res.room else "-",
@@ -300,11 +301,10 @@ def download_all_users_pdf():
         flash("No hay usuarios registrados para generar el PDF.", "warning")
         return redirect(url_for('admin.users'))
 
-    headers = ["ID", "Nombre", "Email", "Teléfono", "Rol"]
+    headers = ["Nombre", "Email", "Teléfono", "Rol"]
     data_rows = []
     for user in users:
         data_rows.append([
-            str(user.id),
             user.get_full_name(),
             user.email,
             user.phone or "-",
@@ -442,11 +442,10 @@ def download_all_staff_pdf():
         flash("No hay personal registrado para generar el PDF.", "warning")
         return redirect(url_for('admin.staff'))
 
-    headers = ["ID", "Nombre", "Email", "Teléfono", "Usuario"]
+    headers = ["Nombre", "Email", "Teléfono", "Usuario"]
     data_rows = []
     for staff in staff_members:
         data_rows.append([
-            str(staff.id),
             staff.get_full_name(),
             staff.email,
             staff.phone or "-",
