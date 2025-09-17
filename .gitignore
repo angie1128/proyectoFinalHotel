@@ -11,11 +11,12 @@ __pycache__/
 # Entornos virtuales
 # ============================
 venv/
-.env/
+.env
 .venv/
 env/
 ENV/
 *.env
+.flaskenv
 
 # ============================
 # Archivos de Flask
@@ -49,6 +50,3 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
-
-
-
