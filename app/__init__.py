@@ -2,21 +2,20 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from config import Config
 import os
+
+from config import settings   # 👈 importa tu Settings
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 
-def create_app(config_class=None):
+def create_app():
     app = Flask(__name__)
-    
-    # Cargar configuración desde Config
-    if config_class is None:
-        from config import DevelopmentConfig
-        config_class = DevelopmentConfig
-    app.config.from_object(config_class)
+
+    # Configurar Flask con Settings
+    app.config['SQLALCHEMY_DATABASE_URI'] = settings.constructed_database_url
+    app.config['SECRET_KEY'] = settings.SECRET_KEY
 
     # Carpeta de subida de imágenes
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'img', 'hab')
@@ -30,7 +29,7 @@ def create_app(config_class=None):
     login_manager.login_message = 'Por favor inicia sesión para acceder a esta página.'
     login_manager.login_message_category = 'info'
 
-    # Modelos
+    # Importar modelos para que Alembic los detecte
     from app.models.user import User
     from app.models.room import Room
     from app.models.reservation import Reservation
