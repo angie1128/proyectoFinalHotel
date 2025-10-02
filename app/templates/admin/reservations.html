@@ -82,13 +82,9 @@
                                         <td class="fw-bold">COP{{ "%.2f"|format(reservation.total_price) }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="{{ url_for('admin.reservation_detail', reservation_id=reservation.id) }}" 
-                                                   class="btn btn-info" title="Ver Detalles">
+                                                <a href="{{ url_for('admin.reservation_detail', reservation_id=reservation.id) }}"
+                                                   class="btn btn-view-details" title="Ver Detalles">
                                                     <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ url_for('admin.download_reservation_pdf', reservation_id=reservation.id) }}" 
-                                                   class="btn btn-success" title="Descargar PDF">
-                                                    <i class="fas fa-file-pdf"></i>
                                                 </a>
                                             </div>
                                         </td>

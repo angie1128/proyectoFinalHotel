@@ -324,6 +324,38 @@ def download_all_reservations_pdf():
     return send_file(buffer, as_attachment=True, download_name="Todas_Las_Reservas.pdf", mimetype='application/pdf')
 
 # -------------------------
+# Descarga Excel de todas las reservas
+# -------------------------
+@admin_bp.route('/reservations/download_excel')
+@login_required
+@admin_required
+def download_all_reservations_excel():
+    reservations = Reservation.query.order_by(Reservation.created_at.desc()).all()
+    if not reservations:
+        flash("No hay reservas registradas para generar el Excel.", "warning")
+        return redirect(url_for('admin.reservations'))
+
+    headers = ["Huésped", "Email", "Habitación", "Check-in", "Check-out", "Estado", "Total"]
+    data_rows = []
+    for res in reservations:
+        data_rows.append([
+            res.guest.get_full_name() if res.guest else "-",
+            res.guest.email if res.guest else "-",
+            f"{res.room.number} ({res.room.type})" if res.room else "-",
+            res.check_in_date.strftime("%d/%m/%Y"),
+            res.check_out_date.strftime("%d/%m/%Y"),
+            res.get_status_display(),
+            f"${res.total_price:.2f}"
+        ])
+
+    wb = create_excel("Lista de Todas las Reservas", headers, data_rows)
+    from io import BytesIO
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="Todas_Las_Reservas.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+# -------------------------
 # Users
 # -------------------------
 @admin_bp.route('/users')

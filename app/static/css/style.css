@@ -1174,3 +1174,27 @@ a:hover {
 .navbar .dropdown-toggle i {
   color: white !important;
 }
+
+/* Custom view details button styling */
+.btn-view-details {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-view-details:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  color: white;
+}
+
+.btn-view-details:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(230, 168, 176, 0.25);
+}
