@@ -7,10 +7,12 @@
 
     <div class="row">
         <!-- Sidebar -->
-        {% include 'admin/sidebar.html' %}
+        <div class="col-lg-2 sidebar border-end d-none d-lg-block">
+            {% include 'admin/sidebar.html' %}
+        </div>
 
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10 bg-white">
+        <div class="col-lg-10 col-12 bg-white">
             <div class="py-4">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -20,53 +22,9 @@
                                 <i class="fas fa-plus me-2"></i>Agregar Habitación
                             </a>
                         </div>
-                        <div class="d-flex justify-content-end mt-2">
-                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">
-                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-                            </a>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Room Statistics -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
-                                <h4 class="text-primary">{{ total_rooms }}</h4>
-                                <small class="text-muted">Total</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                <h4 class="text-success">{{ available_rooms }}</h4>
-                                <small class="text-muted">Disponibles</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-door-closed fa-2x text-danger mb-2"></i>
-                                <h4 class="text-danger">{{ occupied_rooms }}</h4>
-                                <small class="text-muted">Ocupadas</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <i class="fas fa-tools fa-2x text-warning mb-2"></i>
-                                <h4 class="text-warning">{{ maintenance_rooms }}</h4>
-                                <small class="text-muted">Mantenimiento</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Rooms Grid -->
                 <div class="row g-4">
@@ -90,7 +48,7 @@
                                 <p class="card-text flex-grow-1">{{ room.description[:100] }}...</p>
                                 <div class="mt-auto">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="h6 mb-0 text-primary">${{ "%.2f"|format(room.price) }}/noche</span>
+                                        <span class="h6 mb-0 text-primary">COP{{ "%.2f"|format(room.price) }}/noche</span>
                                         <small class="text-muted">{{ room.max_occupancy }} personas</small>
                                     </div>
                                     <div class="d-flex gap-2">
@@ -135,10 +93,9 @@
     </div>
 </div>
 
-<script>
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('show');
-}
-</script>
+<!-- Mobile Sidebar -->
+<div class="sidebar d-lg-none position-fixed start-0 top-0 vh-100 bg-white shadow border-end" style="z-index: 1040; width: 250px;">
+    {% include 'admin/sidebar.html' %}
+</div>
+
 {% endblock %}

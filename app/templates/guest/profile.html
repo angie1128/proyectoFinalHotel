@@ -10,14 +10,7 @@
 
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10 bg-white main-content">
-            <div class="container py-5">
-                <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold"><i class="fas fa-user me-2"></i>Mi Perfil</h1>
-                    <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-                    </a>
-                </div>
+            <div class="container py-3">
 
     <div class="row g-4">
         <!-- Perfil Principal -->
@@ -31,12 +24,12 @@
 
                     <div class="row text-center mb-3">
                         <div class="col-6 border-end">
-                            <h5 class="text-primary mb-0">{{ current_user.guest_reservations|length }}</h5>
+                            <h5 class="text-primary mb-0">{{ current_user.reservations|length }}</h5>
                             <small class="text-muted">Reservaciones</small>
                         </div>
                         <div class="col-6">
                             {% set total_nights = 0 %}
-                            {% for reservation in current_user.guest_reservations %}
+                            {% for reservation in current_user.reservations %}
                                 {% set nights = (reservation.check_out_date - reservation.check_in_date).days %}
                                 {% set total_nights = total_nights + nights %}
                             {% endfor %}
@@ -60,7 +53,7 @@
                     <h6 class="mb-0"><i class="fas fa-id-card me-2"></i>Información Personal</h6>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('guest.update_profile') }}">
+                    <form method="POST" action="{{ url_for('guest.update_profile') }}" enctype="multipart/form-data">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Nombre <small class="text-muted">(No editable)</small></label>
@@ -90,8 +83,8 @@
                                 <label class="form-label fw-bold">Miembro desde <small class="text-muted">(No editable)</small></label>
                                 <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%B %Y') if current_user.created_at else 'No disponible' }}" disabled>
                             </div>
-                            {% if current_user.guest_reservations %}
-                                {% set last_stay = current_user.guest_reservations|selectattr('status', 'equalto', 'completada')|list|last %}
+                            {% if current_user.reservations %}
+                                {% set last_stay = current_user.reservations|selectattr('status', 'equalto', 'completada')|list|last %}
                                 {% if last_stay %}
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Última estadía <small class="text-muted">(No editable)</small></label>
@@ -99,11 +92,18 @@
                                     </div>
                                 {% endif %}
                             {% endif %}
+                            <div class="col-md-12 mt-3">
+                                <label class="form-label fw-bold">Foto de Perfil</label>
+                                <input type="file" name="profile_picture" class="form-control" accept="image/*">
+                            </div>
                         </div>
-                        <div class="mt-4 text-end">
+                        <div class="mt-4 d-flex justify-content-between">
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-save me-2"></i>Guardar Cambios
                             </button>
+                            <a href="{{ url_for('guest.dashboard') }}" class="btn" style="background-color: #fce4ec; border-color: #fce4ec; color: #333;">
+                                <i class="fas fa-arrow-left me-2"></i>volver
+                            </a>
                         </div>
                     </form>
                 </div>

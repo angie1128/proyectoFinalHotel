@@ -3,10 +3,23 @@
 {% block title %}Detalle de Reserva - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
-    <h2 class="text-center text-primary mb-4">Detalle de la Reserva</h2>
+<div class="container-fluid p-0">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-2 sidebar receptionist-sidebar border-end d-none d-lg-block">
+            {% include 'receptionist/sidebar.html' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-10 col-12 bg-white main-content">
+            <div class="py-4 px-4">
+                <h2 class="text-primary mb-4">Detalle de la Reserva</h2>
 
     <div class="card shadow-sm">
+        <img src="{{ url_for('static', filename=reservation.room.get_image_path()) }}"
+             class="card-img-top"
+             alt="Imagen de habitación {{ reservation.room.number }}"
+             style="max-height: 300px; object-fit: cover;">
         <div class="card-body">
             <h5 class="card-title text-primary">Habitación {{ reservation.room.number }}</h5>
             <p><strong>Tipo:</strong> {{ reservation.room.get_type_display() }}</p>
@@ -23,19 +36,25 @@
                 {{ reservation.special_requests or "Ninguna" }}
             </p>
         </div>
-        <div class="card-footer d-flex justify-content-between">
+        <div class="card-footer d-flex flex-column flex-sm-row justify-content-between gap-2">
             <a href="{{ url_for('receptionist.reservations') }}" class="btn btn-outline-secondary">
-                ⬅ Volver a Reservas
+                Volver a Reservas
             </a>
-            <div>
-                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkin') }}" 
-                   class="btn btn-success me-2">🏨 Check-in</a>
-                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkout') }}" 
-                   class="btn btn-warning me-2">📤 Check-out</a>
-                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}" 
-                   class="btn btn-danger">❌ Cancelar</a>
+            <div class="d-flex flex-wrap gap-1">
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkin') }}"
+                   class="btn" style="background-color: #fce4ec; border-color: #e91e63; color: #333;">Check-in</a>
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='checkout') }}"
+                   class="btn" style="background-color: #fce4ec; border-color: #e91e63; color: #333;">Check-out</a>
+                <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}"
+                   class="btn btn-outline-danger">Cancelar</a>
+            </div>
             </div>
         </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div class="sidebar receptionist-sidebar d-lg-none position-fixed start-0 top-0 vh-100 bg-white shadow border-end" style="z-index: 1040; width: 250px;">
+        {% include 'receptionist/sidebar.html' %}
     </div>
 </div>
 {% endblock %}

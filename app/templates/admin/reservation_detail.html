@@ -25,7 +25,7 @@
                     <div class="mb-2"><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</div>
                     <div class="mb-2"><strong>Huéspedes:</strong> {{ reservation.guests_count }}</div>
                     <div class="mb-2"><strong>Estado:</strong> <span class="badge bg-primary">{{ reservation.get_status_display() }}</span></div>
-                    <div class="mb-2"><strong>Total:</strong> <span class="fw-bold text-primary">${{ "%.2f"|format(reservation.total_price) }}</span></div>
+                    <div class="mb-2"><strong>Total:</strong> <span class="fw-bold text-primary">COP{{ "%.2f"|format(reservation.total_price) }}</span></div>
                 </div>
             </div>
 

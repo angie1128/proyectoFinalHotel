@@ -120,7 +120,7 @@
                         <div class="card-body">
                             {% if user.role == 'huesped' %}
                             <div class="text-center mb-3">
-                                <h3 class="text-primary">{{ user.guest_reservations|length }}</h3>
+                                <h3 class="text-primary">{{ user.reservations|length }}</h3>
                                 <p class="text-muted">Reservaciones Totales</p>
                             </div>
                             {% elif user.role == 'recepcionista' %}

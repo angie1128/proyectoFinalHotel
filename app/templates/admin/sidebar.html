@@ -1,29 +1,26 @@
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 sidebar border-end">
-    <div class="py-4 px-3">
-        <nav class="nav flex-column">
-            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
-                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-            </a>
-            <a class="nav-link {% if request.endpoint == 'admin.rooms' %}active{% endif %}" href="{{ url_for('admin.rooms') }}">
-                <i class="fas fa-bed me-2"></i>Habitaciones
-            </a>
-            <a class="nav-link {% if request.endpoint == 'admin.reservations' %}active{% endif %}" href="{{ url_for('admin.reservations') }}">
-                <i class="fas fa-calendar-check me-2"></i>Reservaciones
-            </a>
-            <a class="nav-link {% if request.endpoint == 'admin.staff' %}active{% endif %}" href="{{ url_for('admin.staff') }}">
-                <i class="fas fa-user-tie me-2"></i>Personal
-            </a>
-            <a class="nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}" href="{{ url_for('admin.users') }}">
-                <i class="fas fa-users me-2"></i>Usuarios
-            </a>
-            <a class="nav-link {% if request.endpoint == 'admin.profile' %}active{% endif %}" href="{{ url_for('admin.profile') }}">
-                <i class="fas fa-user me-2"></i>Mi Perfil
-            </a>
-            <hr class="my-3">
-            <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
-                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-            </a>
-        </nav>
-    </div>
+<div class="py-4 px-3">
+    <nav class="nav flex-column">
+        <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+            <i class="fas fa-tachometer-alt me-2"></i>Inicio
+        </a>
+        <a class="nav-link {% if request.endpoint == 'admin.rooms' %}active{% endif %}" href="{{ url_for('admin.rooms') }}">
+            <i class="fas fa-bed me-2"></i>Habitaciones
+        </a>
+        <a class="nav-link {% if request.endpoint == 'admin.reservations' %}active{% endif %}" href="{{ url_for('admin.reservations') }}">
+            <i class="fas fa-calendar-check me-2"></i>Reservaciones
+        </a>
+        <a class="nav-link {% if request.endpoint == 'admin.staff' %}active{% endif %}" href="{{ url_for('admin.staff') }}">
+            <i class="fas fa-user-tie me-2"></i>Personal
+        </a>
+        <a class="nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}" href="{{ url_for('admin.users') }}">
+            <i class="fas fa-users me-2"></i>Usuarios
+        </a>
+        <a class="nav-link {% if request.endpoint == 'admin.profile' %}active{% endif %}" href="{{ url_for('admin.profile') }}">
+            <i class="fas fa-user me-2"></i>Mi Perfil
+        </a>
+        <hr class="my-3">
+        <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+        </a>
+    </nav>
 </div>

@@ -16,12 +16,11 @@
         <div class="col-md-9 col-lg-10 bg-white main-content">
             <div class="py-3">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <span class="text-muted">Bienvenido, {{ current_user.get_full_name() }}</span>
                 </div>
     
     <!-- Quick Actions -->
     <div class="row g-2 mb-3">
-        <div class="col-md-6 col-lg-4">
+        <div class="col-12 col-md-4">
             <div class="card dashboard-card h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-calendar-plus fa-2x mb-3"></i>
@@ -31,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card dashboard-card h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-list fa-2x mb-3"></i>
@@ -41,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card dashboard-card h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-user fa-2x mb-3"></i>
@@ -90,8 +89,8 @@
                 <div class="card-body">
                     {% if reservations %}
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Habitación</th>
                                     <th>Check-in</th>
@@ -103,15 +102,20 @@
                             <tbody>
                                 {% for reservation in reservations[:5] %}
                                 <tr>
-                                    <td>{{ reservation.room.number }} - {{ reservation.room.get_type_display() }}</td>
+                                    <td class="fw-bold">{{ reservation.room.number }} - {{ reservation.room.get_type_display() }}</td>
                                     <td>{{ reservation.check_in_date.strftime('%d/%m/%Y') }}</td>
                                     <td>{{ reservation.check_out_date.strftime('%d/%m/%Y') }}</td>
                                     <td>
-                                        <span class="status-badge status-{{ reservation.status }}">
+                                        <span class="badge
+                                            {% if reservation.status in ['pending','pendiente'] %} bg-warning text-dark
+                                            {% elif reservation.status in ['confirmed','confirmada'] %} bg-success
+                                            {% elif reservation.status in ['completed','completada'] %} bg-primary
+                                            {% elif reservation.status in ['cancelled','cancelada'] %} bg-danger
+                                            {% else %} bg-secondary {% endif %}">
                                             {{ reservation.get_status_display() }}
                                         </span>
                                     </td>
-                                    <td>${{ "%.2f"|format(reservation.total_price) }}</td>
+                                    <td class="fw-bold text-success">COP{{ "%.2f"|format(reservation.total_price) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -135,5 +139,25 @@
         </div>
     </div>
 </div>
+
+<style>
+.table th, .table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+.table-responsive {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.status-badge {
+    font-size: 0.875rem;
+}
+@media (max-width: 767.98px) {
+    .table th:not(.d-none), .table td:not(.d-none) {
+        font-size: 0.9rem;
+    }
+}
+</style>
 
 {% endblock %}

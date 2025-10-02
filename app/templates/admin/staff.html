@@ -6,10 +6,12 @@
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        {% include 'admin/sidebar.html' %}
+        <div class="col-lg-2 sidebar border-end d-none d-lg-block">
+            {% include 'admin/sidebar.html' %}
+        </div>
 
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10 bg-white">
+        <div class="col-lg-10 col-12 bg-white">
             <div class="py-4 px-4">
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -31,16 +33,15 @@
                                 <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary">
                                     <i class="fas fa-user-plus me-1"></i>Agregar Recepcionista
                                 </a>
-                                <a href="{{ url_for('admin.download_all_staff_pdf') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                                <a href="{{ url_for('admin.download_all_staff_pdf') }}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-file-pdf me-1"></i>PDF
+                                </a>
+                                <a href="{{ url_for('admin.download_all_staff_excel') }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-file-excel me-1"></i>Excel
                                 </a>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end mt-2">
-                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">
-                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -88,10 +89,9 @@
     </div>
 </div>
 
-<script>
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('show');
-}
-</script>
+<!-- Mobile Sidebar -->
+<div class="sidebar d-lg-none position-fixed start-0 top-0 vh-100 bg-white shadow border-end" style="z-index: 1040; width: 250px;">
+    {% include 'admin/sidebar.html' %}
+</div>
+
 {% endblock %}

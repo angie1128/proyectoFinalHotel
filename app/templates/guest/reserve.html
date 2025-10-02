@@ -49,6 +49,7 @@
                             <div class="col-md-6 mb-3">
                                 {{ form.guests_count.label(class="form-label") }}
                                 {{ form.guests_count(class="form-control", id="guestsCount") }}
+                                <small class="form-text text-muted">Máximo 4 huéspedes por habitación.</small>
                                 {% for error in form.guests_count.errors %}
                                     <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
@@ -92,7 +93,7 @@
                                                             <p class="small mb-0">{{ room.description[:80] }}...</p>
                                                         </div>
                                                         <div class="text-end">
-                                                            <div class="fw-bold text-primary">${{ "%.2f"|format(room.price) }}</div>
+                                                            <div class="fw-bold text-primary">COP{{ "%.2f"|format(room.price) }}</div>
                                                             <small class="text-muted">por noche</small>
                                                         </div>
                                                     </div>
@@ -146,12 +147,10 @@
                         <div class="mb-2"><strong>Habitación:</strong> <span id="summaryRoom"></span></div>
                         <div class="mb-2"><strong>Huéspedes:</strong> <span id="summaryGuests"></span></div>
                         <hr>
-                        <div class="d-flex justify-content-between mb-2"><span>Precio por noche:</span> <span id="pricePerNight">$0.00</span></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Precio por noche:</span> <span id="pricePerNight">COP0.00</span></div>
                         <div class="d-flex justify-content-between mb-2"><span>Número de noches:</span> <span id="summaryNights">0</span></div>
-                        <div class="d-flex justify-content-between mb-2"><span>Subtotal:</span> <span id="subtotal">$0.00</span></div>
-                        <div class="d-flex justify-content-between mb-2"><span>Impuestos (10%):</span> <span id="taxes">$0.00</span></div>
                         <hr>
-                        <div class="d-flex justify-content-between"><strong>Total:</strong> <strong class="text-primary" id="totalPrice">$0.00</strong></div>
+                        <div class="d-flex justify-content-between"><strong>Total:</strong> <strong class="text-primary" id="totalPrice">COP0.00</strong></div>
                     </div>
                 </div>
             </div>
@@ -182,18 +181,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const roomPrice = parseFloat(roomCard.dataset.price);
                 const roomNumber = selectedRoom.closest('.card-body').querySelector('h6').textContent;
 
-                const subtotal = roomPrice * nights;
-                const taxes = subtotal * 0.1;
-                const total = subtotal + taxes;
+                const total = roomPrice * nights;
 
                 document.getElementById('summaryDates').textContent = checkIn.toLocaleDateString() + ' - ' + checkOut.toLocaleDateString();
                 document.getElementById('summaryRoom').textContent = roomNumber;
                 document.getElementById('summaryGuests').textContent = guestsSelect.value + ' huéspedes';
-                document.getElementById('pricePerNight').textContent = '$' + roomPrice.toFixed(2);
+                document.getElementById('pricePerNight').textContent = 'COP' + roomPrice.toFixed(2);
                 document.getElementById('summaryNights').textContent = nights;
-                document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-                document.getElementById('taxes').textContent = '$' + taxes.toFixed(2);
-                document.getElementById('totalPrice').textContent = '$' + total.toFixed(2);
+                document.getElementById('totalPrice').textContent = 'COP' + total.toFixed(2);
 
                 document.getElementById('reservationSummary').style.display = 'none';
                 document.getElementById('summaryDetails').style.display = 'block';

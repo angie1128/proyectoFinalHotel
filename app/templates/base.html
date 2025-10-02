@@ -8,6 +8,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/icono/loto.ico') }}">
+    <style>
+        .receptionist-sidebar.d-lg-none {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .receptionist-sidebar.d-lg-none.show {
+            transform: translateX(0);
+        }
+    </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <!-- Navbar -->
@@ -32,8 +41,22 @@
                     <a class="navbar-brand fw-bold text-white" href="{{ url_for('main.index') }}">
                         <i class="fas fa-hotel me-1"></i>Pringamosa Hotel Boutique
                     </a>
-                    <button class="btn btn-outline-light d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                    <button class="guest-toggle-btn d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
                         <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    {% elif current_user.is_authenticated and current_user.is_receptionist() %}
+        <!-- Receptionist Navbar -->
+        <nav class="navbar navbar-light bg-primary fixed-top shadow-sm">
+            <div class="container-fluid px-3">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <a class="navbar-brand fw-bold text-white" href="{{ url_for('main.index') }}">
+                        <i class="fas fa-hotel me-1"></i>Pringamosa Hotel Boutique
+                    </a>
+                    <button class="btn btn-outline-light d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars" style="color: white !important;"></i>
                     </button>
                 </div>
             </div>
@@ -140,12 +163,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-    {% if current_user.is_authenticated and (current_user.is_admin() or current_user.is_guest()) %}
+    {% if current_user.is_authenticated and (current_user.is_admin() or current_user.is_guest() or current_user.is_receptionist()) %}
     <script>
     function toggleSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.toggle('show');
+        const sidebars = document.querySelectorAll('.receptionist-sidebar');
+        let toggled = false;
+        for (let sidebar of sidebars) {
+            if (window.getComputedStyle(sidebar).display !== 'none') {
+                sidebar.classList.toggle('show');
+                toggled = true;
+                break;
+            }
+        }
+        if (!toggled) {
+          const sidebars = document.querySelectorAll('.sidebar');
+          for (let sidebar of sidebars) {
+            if (window.getComputedStyle(sidebar).display !== 'none') {
+              sidebar.classList.toggle('show');
+              break;
+            }
+          }
+        }
     }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      const sidebars = document.querySelectorAll('.sidebar');
+      const toggleBtn = event.target.closest('button[onclick="toggleSidebar()"]');
+      for (let sidebar of sidebars) {
+        if (sidebar.classList.contains('show') && !sidebar.contains(event.target) && !toggleBtn) {
+          sidebar.classList.remove('show');
+          break; // Assuming only one can be shown at a time
+        }
+      }
+    });
     </script>
     {% endif %}
     {% block scripts %}{% endblock %}

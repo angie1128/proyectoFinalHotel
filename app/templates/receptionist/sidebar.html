@@ -1,0 +1,21 @@
+<!-- Sidebar -->
+<div class="py-4 px-3">
+    <nav class="nav flex-column">
+        <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
+            <i class="fas fa-tachometer-alt me-2"></i>Inicio
+        </a>
+        <a class="nav-link {% if request.endpoint == 'receptionist.rooms' %}active{% endif %}" href="{{ url_for('receptionist.rooms') }}">
+            <i class="fas fa-bed me-2"></i>Habitaciones
+        </a>
+        <a class="nav-link {% if request.endpoint == 'receptionist.reservations' %}active{% endif %}" href="{{ url_for('receptionist.reservations') }}">
+            <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+        </a>
+        <a class="nav-link {% if request.endpoint == 'receptionist.payments' %}active{% endif %}" href="{{ url_for('receptionist.payments') }}">
+            <i class="fas fa-credit-card me-2"></i>Pagos
+        </a>
+        <hr class="my-3">
+        <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+        </a>
+    </nav>
+</div>

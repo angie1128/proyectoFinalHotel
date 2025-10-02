@@ -27,7 +27,7 @@
                     <p><strong>Check-in:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}</p>
                     <p><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</p>
                     <p><strong>Huéspedes:</strong> {{ reservation.guests_count }}</p>
-                    <p><strong>Total:</strong> ${{ "%.2f"|format(reservation.total_price) }}</p>
+                    <p><strong>Total:</strong> COP{{ "%.2f"|format(reservation.total_price) }}</p>
                     <p><strong>Solicitudes especiales:</strong> {{ reservation.special_requests or "Ninguna" }}</p>
                     <p><strong>Estado:</strong> 
                         {{ status_map.get(reservation.status, reservation.status) }}

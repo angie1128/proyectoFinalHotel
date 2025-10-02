@@ -8,6 +8,8 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import os
 from functools import wraps
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
 
 from app import db
 from app.models.user import User
@@ -64,6 +66,52 @@ def create_pdf(title, headers, data_rows):
     doc.build(elements)
     buffer.seek(0)
     return buffer
+
+# -------------------------
+# Función genérica para crear Excel con estilo rosado
+# -------------------------
+def create_excel(title, headers, data_rows):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = title
+
+    # Estilos
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="FF69B4", end_color="FF69B4", fill_type="solid")
+    center_align = Alignment(horizontal="center")
+
+    # Título
+    ws['A1'] = title
+    ws['A1'].font = Font(bold=True, size=16, color="FF69B4")
+    ws.merge_cells('A1:' + chr(ord('A') + len(headers) - 1) + '1')
+
+    # Headers
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=2, column=col_num, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+
+    # Data
+    for row_num, row_data in enumerate(data_rows, 3):
+        for col_num, cell_value in enumerate(row_data, 1):
+            cell = ws.cell(row=row_num, column=col_num, value=cell_value)
+            cell.alignment = center_align
+
+    # Autoajustar columnas
+    for col_num in range(1, len(headers) + 1):
+        max_length = 0
+        column_letter = chr(ord('A') + col_num - 1)
+        for row_num in range(1, len(data_rows) + 3):  # title, header, data rows
+            cell = ws.cell(row=row_num, column=col_num)
+            if cell.value:
+                cell_length = len(str(cell.value))
+                if cell_length > max_length:
+                    max_length = cell_length
+        adjusted_width = (max_length + 2)
+        ws.column_dimensions[column_letter].width = adjusted_width
+
+    return wb
 # -------------------------
 # Dashboard
 # -------------------------
@@ -348,6 +396,36 @@ def download_all_users_pdf():
     return send_file(buffer, as_attachment=True, download_name="Usuarios_Registrados.pdf", mimetype='application/pdf')
 
 # -------------------------
+# Descarga Excel de todos los usuarios
+# -------------------------
+@admin_bp.route('/users/download_excel')
+@login_required
+@admin_required
+def download_all_users_excel():
+    users = User.query.all()
+    if not users:
+        flash("No hay usuarios registrados para generar el Excel.", "warning")
+        return redirect(url_for('admin.users'))
+
+    headers = ["Nombre", "Email", "Teléfono", "Rol", "Fecha de Registro"]
+    data_rows = []
+    for user in users:
+        data_rows.append([
+            user.get_full_name(),
+            user.email,
+            user.phone or "-",
+            user.role,
+            user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at else "-"
+        ])
+
+    wb = create_excel("Lista de Usuarios Registrados", headers, data_rows)
+    from io import BytesIO
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="Usuarios_Registrados.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+# -------------------------
 # Perfil admin
 # -------------------------
 @admin_bp.route('/profile')
@@ -487,3 +565,33 @@ def download_all_staff_pdf():
 
     buffer = create_pdf("Lista de Recepcionistas", headers, data_rows)
     return send_file(buffer, as_attachment=True, download_name="Personal_Recepcionistas.pdf", mimetype='application/pdf')
+
+# -------------------------
+# Descarga Excel de todo el personal
+# -------------------------
+@admin_bp.route('/staff/download_excel')
+@login_required
+@admin_required
+def download_all_staff_excel():
+    staff_members = User.query.filter_by(role='recepcionista').all()
+    if not staff_members:
+        flash("No hay personal registrado para generar el Excel.", "warning")
+        return redirect(url_for('admin.staff'))
+
+    headers = ["Nombre", "Email", "Teléfono", "Usuario", "Fecha de Registro"]
+    data_rows = []
+    for staff in staff_members:
+        data_rows.append([
+            staff.get_full_name(),
+            staff.email,
+            staff.phone or "-",
+            staff.username,
+            staff.created_at.strftime('%d/%m/%Y %H:%M') if staff.created_at else "-"
+        ])
+
+    wb = create_excel("Lista de Recepcionistas", headers, data_rows)
+    from io import BytesIO
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="Personal_Recepcionistas.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

@@ -17,7 +17,7 @@ def login():
         if user and user.check_password(form.password.data) and user.is_active:
             login_user(user)
             next_page = request.args.get('next')
-            flash(f'¡Bienvenido, {user.get_full_name()}!', 'success')
+            flash(f'Welcome, {user.username}!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
         flash('Email o contraseña incorrectos.', 'danger')
     

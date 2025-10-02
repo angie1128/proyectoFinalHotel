@@ -10,10 +10,12 @@
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        {% include 'admin/sidebar.html' %}
-        
+        <div class="col-lg-2 sidebar border-end d-none d-lg-block">
+            {% include 'admin/sidebar.html' %}
+        </div>
+
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10 bg-white main-content">
+        <div class="col-lg-10 col-12 bg-white main-content">
             <div class="py-1 px-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <span class="text-muted">Bienvenido, {{ current_user.get_full_name() }}</span>
@@ -115,7 +117,7 @@
                                                 {{ reservation.get_status_display() }}
                                             </span>
                                         </td>
-                                        <td class="fw-bold">${{ "%.2f"|format(reservation.total_price) }}</td>
+                                        <td class="fw-bold">COP{{ "%.2f"|format(reservation.total_price) }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -129,6 +131,11 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Mobile Sidebar -->
+<div class="sidebar d-lg-none position-fixed start-0 top-0 vh-100 bg-white shadow border-end" style="z-index: 1040; width: 250px;">
+    {% include 'admin/sidebar.html' %}
 </div>
 
 {% endblock %}

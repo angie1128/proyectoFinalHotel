@@ -14,6 +14,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib import colors
 from app.forms.profile import EditProfileForm
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
 
 # --- BLUEPRINT ---
 receptionist_bp = Blueprint(
@@ -95,14 +97,14 @@ def new_reservation():
     # Cargar habitaciones disponibles
     available_rooms = Room.query.all()
     if available_rooms:
-        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)')
+        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (COP{r.price}/noche)')
                                for r in available_rooms]
     else:
         form.room_id.choices = [(-1, 'No hay habitaciones disponibles')]
 
     if form.validate_on_submit():
-        # Buscar la habitación seleccionada
-        room = Room.query.get(form.room_id.data)
+        # Buscar la habitación seleccionada con bloqueo para evitar concurrencia
+        room = Room.query.filter_by(id=form.room_id.data).with_for_update().first()
 
         if not room or room.status != "disponible":
             flash("⚠️ La habitación seleccionada ya no está disponible.", "danger")
@@ -232,6 +234,70 @@ def reservations_pdf():
     )
 
 
+# --- GENERAR EXCEL DE RESERVAS ---
+@receptionist_bp.route("/reservations/excel")
+@login_required
+@receptionist_required
+def reservations_excel():
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reporte de Reservas"
+
+    # Estilos
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="e91e63", end_color="e91e63", fill_type="solid")
+    center_align = Alignment(horizontal="center")
+
+    # Título
+    ws['A1'] = "Reporte de Reservas"
+    ws['A1'].font = Font(bold=True, size=18, color="e91e63")
+    ws.merge_cells('A1:G1')
+
+    # Headers
+    headers = ["ID", "Huésped", "Habitación", "Check-in", "Check-out", "Estado"]
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=2, column=col_num, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+
+    # Data
+    reservations = Reservation.query.order_by(Reservation.created_at.desc()).all()
+    for row_num, r in enumerate(reservations, 3):
+        ws.cell(row=row_num, column=1, value=str(r.id)).alignment = center_align
+        ws.cell(row=row_num, column=2, value=r.guest.get_full_name() if r.guest else "N/A").alignment = center_align
+        ws.cell(row=row_num, column=3, value=r.room.number if r.room else "N/A").alignment = center_align
+        ws.cell(row=row_num, column=4, value=r.check_in_date.strftime("%d/%m/%Y")).alignment = center_align
+        ws.cell(row=row_num, column=5, value=r.check_out_date.strftime("%d/%m/%Y")).alignment = center_align
+        ws.cell(row=row_num, column=6, value=r.get_status_display()).alignment = center_align
+
+    # Autoajustar columnas
+    headers = ["ID", "Huésped", "Habitación", "Check-in", "Check-out", "Estado"]
+    for col_num in range(1, len(headers) + 1):
+        max_length = 0
+        column_letter = chr(ord('A') + col_num - 1)
+        for row_num in range(1, len(reservations) + 3):  # title, header, data rows
+            cell = ws.cell(row=row_num, column=col_num)
+            if cell.value:
+                cell_length = len(str(cell.value))
+                if cell_length > max_length:
+                    max_length = cell_length
+        adjusted_width = (max_length + 2)
+        ws.column_dimensions[column_letter].width = adjusted_width
+
+    from io import BytesIO
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="reporte_reservas.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+
 # --- CHECK-IN ---
 @receptionist_bp.route('/checkin')
 @login_required
@@ -296,9 +362,9 @@ def new_checkin():
 @receptionist_required
 def checkin_select_room(guest_id, room_id, check_out_date):
     guest = User.query.get_or_404(guest_id)
-    room = Room.query.get_or_404(room_id)
+    room = Room.query.filter_by(id=room_id).with_for_update().first()
 
-    if room.status != 'disponible':
+    if not room or room.status != 'disponible':
         flash(f'La habitación {room.number} no está disponible.', 'warning')
         return redirect(url_for('receptionist.new_checkin'))
 

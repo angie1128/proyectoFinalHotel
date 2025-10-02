@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models.room import Room
 from app.models.reservation import Reservation
@@ -56,3 +56,41 @@ def rooms():
     """
     rooms = Room.query.all()
     return render_template("main/rooms.html", rooms=rooms)
+
+@main_bp.route("/reserve", methods=["GET", "POST"])
+def reserve():
+    """
+    Página de reserva que requiere autenticación para proceder.
+    """
+    from flask_login import current_user
+    from app.forms.reservation import PublicReservationForm
+    from datetime import datetime
+
+    if not current_user.is_authenticated:
+        # Usuario no autenticado, mostrar mensaje de login requerido
+        return render_template("main/reserve.html", requires_login=True)
+
+    form = PublicReservationForm()
+    available_rooms = []
+    search_performed = False
+
+    if form.validate_on_submit():
+        search_performed = True
+        check_in = form.check_in_date.data
+        check_out = form.check_out_date.data
+
+        if check_in and check_out and check_out > check_in:
+            # Find rooms that are available for the selected dates
+            # This is a simplified check - in a real app you'd check against existing reservations
+            available_rooms = Room.query.filter_by(status='disponible').all()
+
+            # For now, we'll show all available rooms
+            # In a production app, you'd filter out rooms that have conflicting reservations
+        else:
+            flash("Por favor selecciona fechas válidas.", "warning")
+
+    return render_template("main/reserve.html",
+                          form=form,
+                          available_rooms=available_rooms,
+                          search_performed=search_performed,
+                          requires_login=False)

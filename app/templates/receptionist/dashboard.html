@@ -12,38 +12,20 @@
 .card .card-header { border-top-left-radius: 10px; border-top-right-radius: 10px; }
 </style>
 
-<div class="container-fluid">
-  <div class="row">
-    <!-- Sidebar -->
-    <div class="col-md-3 col-lg-2 sidebar border-end">
-      <div class="py-4 px-3">
-        <h5 class="text-primary fw-bold mb-4">
-          <i class="fas fa-user-tie me-2"></i>Recepcionista
-        </h5>
-        <nav class="nav flex-column">
-            <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
-                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-            </a>
-            <a class="nav-link {% if request.endpoint == 'receptionist.rooms' %}active{% endif %}" href="{{ url_for('receptionist.rooms') }}">
-                <i class="fas fa-bed me-2"></i>Habitaciones
-            </a>
-            <a class="nav-link {% if request.endpoint == 'receptionist.reservations' %}active{% endif %}" href="{{ url_for('receptionist.reservations') }}">
-                <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-            </a>
-            <a class="nav-link {% if request.endpoint == 'receptionist.payments' %}active{% endif %}" href="{{ url_for('receptionist.payments') }}">
-                <i class="fas fa-credit-card me-2"></i>Pagos
-            </a>
-        </nav>
-      </div>
-    </div>
+<div class="container-fluid p-0">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-2 sidebar receptionist-sidebar border-end d-none d-lg-block">
+            {% include 'receptionist/sidebar.html' %}
+        </div>
 
-    <!-- Main -->
-    <div class="col-md-9 col-lg-10 bg-white">
+        <!-- Main Content -->
+        <div class="col-lg-10 col-12 bg-white main-content">
       <div class="py-4 px-4">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
           <div class="text-muted small">
             <span>{{ current_time.strftime('%d/%m/%Y %H:%M') }}</span> |
-            Bienvenido, <strong>{{ current_user.get_full_name() }}</strong>
+             <strong>{{ current_user.get_full_name() }}</strong>
           </div>
         </div>
 
@@ -139,7 +121,12 @@
         </div> <!-- row -->
       </div> <!-- px-4 -->
     </div> <!-- col -->
-  </div> <!-- row -->
+</div> <!-- row -->
+
+<!-- Mobile Sidebar -->
+<div class="sidebar receptionist-sidebar d-lg-none position-fixed start-0 top-0 vh-100 bg-white shadow border-end" style="z-index: 1040; width: 250px;">
+    {% include 'receptionist/sidebar.html' %}
+</div>
 </div> <!-- container -->
 
 <!-- Chart.js -->

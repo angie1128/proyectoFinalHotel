@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Reservar Habitación - Pringamosa Hotel Boutique{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary mb-3">Reservar Habitación</h1>
+        {% if requires_login %}
+        <p class="lead text-muted">Para poder reservar una habitación en el Hotel Pringamosa Boutique, primero debes iniciar sesión en tu cuenta.</p>
+        {% else %}
+        <p class="lead text-muted">Selecciona tus fechas y encuentra la habitación perfecta</p>
+        {% endif %}
+    </div>
+
+    {% if requires_login %}
+    <!-- Login Required Message -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-user-lock fa-4x text-primary mb-4"></i>
+                    <h3 class="mb-3">Inicio de Sesión Requerido</h3>
+                    <p class="mb-4">
+                        Para poder reservar una habitación en el Hotel Pringamosa Boutique, primero debes iniciar sesión en tu cuenta.
+                        Si no tienes una cuenta, puedes registrarte fácilmente.
+                        Una vez logueado, podrás seleccionar tus fechas, elegir la habitación deseada y completar la reserva de manera segura.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('auth.login') }}?next={{ url_for('main.reserve') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Registrarse
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Reservation Form -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Buscar Disponibilidad</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.check_in_date.label(class="form-label") }}
+                                {{ form.check_in_date(class="form-control", type="date") }}
+                                {% if form.check_in_date.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.check_in_date.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                {{ form.check_out_date.label(class="form-label") }}
+                                {{ form.check_out_date(class="form-control", type="date") }}
+                                {% if form.check_out_date.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.check_out_date.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.guests_count.label(class="form-label") }}
+                            {{ form.guests_count(class="form-control") }}
+                            {% if form.guests_count.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.guests_count.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Available Rooms -->
+    {% if search_performed %}
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mb-4">
+                {% if available_rooms %}
+                    Habitaciones Disponibles
+                {% else %}
+                    No hay habitaciones disponibles para las fechas seleccionadas
+                {% endif %}
+            </h3>
+        </div>
+    </div>
+
+    {% if available_rooms %}
+    <div class="row g-4">
+        {% for room in available_rooms %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="position-relative">
+                    <img src="{{ url_for('static', filename=room.get_image_path()) }}"
+                         class="card-img-top"
+                         alt="Habitación {{ room.number }}"
+                         style="height:250px; object-fit:cover;">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-success">{{ room.get_status_display() }}</span>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Habitación {{ room.number }}</h5>
+                    <p class="card-text text-muted">{{ room.description[:100] }}...</p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h6 mb-0 text-primary">COP{{ "%.2f"|format(room.price) }}/noche</span>
+                            <small class="text-muted">{{ room.max_occupancy }} personas</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('auth.login') }}?next={{ url_for('guest.reserve') }}"
+                               class="btn btn-primary flex-fill">
+                                <i class="fas fa-calendar-check me-1"></i>Reservar Ahora
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No hay habitaciones disponibles</h5>
+        <p class="text-muted">Intenta con diferentes fechas o contacta la recepción.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Volver al Inicio</a>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

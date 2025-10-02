@@ -22,7 +22,7 @@
                     <p class="card-text flex-grow-1">{{ room.description[:100] }}...</p>
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">${{ "%.2f"|format(room.price) }}/noche</span>
+                            <span class="fw-bold text-primary">COP{{ "%.2f"|format(room.price) }}/noche</span>
                             <small class="text-muted">{{ room.max_occupancy }} personas</small>
                         </div>
                         <a href="{{ url_for('guest.make_reservation', room_id=room.id) }}" 

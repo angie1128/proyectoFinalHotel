@@ -3,7 +3,7 @@
     <div class="py-4 px-3">
         <nav class="nav flex-column">
             <a class="nav-link {% if request.endpoint == 'guest.dashboard' %}active{% endif %}" href="{{ url_for('guest.dashboard') }}">
-                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                <i class="fas fa-tachometer-alt me-2"></i>Inicio
             </a>
             <a class="nav-link {% if request.endpoint == 'guest.rooms' %}active{% endif %}" href="{{ url_for('guest.rooms') }}">
                 <i class="fas fa-bed me-2"></i>Habitaciones

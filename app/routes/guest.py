@@ -76,7 +76,7 @@ def reserve():
 
     # Ensure room_id choices is always set, even if empty
     if available_rooms:
-        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)')
+        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (COP{r.price}/noche)')
                                for r in available_rooms]
     else:
         form.room_id.choices = [(-1, 'No hay habitaciones disponibles')]
@@ -108,7 +108,7 @@ def reserve():
         db.session.add(reservation)
         db.session.commit()
 
-        flash(f'¡Reservación creada exitosamente! Total: ${total_price:.2f}', 'success')
+        flash(f'¡Reservación creada exitosamente! Total: COP{total_price:.2f}', 'success')
         return redirect(url_for('guest.reservations'))
 
     return render_template("guest/reserve.html", form=form, available_rooms=available_rooms)

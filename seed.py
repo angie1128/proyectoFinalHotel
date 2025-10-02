@@ -30,13 +30,13 @@ def seed():
         # -------------------------------
         if Room.query.count() == 0:
             sample_rooms = [
-                Room(number='101', type='individual', price=80.00, status='disponible',
+                Room(number='101', type='individual', price=313815.20, status='disponible',
                      description='Habitación individual con vista al jardín', image='Hab1.png'),
-                Room(number='102', type='doble', price=120.00, status='disponible',
+                Room(number='102', type='doble', price=470722.80, status='disponible',
                      description='Habitación doble con balcón', image='Hab2.png'),
-                Room(number='201', type='suite', price=200.00, status='disponible',
+                Room(number='201', type='suite', price=784538.00, status='disponible',
                      description='Suite presidencial con jacuzzi', image='Hab3.png'),
-                Room(number='202', type='familiar', price=150.00, status='disponible',
+                Room(number='202', type='familiar', price=588403.50, status='disponible',
                      description='Habitación familiar para 4 personas', image='Hab5.png'),
             ]
             db.session.add_all(sample_rooms)
