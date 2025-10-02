@@ -1,44 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard Administrador - Hotel Paradise{% endblock %}
+{% block title %}Pringamosa Hotel Boutique{% endblock %}
+
+{% block body_class %}dashboard{% endblock %}
+
+{% block main_class %}dashboard-main{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar border-end bg-light">
-            <div class="py-3 px-0">
-                <h5 class="text-primary fw-bold mb-4">
-                    <i class="fas fa-user-shield me-2"></i>Administrador
-                </h5>
-                <nav class="nav flex-column">
-                    <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.reservations' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.reservations') }}">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.rooms' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.rooms') }}">
-                        <i class="fas fa-bed me-2"></i>Habitaciones
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.staff' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.staff') }}">
-                        <i class="fas fa-users me-2"></i>Personal
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.users' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.users') }}">
-                        <i class="fas fa-user-friends me-2"></i>Usuarios
-                    </a>
-                </nav>
-            </div>
-        </div>
+        {% include 'admin/sidebar.html' %}
         
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10 bg-white">
-            <div class="py-4 px-4">
+        <div class="col-md-9 col-lg-10 bg-white main-content">
+            <div class="py-1 px-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold">Dashboard Administrador</h1>
                     <span class="text-muted">Bienvenido, {{ current_user.get_full_name() }}</span>
                 </div>
-                
+
                 <!-- Statistics Cards -->
                 <div class="row g-4 mb-5">
                     <div class="col-md-3">
@@ -78,31 +58,30 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Quick Actions -->
-<div class="row g-4 mb-5 justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
-            </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('admin.create_room') }}" class="btn btn-primary">
-                        <i class="fas fa-bed me-2"></i>Agregar Habitación
-                    </a>
-                    <a href="{{ url_for('admin.create_staff') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-user-plus me-2"></i>Agregar Personal
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-                
+                <!-- Quick Actions -->
+                <div class="row g-4 mb-5 justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0 fade-in-up">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('admin.create_room') }}" class="btn btn-primary">
+                                        <i class="fas fa-bed me-2"></i>Agregar Habitación
+                                    </a>
+                                    <a href="{{ url_for('admin.create_staff') }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-user-plus me-2"></i>Agregar Personal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Recent Reservations -->
-                <div class="card shadow-sm border-0">
+                <div class="card shadow-sm border-0 fade-in-up">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="fas fa-history me-2"></i>Reservaciones Recientes</h5>
                     </div>
@@ -128,7 +107,7 @@
                                         <td>{{ reservation.check_in_date.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ reservation.check_out_date.strftime('%d/%m/%Y') }}</td>
                                         <td>
-                                            <span class="badge 
+                                            <span class="badge
                                                 {% if reservation.status == 'pendiente' %} bg-warning text-dark
                                                 {% elif reservation.status == 'confirmada' %} bg-success
                                                 {% elif reservation.status == 'cancelada' %} bg-danger
@@ -151,4 +130,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

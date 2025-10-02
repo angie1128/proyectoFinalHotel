@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,76 +9,85 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/icono/loto.ico') }}">
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
-                <i class="fas fa-hotel me-2"></i>Pringamosa Hotel Boutique
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- Enlaces principales -->
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a></li>
-
-                    {% if current_user.is_authenticated %}
-                        {% if current_user.is_admin() %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.rooms') }}">Habitaciones</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Usuarios</a></li>
-
-                        {% elif current_user.is_receptionist() %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">Dashboard </a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.reservations') }}">Reservas</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('receptionist.payments') }}">Pagos</a></li>
-
-                        {% elif current_user.is_guest() %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('guest.rooms') }}">Habitaciones</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('guest.reservations') }}">Mis Reservas</a></li>
-                        {% endif %}
-                    {% endif %}
-
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">Nosotros</a></li>
-                </ul>
-
-                <!-- Dropdown usuario -->
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i>{{ current_user.get_full_name() }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                {% if current_user.is_admin() %}
-                                    <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('admin.profile') }}">Mi Perfil</a></li>
-
-                                {% elif current_user.is_receptionist() %}
-                                    <li><a class="dropdown-item" href="{{ url_for('receptionist.dashboard') }}">Dashboard </a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('receptionist.profile') }}">Mi Perfil</a></li>
-
-                                {% elif current_user.is_guest() %}
-                                    <li><a class="dropdown-item" href="{{ url_for('guest.profile') }}">Mi Perfil</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('guest.reservations') }}">Mis Reservas</a></li>
-                                {% endif %}
-                                
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
-                                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
-                                </a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Registrarse</a></li>
-                    {% endif %}
-                </ul>
+    {% if current_user.is_authenticated and current_user.is_admin() %}
+        <nav class="navbar navbar-light bg-primary fixed-top shadow-sm">
+            <div class="container-fluid px-3">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <a class="navbar-brand fw-bold text-white" href="{{ url_for('main.index') }}">
+                        <i class="fas fa-hotel me-1"></i>Pringamosa Hotel Boutique
+                    </a>
+                    <button class="btn btn-outline-light d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    {% elif current_user.is_authenticated and current_user.is_guest() %}
+        <!-- Guest Navbar -->
+        <nav class="navbar navbar-light bg-primary fixed-top shadow-sm">
+            <div class="container-fluid px-3">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <a class="navbar-brand fw-bold text-white" href="{{ url_for('main.index') }}">
+                        <i class="fas fa-hotel me-1"></i>Pringamosa Hotel Boutique
+                    </a>
+                    <button class="btn btn-outline-light d-lg-none" type="button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    {% else %}
+        <!-- Non-admin Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary fixed-top shadow-sm">
+            <div class="container-fluid px-3">
+                <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
+                    <i class="fas fa-hotel me-1"></i>Pringamosa Hotel Boutique
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Enlaces principales -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item me-4"><a class="nav-link" href="{{ url_for('main.index') }}">Inicio</a></li>
+
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item ms-5"><a class="nav-link" href="{{ url_for('main.about') }}" aria-label="Ir a la página sobre nosotros">Nosotros</a></li>
+                        {% else %}
+                            <li class="nav-item me-3"><a class="nav-link" href="{{ url_for('main.about') }}" aria-label="Ir a la página sobre nosotros">Nosotros</a></li>
+                        {% endif %}
+                    </ul>
+
+                    <!-- Enlaces de autenticación -->
+                    {% if not current_user.is_authenticated %}
+                    <ul class="navbar-nav ms-auto me-3">
+                        <li class="nav-item me-3"><a class="nav-link" href="{{ url_for('auth.login') }}" aria-label="Ir a la página de iniciar sesión">Iniciar Sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}" aria-label="Ir a la página de registro">Registrar</a></li>
+                    </ul>
+                    {% endif %}
+
+                    <!-- Dropdowns -->
+                    <ul class="navbar-nav">
+                        {% if current_user.is_authenticated and not current_user.is_receptionist() %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-label="Menú de usuario">
+                                    <i class="fas fa-user me-1"></i>{{ current_user.get_full_name() }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}" aria-label="Cerrar sesión">
+                                        <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                                    </a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    {% endif %}
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -98,7 +107,7 @@
     {% block hero %}{% endblock %}
 
     <!-- Main Content -->
-    <main class="container-fluid px-0 {% if not self.hero() %}mt-3{% endif %}">
+    <main class="container-fluid px-0 {% if not self.hero() %}{% if current_user.is_authenticated %}mt-0{% else %}mt-3{% endif %}{% endif %} {% block main_class %}{% endblock %}">
         {% block content %}{% endblock %}
     </main>
 
@@ -131,6 +140,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    {% if current_user.is_authenticated and (current_user.is_admin() or current_user.is_guest()) %}
+    <script>
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('show');
+    }
+    </script>
+    {% endif %}
     {% block scripts %}{% endblock %}
 </body>
 </html>

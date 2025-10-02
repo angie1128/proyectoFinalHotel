@@ -69,8 +69,17 @@ def update_profile():
 def reserve():
     available_rooms = Room.query.filter_by(status='disponible').all()
     form = ReservationForm()
-    form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)') 
-                            for r in available_rooms]
+
+    # Set guest_id choices and data (only current user for guest form)
+    form.guest_id.choices = [(current_user.id, current_user.get_full_name())]
+    form.guest_id.data = current_user.id  # Pre-set the value
+
+    # Ensure room_id choices is always set, even if empty
+    if available_rooms:
+        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)')
+                               for r in available_rooms]
+    else:
+        form.room_id.choices = [(-1, 'No hay habitaciones disponibles')]
 
     if form.validate_on_submit():
         room = Room.query.get(int(form.room_id.data))
@@ -86,7 +95,7 @@ def reserve():
         total_price = room.price * nights
 
         reservation = Reservation(
-            guest_id=current_user.id,
+            guest_id=current_user.id,  # Use logged-in user, not form data
             room_id=room.id,
             check_in_date=form.check_in_date.data,
             check_out_date=form.check_out_date.data,

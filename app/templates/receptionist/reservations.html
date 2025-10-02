@@ -1,67 +1,102 @@
 {% extends "base.html" %}
 
-{% block title %}Reservas - Hotel Paradise{% endblock %}
+{% block title %}Reservas - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
-    <h2 class="text-center text-primary mb-4">Gestión de Reservas</h2>
-
-    <div class="d-flex justify-content-between mb-3">
-        <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-outline-secondary">
-            ⬅ Volver al Dashboard
-        </a>
-        <div>
-            <a href="{{ url_for('receptionist.new_reservation') }}" class="btn btn-success me-2">
-                ➕ Nueva Reserva
-            </a>
-            <a href="{{ url_for('receptionist.reservations_pdf') }}" class="btn btn-danger">
-                📄 Descargar PDF
-            </a>
-        </div>
-    </div>
-
+<div class="container-fluid p-0">
     <div class="row">
-        {% for reservation in reservations %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <img src="{{ url_for('static', filename=reservation.room.get_image_path()) }}" 
-                     class="card-img-top" 
-                     alt="Imagen de habitación {{ reservation.room.number }}"
-                     style="max-height: 220px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Habitación {{ reservation.room.number }}</h5>
-                    <p><strong>Tipo:</strong> {{ reservation.room.get_type_display() }}</p>
-                    <p><strong>Huésped:</strong> {{ reservation.guest.get_full_name() }}</p>
-<p><strong>Email:</strong> {{ reservation.guest.email }}</p>
-<p><strong>Teléfono:</strong> {{ reservation.guest.phone }}</p>
-
-                    <p><strong>Check-in:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}</p>
-                    <p><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</p>
-                    <p><strong>Estado:</strong> 
-                        <span class="badge bg-info text-dark">{{ reservation.get_status_display() }}</span>
-                    </p>
-                </div>
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ url_for('receptionist.reservation_detail', reservation_id=reservation.id) }}" 
-                       class="btn btn-sm btn-outline-primary">
-                        🔍 Ver Detalles
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar border-end">
+            <div class="py-4 px-3">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-tie me-2"></i>Recepcionista
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <div>
-                        <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='confirmada') }}" 
-                           class="btn btn-sm btn-success me-1">
-                            ✅ Confirmar
-                        </a>
-                        <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}" 
-                           class="btn btn-sm btn-danger">
-                            ❌ Cancelar
-                        </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.rooms' %}active{% endif %}" href="{{ url_for('receptionist.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.reservations' %}active{% endif %}" href="{{ url_for('receptionist.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.payments' %}active{% endif %}" href="{{ url_for('receptionist.payments') }}">
+                        <i class="fas fa-credit-card me-2"></i>Pagos
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 bg-white">
+            <div class="py-4 px-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h1 class="h3 text-primary fw-bold mb-0">Gestión de Reservas</h1>
+                            <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                            </a>
+                        </div>
                     </div>
+                </div>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{{ url_for('receptionist.new_reservation') }}" class="btn btn-success me-2">
+                        ➕ Nueva Reserva
+                    </a>
+                    <a href="{{ url_for('receptionist.reservations_pdf') }}" class="btn btn-danger">
+                        📄 Descargar PDF
+                    </a>
+                </div>
+
+                <div class="row">
+                    {% for reservation in reservations %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <img src="{{ url_for('static', filename=reservation.room.get_image_path()) }}"
+                                 class="card-img-top"
+                                 alt="Imagen de habitación {{ reservation.room.number }}"
+                                 style="max-height: 220px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Habitación {{ reservation.room.number }}</h5>
+                                <p><strong>Tipo:</strong> {{ reservation.room.get_type_display() }}</p>
+                                <p><strong>Huésped:</strong> {{ reservation.guest.get_full_name() }}</p>
+                                <p><strong>Email:</strong> {{ reservation.guest.email }}</p>
+                                <p><strong>Teléfono:</strong> {{ reservation.guest.phone }}</p>
+
+                                <p><strong>Check-in:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}</p>
+                                <p><strong>Check-out:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}</p>
+                                <p><strong>Estado:</strong>
+                                    <span class="badge bg-info text-dark">{{ reservation.get_status_display() }}</span>
+                                </p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <a href="{{ url_for('receptionist.reservation_detail', reservation_id=reservation.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    🔍 Ver Detalles
+                                </a>
+                                <div>
+                                    <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='confirmada') }}"
+                                       class="btn btn-sm btn-success me-1">
+                                        ✅ Confirmar
+                                    </a>
+                                    <a href="{{ url_for('receptionist.update_status', reservation_id=reservation.id, status='cancelada') }}"
+                                       class="btn btn-sm btn-danger">
+                                        ❌ Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted">No hay reservas registradas.</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        {% else %}
-        <p class="text-center text-muted">No hay reservas registradas.</p>
-        {% endfor %}
     </div>
 </div>
+
 {% endblock %}

@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Mi Perfil - Hotel Paradise{% endblock %}
+{% block title %}Mi Perfil - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-primary fw-bold"><i class="fas fa-user me-2"></i>Mi Perfil</h1>
-        <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-        </a>
-    </div>
+<div class="container-fluid p-0">
+    <div class="row">
+        <!-- Sidebar -->
+        {% include 'guest/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 bg-white main-content">
+            <div class="container py-5">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 text-primary fw-bold"><i class="fas fa-user me-2"></i>Mi Perfil</h1>
+                    <a href="{{ url_for('guest.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                    </a>
+                </div>
 
     <div class="row g-4">
         <!-- Perfil Principal -->
@@ -56,38 +63,38 @@
                     <form method="POST" action="{{ url_for('guest.update_profile') }}">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Nombre</label>
+                                <label class="form-label fw-bold">Nombre <small class="text-muted">(No editable)</small></label>
                                 <input type="text" class="form-control" value="{{ current_user.first_name }}" disabled>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Apellido</label>
+                                <label class="form-label fw-bold">Apellido <small class="text-muted">(No editable)</small></label>
                                 <input type="text" class="form-control" value="{{ current_user.last_name }}" disabled>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Email</label>
+                                <label class="form-label fw-bold">Email <small class="text-success">(Editable)</small></label>
                                 <input type="email" name="email" class="form-control" value="{{ current_user.email }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Teléfono</label>
+                                <label class="form-label fw-bold">Teléfono <small class="text-success">(Editable)</small></label>
                                 <input type="text" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Usuario</label>
+                                <label class="form-label fw-bold">Usuario <small class="text-success">(Editable)</small></label>
                                 <input type="text" name="username" class="form-control" value="{{ current_user.username }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Rol</label>
+                                <label class="form-label fw-bold">Rol <small class="text-muted">(No editable)</small></label>
                                 <input type="text" class="form-control" value="{{ current_user.get_role_display() }}" disabled>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Miembro desde</label>
+                                <label class="form-label fw-bold">Miembro desde <small class="text-muted">(No editable)</small></label>
                                 <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%B %Y') if current_user.created_at else 'No disponible' }}" disabled>
                             </div>
                             {% if current_user.guest_reservations %}
                                 {% set last_stay = current_user.guest_reservations|selectattr('status', 'equalto', 'completada')|list|last %}
                                 {% if last_stay %}
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">Última estadía</label>
+                                        <label class="form-label fw-bold">Última estadía <small class="text-muted">(No editable)</small></label>
                                         <input type="text" class="form-control" value="{{ last_stay.check_out_date.strftime('%d/%m/%Y') }}" disabled>
                                     </div>
                                 {% endif %}
@@ -99,6 +106,8 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
                 </div>
             </div>
         </div>

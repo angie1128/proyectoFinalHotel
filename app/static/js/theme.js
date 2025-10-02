@@ -1,33 +1,21 @@
-// Theme Management
-function toggleTheme() {
-  const html = document.documentElement
-  const themeIcon = document.getElementById("theme-icon")
-  const currentTheme = html.getAttribute("data-theme")
-
-  if (currentTheme === "dark") {
-    html.setAttribute("data-theme", "light")
-    themeIcon.className = "fas fa-sun"
-    localStorage.setItem("theme", "light")
-  } else {
-    html.setAttribute("data-theme", "dark")
-    themeIcon.className = "fas fa-moon"
-    localStorage.setItem("theme", "dark")
-  }
-}
-
-// Load saved theme on page load
+// Automatic theme switching based on system preference
 document.addEventListener("DOMContentLoaded", () => {
-  const savedTheme = localStorage.getItem("theme") || "light"
-  const html = document.documentElement
-  const themeIcon = document.getElementById("theme-icon")
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
 
-  html.setAttribute("data-theme", savedTheme)
-
-  if (savedTheme === "dark") {
-    themeIcon.className = "fas fa-moon"
-  } else {
-    themeIcon.className = "fas fa-sun"
+  // Function to apply theme
+  const applyTheme = (isDark) => {
+    // No need to set data-theme since CSS handles it with media query
+    // But if you want to force or override, you could add logic here
+    console.log("Theme applied:", isDark ? "dark" : "light")
   }
+
+  // Apply initial theme
+  applyTheme(mediaQuery.matches)
+
+  // Listen for changes
+  mediaQuery.addEventListener("change", (e) => {
+    applyTheme(e.matches)
+  })
 })
 
 // Auto-dismiss alerts after 5 seconds
@@ -89,3 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   })
 })
+
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        const icon = button.querySelector('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.className = "fas fa-eye-slash";
+        } else {
+            input.type = "password";
+            icon.className = "fas fa-eye";
+        }
+    });
+});

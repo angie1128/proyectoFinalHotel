@@ -18,7 +18,7 @@ def create_app():
     app.config['SECRET_KEY'] = settings.SECRET_KEY
 
     # Carpeta de subida de imágenes
-    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'img', 'hab')
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # Inicializar extensiones

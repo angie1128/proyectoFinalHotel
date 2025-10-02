@@ -39,14 +39,17 @@ class Room(db.Model):
     
     def get_image_path(self):
         """
-        Devuelve la ruta correcta de la imagen según de dónde provenga.
+        Devuelve la ruta correcta de la imagen.
+        - Imágenes seed (Hab1.png, etc.) están en /static/img/hab/
+        - Imágenes subidas por admin están en /static/uploads/
         """
         if self.image:
-            # Si es una imagen subida por el admin, debe estar en /static/uploads/
-            if self.image.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            # Si el nombre de la imagen parece ser de seed (empieza con 'Hab'), usar img/hab/
+            if self.image.startswith('Hab') and self.image.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                return f"img/hab/{self.image}"
+            # De lo contrario, es una imagen subida, usar uploads/
+            else:
                 return f"uploads/{self.image}"
-            # Si es una imagen fija del proyecto (ej: Hab1.png), debe estar en /static/img/hab/
-            return f"img/hab/{self.image}"
         # Si no tiene imagen asignada
         return "img/hab/default.jpg"
     

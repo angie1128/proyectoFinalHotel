@@ -1,19 +1,35 @@
 {% extends "base.html" %}
 
-{% block title %}Mis Reservaciones - Hotel Paradise{% endblock %}
+{% block title %}Mis Reservaciones - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid p-0">
     <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 text-primary fw-bold">Mis Reservaciones</h1>
-                <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Nueva Reservación
-                </a>
-            </div>
-        </div>
-    </div>
+        <!-- Sidebar -->
+        {% include 'guest/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 bg-white main-content">
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                            <h1 class="h3 text-primary fw-bold mb-0">Mis Reservaciones</h1>
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <a href="{{ url_for('guest.reserve') }}" class="btn btn-primary">
+                                                    <i class="fas fa-plus me-2"></i>Nueva Reservación
+                                                </a>
+                                                <a href="{{ url_for('guest.dashboard') }}" class="btn btn-primary">
+                                                    <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                                                </a>
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
     {# Mapa de estados para mostrar en español (seguro ante valores en inglés/español) #}
     {% set status_map = {
@@ -85,7 +101,7 @@
                             <div class="card h-100">
                                 {{ room_image(reservation) }}
                                 <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">Reservación #{{ reservation.id }}</h5>
+                                    <h5 class="card-title">Reservación</h5>
                                     <p class="card-text">
                                         <strong>Habitación:</strong>
                                         {{ reservation.room.number if reservation.room else 'N/A' }}
@@ -98,7 +114,7 @@
                                             {% set disp = reservation.get_status_display() %}
                                         {% endif %}
                                         <span class="badge
-                                            {% if reservation.status in ['pending','pendiente'] %} bg-warning text-dark
+                                            {% if reservation.status in ['pending','pendiente'] %} bg-secondary text-dark
                                             {% elif reservation.status in ['confirmed','confirmada'] %} bg-success
                                             {% elif reservation.status in ['completed','completada'] %} bg-primary
                                             {% elif reservation.status in ['cancelled','cancelada'] %} bg-danger
@@ -131,15 +147,15 @@
                         {% for reservation in reservations if reservation.status in pending_states %}
                         {% set found = true %}
                         <div class="col-md-6 col-lg-4">
-                            <div class="card border-warning h-100">
+                            <div class="card border-secondary h-100">
                                 {{ room_image(reservation) }}
                                 <div class="card-body">
-                                    <h5 class="card-title">Reservación #{{ reservation.id }}</h5>
+                                    <h5 class="card-title">Reservación</h5>
                                     <p>
                                         <strong>Entrada:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}<br>
                                         <strong>Salida:</strong> {{ reservation.check_out_date.strftime('%d/%m/%Y') }}
                                     </p>
-                                    <p><span class="badge bg-warning text-dark">{{ status_map.get(reservation.status, 'Pendiente') }}</span></p>
+                                    <p><span class="badge bg-secondary text-dark">{{ status_map.get(reservation.status, 'Pendiente') }}</span></p>
                                     <a href="{{ url_for('guest.view_reservation', id=reservation.id) }}" class="btn btn-sm btn-outline-primary">Ver</a>
                                 </div>
                             </div>
@@ -162,7 +178,7 @@
                             <div class="card border-success h-100">
                                 {{ room_image(reservation) }}
                                 <div class="card-body">
-                                    <h5 class="card-title">Reservación #{{ reservation.id }}</h5>
+                                    <h5 class="card-title">Reservación</h5>
                                     <p><span class="badge bg-success">{{ status_map.get(reservation.status, 'Confirmada') }}</span></p>
                                     <p>
                                         <strong>Entrada:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}<br>
@@ -190,7 +206,7 @@
                             <div class="card border-primary h-100">
                                 {{ room_image(reservation) }}
                                 <div class="card-body">
-                                    <h5 class="card-title">Reservación #{{ reservation.id }}</h5>
+                                    <h5 class="card-title">Reservación</h5>
                                     <p><span class="badge bg-primary">{{ status_map.get(reservation.status, 'Completada') }}</span></p>
                                     <p>
                                         <strong>Entrada:</strong> {{ reservation.check_in_date.strftime('%d/%m/%Y') }}<br>
@@ -207,6 +223,8 @@
                     </div>
                 </div>
 
+            </div>
+                </div>
             </div>
         </div>
     </div>

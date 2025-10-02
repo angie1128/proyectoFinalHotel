@@ -9,32 +9,13 @@
     <meta name="keywords" content="Pringamosa Hotel Boutique, sobre nosotros, hotel de lujo, servicios de hotel">
     <!-- AOS para animaciones -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        .hero-section {
-            background: url('/static/img/hotel_banner.jpg') no-repeat center center;
-            background-size: cover;
-            color: white;
-            padding: 100px 0;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        .service-card {
-            transition: transform 0.3s ease;
-        }
-        .service-card:hover {
-            transform: translateY(-10px);
-        }
-        .carousel-img {
-            height: 400px;
-            object-fit: cover;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <!-- Hero Section -->
-    <section class="hero-section text-center" aria-labelledby="hero-title">
-        <div class="container">
+    <section class="hero-section about-hero text-center text-white" style="margin-top: 80px;" aria-labelledby="hero-title">
+        <div class="container" data-aos="fade-in">
             <h1 id="hero-title" class="display-4 mb-4">Sobre Pringamosa Hotel Boutique</h1>
             <p class="lead">Somos Vitrina de Cultura y Tradición</p>
         </div>
@@ -82,10 +63,83 @@
         </div>
     </section>
 
+    <!-- Nuestros Valores -->
+    <section class="py-5 bg-light" data-aos="fade-up">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-4">Nuestros Valores</h2>
+                <p class="lead text-muted">Lo que nos define como hotel boutique</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-heart fa-3x text-primary"></i>
+                            </div>
+                            <h4 class="card-title">Pasión por la Hospitalidad</h4>
+                            <p class="card-text text-muted">Cada detalle está cuidado con amor para hacer de tu estancia una experiencia inolvidable.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-leaf fa-3x text-success"></i>
+                            </div>
+                            <h4 class="card-title">Sostenibilidad</h4>
+                            <p class="card-text text-muted">Comprometidos con prácticas ecológicas y el respeto por nuestro entorno natural.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-users fa-3x text-info"></i>
+                            </div>
+                            <h4 class="card-title">Comunidad Local</h4>
+                            <p class="card-text text-muted">Apoyamos a artistas y artesanos locales, siendo una vitrina de la cultura veleña.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería -->
+    <section class="py-5" data-aos="fade-up">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-4">Nuestra Galería</h2>
+                <p class="lead text-muted">Descubre la belleza de Pringamosa</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/flores/Flor2.jpeg') }}"
+                         class="img-fluid rounded shadow" alt="Naturaleza en Pringamosa"
+                         style="width:100%; height:250px; object-fit:cover;">
+                </div>
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/hotel/Hotel1.jpeg') }}"
+                         class="img-fluid rounded shadow" alt="Instalaciones del hotel"
+                         style="width:100%; height:250px; object-fit:cover;">
+                </div>
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/pasillos/Pasillo1.jpeg') }}"
+                         class="img-fluid rounded shadow" alt="Pasillos elegantes"
+                         style="width:100%; height:250px; object-fit:cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Call to Action -->
     <section class="bg-primary text-white text-center py-5">
         <div class="container">
             <h3 class="mb-4">¡Vive la Experiencia!</h3>
+            <p class="mb-4">Reserva tu estancia y descubre todo lo que Pringamosa tiene para ofrecerte</p>
             <a href="{{ url_for('guest.reserve') }}" class="btn btn-light btn-lg">Reserva Tu Estancia</a>
         </div>
     </section>

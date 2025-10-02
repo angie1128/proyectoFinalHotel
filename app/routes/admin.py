@@ -282,8 +282,40 @@ def download_all_reservations_pdf():
 @login_required
 @admin_required
 def users():
-    users = User.query.all()
-    return render_template('admin/users.html', users=users)
+    search_query = request.args.get('search', '').strip()
+    role_filter = request.args.get('role', 'all')
+
+    query = User.query
+
+    if search_query:
+        query = query.filter(
+            db.or_(
+                User.first_name.ilike(f'%{search_query}%'),
+                User.last_name.ilike(f'%{search_query}%'),
+                User.username.ilike(f'%{search_query}%'),
+                User.email.ilike(f'%{search_query}%')
+            )
+        )
+
+    if role_filter != 'all':
+        query = query.filter_by(role=role_filter)
+
+    users = query.all()
+
+    # Statistics (keeping them for now, but will replace in template)
+    total_users = User.query.count()
+    guest_users = User.query.filter_by(role='huesped').count()
+    receptionist_users = User.query.filter_by(role='recepcionista').count()
+    admin_users = User.query.filter_by(role='admin').count()
+
+    return render_template('admin/users.html',
+                          users=users,
+                          total_users=total_users,
+                          guest_users=guest_users,
+                          receptionist_users=receptionist_users,
+                          admin_users=admin_users,
+                          search_query=search_query,
+                          role_filter=role_filter)
 
 @admin_bp.route('/users/<int:id>')
 @login_required
@@ -291,6 +323,7 @@ def users():
 def view_user(id):
     user = User.query.get_or_404(id)
     return render_template('admin/view_user.html', user=user)
+
 
 @admin_bp.route('/users/download_pdf')
 @login_required

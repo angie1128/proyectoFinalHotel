@@ -1,40 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Reservaciones - Hotel Paradise{% endblock %}
+{% block title %}Reservaciones - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar">
-            <div class="py-4">
-                <h5 class="text-primary fw-bold mb-4">
-                    <i class="fas fa-user-shield me-2"></i>Administrador
-                </h5>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link" href="{{ url_for('admin.rooms') }}">
-                        <i class="fas fa-bed me-2"></i>Habitaciones
-                    </a>
-                    <a class="nav-link active" href="{{ url_for('admin.reservations') }}">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-                    </a>
-                    <a class="nav-link" href="{{ url_for('admin.staff') }}">
-                        <i class="fas fa-users me-2"></i>Personal
-                    </a>
-                    <a class="nav-link" href="{{ url_for('admin.users') }}">
-                        <i class="fas fa-user-friends me-2"></i>Usuarios
-                    </a>
-                </nav>
-            </div>
-        </div>
+        {% include 'admin/sidebar.html' %}
 
         <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
+        <div class="col-md-9 col-lg-10 bg-white">
             <div class="py-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold">Gestión de Reservaciones</h1>
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h1 class="h3 text-primary fw-bold mb-0">Gestión de Reservaciones</h1>
+                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Card de Reservaciones -->
@@ -125,6 +109,11 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('show');
+    }
 </script>
 
 {% endblock %}

@@ -1,75 +1,109 @@
 {% extends "base.html" %}
 
-{% block title %}Pagos - Hotel Paradise{% endblock %}
+{% block title %}Pagos - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Gestión de Pagos</h2>
-        <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-secondary">
-             Volver al Dashboard
-        </a>
-    </div>
-
+<div class="container-fluid p-0">
     <div class="row">
-        {% for res in reservations %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">
-                        Reserva #{{ res.id }}
-                    </h5>
-                    <p class="card-text mb-1"><strong>Huésped:</strong> {{ res.guest.get_full_name() if res.guest else "N/A" }}</p>
-                    <p class="card-text mb-1"><strong>Habitación:</strong> {{ res.room.number if res.room else "N/A" }}</p>
-                    <p class="card-text mb-1"><strong>Check-in:</strong> {{ res.check_in_date.strftime("%d/%m/%Y") }}</p>
-                    <p class="card-text mb-3"><strong>Check-out:</strong> {{ res.check_out_date.strftime("%d/%m/%Y") }}</p>
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar border-end">
+            <div class="py-4 px-3">
+                <h5 class="text-primary fw-bold mb-4">
+                    <i class="fas fa-user-tie me-2"></i>Recepcionista
+                </h5>
+                <nav class="nav flex-column">
+                    <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.rooms' %}active{% endif %}" href="{{ url_for('receptionist.rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Habitaciones
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.reservations' %}active{% endif %}" href="{{ url_for('receptionist.reservations') }}">
+                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receptionist.payments' %}active{% endif %}" href="{{ url_for('receptionist.payments') }}">
+                        <i class="fas fa-credit-card me-2"></i>Pagos
+                    </a>
+                </nav>
+            </div>
+        </div>
 
-                    <p class="card-text">
-                        <strong>Tipo de pago:</strong> 
-                        {{ res.payment_type if res.payment_type else "Pendiente" }}<br>
-                        <strong>Detalle:</strong> 
-                        {{ res.payment_detail if res.payment_detail else "-" }}
-                    </p>
-
-                    {% if not res.payment_type %}
-                    <!-- Formulario de pago -->
-                    <form action="{{ url_for('receptionist.update_payment', reservation_id=res.id) }}" method="post">
-                        <div class="mb-2">
-                            <label class="form-label">Método de Pago</label>
-                            <select name="payment_type" class="form-select form-select-sm payment-type" required>
-                                <option value="">-- Seleccionar --</option>
-                                <option value="efectivo">Efectivo</option>
-                                <option value="transferencia">Transferencia</option>
-                                <option value="tarjeta">Tarjeta</option>
-                            </select>
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 bg-white">
+            <div class="py-4 px-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h1 class="h3 text-primary fw-bold mb-0">Gestión de Pagos</h1>
+                            <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                            </a>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Campo efectivo -->
-                        <div class="mb-2 d-none payment-field efectivo-field">
-                            <input type="number" step="0.01" name="cash_amount" placeholder="Monto recibido" class="form-control form-control-sm">
+                <div class="row">
+                    {% for res in reservations %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">
+                                    Reserva
+                                </h5>
+                                <p class="card-text mb-1"><strong>Huésped:</strong> {{ res.guest.get_full_name() if res.guest else "N/A" }}</p>
+                                <p class="card-text mb-1"><strong>Habitación:</strong> {{ res.room.number if res.room else "N/A" }}</p>
+                                <p class="card-text mb-1"><strong>Check-in:</strong> {{ res.check_in_date.strftime("%d/%m/%Y") }}</p>
+                                <p class="card-text mb-3"><strong>Check-out:</strong> {{ res.check_out_date.strftime("%d/%m/%Y") }}</p>
+
+                                <p class="card-text">
+                                    <strong>Tipo de pago:</strong>
+                                    {{ res.payment_type if res.payment_type else "Pendiente" }}<br>
+                                    <strong>Detalle:</strong>
+                                    {{ res.payment_detail if res.payment_detail else "-" }}
+                                </p>
+
+                                {% if not res.payment_type %}
+                                <!-- Formulario de pago -->
+                                <form action="{{ url_for('receptionist.update_payment', reservation_id=res.id) }}" method="post">
+                                    <div class="mb-2">
+                                        <label class="form-label">Método de Pago</label>
+                                        <select name="payment_type" class="form-select form-select-sm payment-type" required>
+                                            <option value="">-- Seleccionar --</option>
+                                            <option value="efectivo">Efectivo</option>
+                                            <option value="transferencia">Transferencia</option>
+                                            <option value="tarjeta">Tarjeta</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Campo efectivo -->
+                                    <div class="mb-2 d-none payment-field efectivo-field">
+                                        <input type="number" step="0.01" name="cash_amount" placeholder="Monto recibido" class="form-control form-control-sm">
+                                    </div>
+
+                                    <!-- Campo transferencia -->
+                                    <div class="mb-2 d-none payment-field transferencia-field">
+                                        <input type="text" name="transfer_method" placeholder="Banco / Plataforma (Nequi, Daviplata...)" class="form-control form-control-sm">
+                                    </div>
+
+                                    <!-- Campo tarjeta -->
+                                    <div class="mb-2 d-none payment-field tarjeta-field">
+                                        <input type="text" name="card_number" placeholder="Número de tarjeta" class="form-control form-control-sm">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-sm btn-success w-100">Guardar</button>
+                                </form>
+                                {% endif %}
+                            </div>
                         </div>
-
-                        <!-- Campo transferencia -->
-                        <div class="mb-2 d-none payment-field transferencia-field">
-                            <input type="text" name="transfer_method" placeholder="Banco / Plataforma (Nequi, Daviplata...)" class="form-control form-control-sm">
-                        </div>
-
-                        <!-- Campo tarjeta -->
-                        <div class="mb-2 d-none payment-field tarjeta-field">
-                            <input type="text" name="card_number" placeholder="Número de tarjeta" class="form-control form-control-sm">
-                        </div>
-
-                        <button type="submit" class="btn btn-sm btn-success w-100">Guardar</button>
-                    </form>
-                    {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No hay reservas con pagos pendientes.</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        {% else %}
-        <div class="col-12 text-center">
-            <p class="text-muted">No hay reservas con pagos pendientes.</p>
-        </div>
-        {% endfor %}
     </div>
 </div>
 
@@ -86,5 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 </script>
 {% endblock %}

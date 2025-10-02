@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard Recepcionista - Hotel Paradise{% endblock %}
+{% block title %}Pringamosa Hotel Boutique{% endblock %}
+
+{% block body_class %}dashboard{% endblock %}
+
+{% block main_class %}dashboard-main{% endblock %}
 
 {% block content %}
 <style>
-.sidebar { background: #f8f9fa; }
 .card-dashboard { border-radius: 10px; }
 .card .card-header { border-top-left-radius: 10px; border-top-right-radius: 10px; }
 </style>
@@ -12,33 +15,32 @@
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <div class="col-md-3 col-lg-2 sidebar bg-light min-vh-100 border-end">
+    <div class="col-md-3 col-lg-2 sidebar border-end">
       <div class="py-4 px-3">
         <h5 class="text-primary fw-bold mb-4">
           <i class="fas fa-user-tie me-2"></i>Recepcionista
         </h5>
         <nav class="nav flex-column">
-          <a class="nav-link active mb-1" href="{{ url_for('receptionist.dashboard') }}">
-            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-          </a>
-          <a class="nav-link mb-1" href="{{ url_for('receptionist.rooms') }}">
-            <i class="fas fa-bed me-2"></i>Habitaciones
-          </a>
-          <a class="nav-link mb-1" href="{{ url_for('receptionist.reservations') }}">
-            <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-          </a>
-          <a class="nav-link mb-1" href="{{ url_for('receptionist.payments') }}">
-            <i class="fas fa-credit-card me-2"></i>Pagos
-          </a>
+            <a class="nav-link {% if request.endpoint == 'receptionist.dashboard' %}active{% endif %}" href="{{ url_for('receptionist.dashboard') }}">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a class="nav-link {% if request.endpoint == 'receptionist.rooms' %}active{% endif %}" href="{{ url_for('receptionist.rooms') }}">
+                <i class="fas fa-bed me-2"></i>Habitaciones
+            </a>
+            <a class="nav-link {% if request.endpoint == 'receptionist.reservations' %}active{% endif %}" href="{{ url_for('receptionist.reservations') }}">
+                <i class="fas fa-calendar-alt me-2"></i>Reservaciones
+            </a>
+            <a class="nav-link {% if request.endpoint == 'receptionist.payments' %}active{% endif %}" href="{{ url_for('receptionist.payments') }}">
+                <i class="fas fa-credit-card me-2"></i>Pagos
+            </a>
         </nav>
       </div>
     </div>
 
     <!-- Main -->
-    <div class="col-md-9 col-lg-10">
+    <div class="col-md-9 col-lg-10 bg-white">
       <div class="py-4 px-4">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-          <h1 class="h3 text-primary fw-bold">Dashboard Recepcionista</h1>
           <div class="text-muted small">
             <span>{{ current_time.strftime('%d/%m/%Y %H:%M') }}</span> |
             Bienvenido, <strong>{{ current_user.get_full_name() }}</strong>

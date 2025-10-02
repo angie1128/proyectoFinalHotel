@@ -13,11 +13,9 @@ class ReservationForm(FlaskForm):
     total_price = HiddenField()
     special_requests = TextAreaField("Peticiones especiales")
     submit = SubmitField("Confirmar Reserva")
-    
+
     def __init__(self, *args, **kwargs):
         super(ReservationForm, self).__init__(*args, **kwargs)
-        self.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)') 
-                               for r in Room.query.filter_by(status='disponible').all()]
     
     def validate_check_in_date(self, check_in_date):
         if check_in_date.data < date.today():

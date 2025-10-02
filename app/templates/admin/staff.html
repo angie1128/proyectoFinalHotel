@@ -1,35 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Personal - Hotel Paradise{% endblock %}
+{% block title %}Personal - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 sidebar border-end bg-light">
-            <div class="py-4 px-3">
-                <h5 class="text-primary fw-bold mb-4">
-                    <i class="fas fa-user-shield me-2"></i>Administrador
-                </h5>
-                <nav class="nav flex-column">
-                    <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.rooms' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.rooms') }}">
-                        <i class="fas fa-bed me-2"></i>Habitaciones
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.reservations' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.reservations') }}">
-                        <i class="fas fa-calendar-alt me-2"></i>Reservaciones
-                    </a>
-                    <a class="nav-link active" href="{{ url_for('admin.staff') }}">
-                        <i class="fas fa-users me-2"></i>Personal
-                    </a>
-                    <a class="nav-link {% if request.endpoint == 'admin.users' %}active fw-bold text-primary{% endif %}" href="{{ url_for('admin.users') }}">
-                        <i class="fas fa-user-friends me-2"></i>Usuarios
-                    </a>
-                </nav>
-            </div>
-        </div>
+        {% include 'admin/sidebar.html' %}
 
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10 bg-white">
@@ -46,15 +23,24 @@
                   {% endif %}
                 {% endwith %}
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 text-primary fw-bold">Recepcionistas</h1>
-                    <div>
-                        <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary me-2">
-                            <i class="fas fa-user-plus me-1"></i>Agregar Recepcionista
-                        </a>
-                        <a href="{{ url_for('admin.download_all_staff_pdf') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-file-pdf me-1"></i>Descargar PDF
-                        </a>
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h1 class="h3 text-primary fw-bold mb-0">Recepcionistas</h1>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ url_for('admin.create_staff') }}" class="btn btn-primary">
+                                    <i class="fas fa-user-plus me-1"></i>Agregar Recepcionista
+                                </a>
+                                <a href="{{ url_for('admin.download_all_staff_pdf') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-file-pdf me-1"></i>Descargar PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -101,4 +87,11 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('show');
+}
+</script>
 {% endblock %}

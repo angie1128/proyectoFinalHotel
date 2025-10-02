@@ -1,0 +1,23 @@
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar guest-sidebar border-end">
+    <div class="py-4 px-3">
+        <nav class="nav flex-column">
+            <a class="nav-link {% if request.endpoint == 'guest.dashboard' %}active{% endif %}" href="{{ url_for('guest.dashboard') }}">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a class="nav-link {% if request.endpoint == 'guest.rooms' %}active{% endif %}" href="{{ url_for('guest.rooms') }}">
+                <i class="fas fa-bed me-2"></i>Habitaciones
+            </a>
+            <a class="nav-link {% if request.endpoint == 'guest.reservations' %}active{% endif %}" href="{{ url_for('guest.reservations') }}">
+                <i class="fas fa-calendar-check me-2"></i>Reservaciones
+            </a>
+            <a class="nav-link {% if request.endpoint == 'guest.profile' %}active{% endif %}" href="{{ url_for('guest.profile') }}">
+                <i class="fas fa-user me-2"></i>Mi Perfil
+            </a>
+            <hr class="my-3">
+            <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
+        </nav>
+    </div>
+</div>

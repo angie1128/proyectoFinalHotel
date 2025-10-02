@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Crear Personal - Hotel Paradise{% endblock %}
+{% block title %}Crear Personal - Pringamosa Hotel Boutique{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
@@ -89,8 +89,8 @@
                                             {{ form.password.label(class="form-label") }}
                                             <div class="input-group">
                                                 {{ form.password(class="form-control", id="password") }}
-                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                    <i class="fas fa-eye" id="passwordIcon"></i>
+                                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password">
+                                                    <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -98,8 +98,8 @@
                                             {{ form.password2.label(class="form-label") }}
                                             <div class="input-group">
                                                 {{ form.password2(class="form-control", id="password2") }}
-                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
-                                                    <i class="fas fa-eye" id="password2Icon"></i>
+                                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password2">
+                                                    <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -120,28 +120,4 @@
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
-    const passwordIcon = document.getElementById('passwordIcon');
-    togglePassword.addEventListener('click', function() {
-        const type = password.type === 'password' ? 'text' : 'password';
-        password.type = type;
-        passwordIcon.classList.toggle('fa-eye');
-        passwordIcon.classList.toggle('fa-eye-slash');
-    });
-
-    const togglePassword2 = document.getElementById('togglePassword2');
-    const password2 = document.getElementById('password2');
-    const password2Icon = document.getElementById('password2Icon');
-    togglePassword2.addEventListener('click', function() {
-        const type = password2.type === 'password' ? 'text' : 'password';
-        password2.type = type;
-        password2Icon.classList.toggle('fa-eye');
-        password2Icon.classList.toggle('fa-eye-slash');
-    });
-});
-</script>
 {% endblock %}

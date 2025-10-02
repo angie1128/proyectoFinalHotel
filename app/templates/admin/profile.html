@@ -1,65 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Mi Perfil - Recepcionista{% endblock %}
+{% block title %}Mi Perfil - Administrador{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('receptionist.dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('receptionist.profile') }}">
-                            <i class="fas fa-user"></i> Mi Perfil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('receptionist.rooms') }}">
-                            <i class="fas fa-bed"></i> Habitaciones
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('receptionist.reservations') }}">
-                            <i class="fas fa-calendar-check"></i> Reservaciones
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('receptionist.payments') }}">
-                            <i class="fas fa-credit-card"></i> Pagos
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        {% include 'admin/sidebar.html' %}
 
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <!-- Sidebar Toggle Button for Mobile -->
+            <button class="sidebar-toggle d-none" type="button" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Mi Perfil</h1>
-                <a href="{{ url_for('receptionist.dashboard') }}" class="btn btn-outline-secondary">
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
                     ← Volver al Dashboard
                 </a>
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="card shadow-sm">
-                        <div class="card-body text-center">
-                            <!-- Imagen de avatar -->
-                            <img src="{{ url_for('static', filename='img/avatar.png') }}" 
-                                 class="rounded-circle mb-3" width="120" height="120" alt="Avatar">
+                    <div class="card shadow-sm fade-in-up">
+                        <div class="card-body">
 
-                            <h4 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h4>
+                            <!-- Información del administrador -->
+                            <h4 class="mb-3">{{ user.first_name }} {{ user.last_name }}</h4>
                             <p class="text-muted">@{{ user.username }}</p>
 
-                            <!-- Info de contacto -->
-                            <div class="row mt-4 text-start">
+                            <div class="row text-start mt-4">
                                 <div class="col-sm-6 mb-3">
                                     <strong>Email:</strong> <br>
                                     <i class="fas fa-envelope text-primary"></i> {{ user.email }}
@@ -70,23 +41,23 @@
                                 </div>
                                 <div class="col-sm-6 mb-3">
                                     <strong>Rol:</strong> <br>
-                                    <span class="badge bg-info">Recepcionista</span>
-                                </div>
-                                <div class="col-sm-6 mb-3">
-                                    <strong>Último acceso:</strong> <br>
-                                    <i class="fas fa-clock text-warning"></i> {{ user.last_login or 'No disponible' }}
+                                    <span>Administrador</span>
                                 </div>
                             </div>
 
-                            <!-- Botones interactivos -->
+                            <!-- Botones de acción -->
                             <div class="d-flex justify-content-center gap-3 mt-3">
-                                <a href="{{ url_for('receptionist.change_password') }}" class="btn btn-outline-secondary">
+                                <a href="{{ url_for('admin.change_password') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-key"></i> Cambiar Contraseña
                                 </a>
                                 <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
                                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                                 </a>
+                                <a href="{{ url_for('admin.edit_profile') }}" class="btn btn-primary">
+                                    <i class="fas fa-user-edit"></i> Editar Perfil
+                                </a>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -94,4 +65,11 @@
         </main>
     </div>
 </div>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('show');
+}
+</script>
 {% endblock %}

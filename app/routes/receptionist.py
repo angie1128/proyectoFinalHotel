@@ -89,13 +89,16 @@ def new_reservation():
     form = ReservationForm()
 
     # Cargar huéspedes disponibles (solo rol = huésped)
-    form.guest_id.choices = [
-        (u.id, u.get_full_name()) 
-        for u in User.query.filter_by(role="huesped").all()
-    ]
+    guests = User.query.filter_by(role="huesped").all()
+    form.guest_id.choices = [(u.id, u.get_full_name()) for u in guests]
 
     # Cargar habitaciones disponibles
     available_rooms = Room.query.all()
+    if available_rooms:
+        form.room_id.choices = [(r.id, f'Habitación {r.number} - {r.get_type_display()} (${r.price}/noche)')
+                               for r in available_rooms]
+    else:
+        form.room_id.choices = [(-1, 'No hay habitaciones disponibles')]
 
     if form.validate_on_submit():
         # Buscar la habitación seleccionada
